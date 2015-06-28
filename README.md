@@ -1,7 +1,6 @@
 # QR code decoder / reader for PHP
-This is a PHP library to detect and decode QR-codes.
-This is first and only QR code reader that works without extensions.
-Ported from [ZXing library](https://github.com/zxing/zxing) 
+This is a PHP library to detect and decode QR-codes.<br />This is first and only QR code reader that works without extensions.<br />
+Ported from [ZXing library](https://github.com/zxing/zxing)
 
 ## Usage 
 ```php
