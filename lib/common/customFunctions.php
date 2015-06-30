@@ -7,16 +7,9 @@ function arraycopy($srcArray,$srcPos,$destArray, $destPos, $length){//System.arr
 }
 
 
-function overflow32($value) {
-    $value = $value % 4294967296;
-    if ($value > 2147483647) {
-        return $value - 4294967296;
-    } elseif ($value < -2147483648) {
-        return $value + 4294967296;
-    } else {
-        return $value;
-    } // if
-}  // overflow32()
+function overflow32($value) {//There is no need to overflow 64 bits to 32 bit
+    return $value;
+}
 
 function hashCode( $s )
 {
@@ -33,10 +26,10 @@ function hashCode( $s )
 
 function numberOfTrailingZeros($i) {
     if ($i == 0) return 32;
-    (int)$num = 0;
+    $num = 0;
     while (($i & 1) == 0) {
         $i >>= 1;
-        $num ++;
+        $num++;
     }
     return $num;
 }
