@@ -1,4 +1,4 @@
-<?
+<?php
 
 include_once ('Reader.php');
 require_once ('BinaryBitmap.php');
