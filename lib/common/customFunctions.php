@@ -35,7 +35,6 @@ function numberOfTrailingZeros($i) {
 }
 function intval32bits($value)
 {
-
     $value = ($value & 0xFFFFFFFF);
 
     if ($value & 0x80000000)
@@ -66,7 +65,7 @@ function sdvig3($num,$count=1){//>>> 32 bit
 */
 
 function sdvig3($a,$b) {
-    return $a>>$b;
+
     if ($a >= 0) {
         return bindec(decbin($a>>$b)); //simply right shift for positive number
     }

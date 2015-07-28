@@ -70,9 +70,9 @@ final class QrReader
 
                 $source = new \Zxing\GDLuminanceSource($im, $width, $height);
             }
-            $histo = new Zxing\Common\HybridBinarizer($source);
-            $bitmap = new Zxing\BinaryBitmap($histo);
-            $reader = new Zxing\Qrcode\QRCodeReader();
+            $histo = new \Zxing\Common\HybridBinarizer($source);
+            $bitmap = new \Zxing\BinaryBitmap($histo);
+            $reader = new \Zxing\Qrcode\QRCodeReader();
 
             $this->result = $reader->decode($bitmap);
         }catch (\Zxing\NotFoundException $er){
@@ -93,5 +93,9 @@ final class QrReader
         }
     }
 
+    public function decode()
+    {
+        return $this->text();
+    }
 }
 
