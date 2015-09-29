@@ -46,7 +46,7 @@ include_once ('common/GlobalHistogramBinarizer.php');
 include_once ('common/HybridBinarizer.php');
 
 
-final class QrReader
+final class rR
 {
     const SOURCE_TYPE_FILE = 'file';
     const SOURCE_TYPE_BLOB = 'blob';
@@ -63,6 +63,7 @@ final class QrReader
                         $im->readImage($imgsource);
                     }else {
                         $image = file_get_contents($imgsource);
+                        $im = imagecreatefromstring($image);
                     }
 
                     break;
@@ -72,7 +73,7 @@ final class QrReader
                         $im = new Imagick();
                         $im->readimageblob($imgsource);
                     }else {
-                        $image = $imgsource;
+                        $im = imagecreatefromstring($imgsource);
                     }
 
                     break;
@@ -83,11 +84,8 @@ final class QrReader
                 $height = $im->getImageHeight();
                 $source = new \Zxing\IMagickLuminanceSource($im, $width, $height);
             }else {
-                $sizes = getimagesize($imgsource);
-                $width = $sizes[0];
-                $height = $sizes[1];
-                $im = imagecreatefromstring($image);
-
+                $width = imagesx($im);
+                $height = imagesy($im);
                 $source = new \Zxing\GDLuminanceSource($im, $width, $height);
             }
             $histo = new \Zxing\Common\HybridBinarizer($source);
