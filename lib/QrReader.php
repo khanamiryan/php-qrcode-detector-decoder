@@ -46,7 +46,7 @@ include_once ('common/GlobalHistogramBinarizer.php');
 include_once ('common/HybridBinarizer.php');
 
 
-final class rR
+final class QrReader
 {
     const SOURCE_TYPE_FILE = 'file';
     const SOURCE_TYPE_BLOB = 'blob';
