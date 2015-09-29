@@ -48,22 +48,42 @@ include_once ('common/HybridBinarizer.php');
 
 final class QrReader
 {
+    const SOURCE_TYPE_FILE = 'file';
+    const SOURCE_TYPE_BLOB = 'blob';
     public $result;
 
-    function __construct($filename)
+    function __construct($imgsource, $sourcetype = 'file')
     {
 
         try {
+            switch($sourcetype) {
+                case 'file':
+                    if(extension_loaded('imagick')) {
+                        $im = new Imagick();
+                        $im->readImage($imgsource);
+                    }else {
+                        $image = file_get_contents($imgsource);
+                    }
+
+                    break;
+
+                case 'blob':
+                    if(extension_loaded('imagick')) {
+                        $im = new Imagick();
+                        $im->readimageblob($imgsource);
+                    }else {
+                        $image = $imgsource;
+                    }
+
+                    break;
+            }
 
             if(extension_loaded('imagick')) {
-                $im = new Imagick();
-                $im->readImage($filename);
                 $width = $im->getImageWidth();
                 $height = $im->getImageHeight();
                 $source = new \Zxing\IMagickLuminanceSource($im, $width, $height);
             }else {
-                $image = file_get_contents($filename);
-                $sizes = getimagesize($filename);
+                $sizes = getimagesize($imgsource);
                 $width = $sizes[0];
                 $height = $sizes[1];
                 $im = imagecreatefromstring($image);
