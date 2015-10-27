@@ -50,15 +50,16 @@ final class QrReader
 {
     const SOURCE_TYPE_FILE = 'file';
     const SOURCE_TYPE_BLOB = 'blob';
+    const SOURCE_TYPE_RESOURCE = 'resource';
     public $result;
 
-    function __construct($imgsource, $sourcetype = 'file')
+    function __construct($imgsource, $sourcetype = 'file', $isUseImagickIfAvailable = true)
     {
 
         try {
             switch($sourcetype) {
-                case 'file':
-                    if(extension_loaded('imagick')) {
+                case QrReader::SOURCE_TYPE_FILE:
+                    if($isUseImagickIfAvailable && extension_loaded('imagick')) {
                         $im = new Imagick();
                         $im->readImage($imgsource);
                     }else {
@@ -68,8 +69,8 @@ final class QrReader
 
                     break;
 
-                case 'blob':
-                    if(extension_loaded('imagick')) {
+                case QrReader::SOURCE_TYPE_BLOB:
+                    if($isUseImagickIfAvailable && extension_loaded('imagick')) {
                         $im = new Imagick();
                         $im->readimageblob($imgsource);
                     }else {
@@ -77,9 +78,19 @@ final class QrReader
                     }
 
                     break;
+
+                case QrReader::SOURCE_TYPE_RESOURCE:
+                    $im = $imgsource;
+                    if($isUseImagickIfAvailable && extension_loaded('imagick')) {
+                        $isUseImagickIfAvailable = true;
+                    }else {
+                        $isUseImagickIfAvailable = false;
+                    }
+
+                    break;
             }
 
-            if(extension_loaded('imagick')) {
+            if($isUseImagickIfAvailable && extension_loaded('imagick')) {
                 $width = $im->getImageWidth();
                 $height = $im->getImageHeight();
                 $source = new \Zxing\IMagickLuminanceSource($im, $width, $height);
