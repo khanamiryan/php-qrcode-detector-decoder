@@ -24,3 +24,7 @@ You can help the project by adding features, cleaning the code, adding composer 
 3. Commit your changes: `git commit -am 'Add some feature'`
 4. Push to the branch: `git push origin my-new-feature`
 5. Submit a pull request
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/khanamiryan/php-qrcode-detector-decoder/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
