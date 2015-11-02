@@ -48,26 +48,55 @@ include_once ('common/HybridBinarizer.php');
 
 final class QrReader
 {
+    const SOURCE_TYPE_FILE = 'file';
+    const SOURCE_TYPE_BLOB = 'blob';
+    const SOURCE_TYPE_RESOURCE = 'resource';
     public $result;
 
-    function __construct($filename)
+    function __construct($imgsource, $sourcetype = QrReader::SOURCE_TYPE_FILE, $isUseImagickIfAvailable = true)
     {
 
         try {
+            switch($sourcetype) {
+                case QrReader::SOURCE_TYPE_FILE:
+                    if($isUseImagickIfAvailable && extension_loaded('imagick')) {
+                        $im = new Imagick();
+                        $im->readImage($imgsource);
+                    }else {
+                        $image = file_get_contents($imgsource);
+                        $im = imagecreatefromstring($image);
+                    }
 
-            if(extension_loaded('imagick')) {
-                $im = new Imagick();
-                $im->readImage($filename);
+                    break;
+
+                case QrReader::SOURCE_TYPE_BLOB:
+                    if($isUseImagickIfAvailable && extension_loaded('imagick')) {
+                        $im = new Imagick();
+                        $im->readimageblob($imgsource);
+                    }else {
+                        $im = imagecreatefromstring($imgsource);
+                    }
+
+                    break;
+
+                case QrReader::SOURCE_TYPE_RESOURCE:
+                    $im = $imgsource;
+                    if($isUseImagickIfAvailable && extension_loaded('imagick')) {
+                        $isUseImagickIfAvailable = true;
+                    }else {
+                        $isUseImagickIfAvailable = false;
+                    }
+
+                    break;
+            }
+
+            if($isUseImagickIfAvailable && extension_loaded('imagick')) {
                 $width = $im->getImageWidth();
                 $height = $im->getImageHeight();
                 $source = new \Zxing\IMagickLuminanceSource($im, $width, $height);
             }else {
-                $image = file_get_contents($filename);
-                $sizes = getimagesize($filename);
-                $width = $sizes[0];
-                $height = $sizes[1];
-                $im = imagecreatefromstring($image);
-
+                $width = imagesx($im);
+                $height = imagesy($im);
                 $source = new \Zxing\GDLuminanceSource($im, $width, $height);
             }
             $histo = new \Zxing\Common\HybridBinarizer($source);
