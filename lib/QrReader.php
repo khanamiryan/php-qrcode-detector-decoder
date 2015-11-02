@@ -6,6 +6,8 @@ require_once ('common/detector/MathUtils.php');
 require_once ('common/BitMatrix.php');
 require_once ('common/BitSource.php');
 require_once ('common/BitArray.php');
+require_once ('common/CharacterSetEci.php');//
+require_once ('common/AbstractEnum.php');//
 require_once ('BinaryBitmap.php');
 include_once ('LuminanceSource.php');
 include_once ('GDLuminanceSource.php');
