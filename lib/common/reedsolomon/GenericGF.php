@@ -108,7 +108,7 @@ final class GenericGF {
      */
     function buildMonomial($degree, $coefficient) {
         if ($degree < 0) {
-            throw new InvalidArgumentException();
+            throw new \InvalidArgumentException();
         }
         if ($coefficient == 0) {
             return $this->zero;
@@ -139,7 +139,7 @@ final class GenericGF {
      */
     function log($a) {
         if ($a == 0) {
-            throw new InvalidArgumentException();
+            throw new \InvalidArgumentException();
         }
         return $this->logTable[$a];
     }

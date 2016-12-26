@@ -85,7 +85,7 @@ abstract class DataMask
     static function forReference($reference)
     {
         if ($reference < 0 || $reference > 7) {
-            throw new InvalidArgumentException();
+            throw new \InvalidArgumentException();
         }
         return self::$DATA_MASKS[$reference];
     }
