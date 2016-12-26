@@ -25,7 +25,7 @@ final class BitMatrix {
     }
     public static  function parse($stringRepresentation, $setString, $unsetString){
         if (!$stringRepresentation) {
-            throw new InvalidArgumentException();
+            throw new \InvalidArgumentException();
         }
         $bits = array();
         $bitsPos = 0;
@@ -41,7 +41,7 @@ final class BitMatrix {
                         $rowLength = $bitsPos - $rowStartPos;
                     }
                     else if ($bitsPos - $rowStartPos != $rowLength) {
-                        throw new InvalidArgumentException("row lengths do not match");
+                        throw new \InvalidArgumentException("row lengths do not match");
                     }
                     $rowStartPos = $bitsPos;
                     $nRows++;
@@ -58,7 +58,7 @@ final class BitMatrix {
                 $bits[$bitsPos] = false;
                 $bitsPos++;
             } else {
-                throw new InvalidArgumentException(
+                throw new \InvalidArgumentException(
                     "illegal character encountered: " . substr($stringRepresentation,$pos));
             }
         }
@@ -68,7 +68,7 @@ final class BitMatrix {
             if($rowLength == -1) {
                 $rowLength = $bitsPos - $rowStartPos;
             } else if ($bitsPos - $rowStartPos != $rowLength) {
-                throw new InvalidArgumentException("row lengths do not match");
+                throw new \InvalidArgumentException("row lengths do not match");
             }
             $nRows++;
         }
@@ -151,7 +151,7 @@ final class BitMatrix {
     public function _xor($mask) {//было xor, php не позволяет использовать xor
         if ($this->width != $mask->getWidth() || $this->height != $mask->getHeight()
             || $this->rowSize != $mask->getRowSize()) {
-            throw new InvalidArgumentException("input matrix dimensions do not match");
+            throw new \InvalidArgumentException("input matrix dimensions do not match");
         }
         $rowArray = new BitArray($this->width / 32 + 1);
         for ($y = 0; $y < $this->height; $y++) {
@@ -183,15 +183,15 @@ final class BitMatrix {
      */
     public function setRegion($left, $top, $width, $height) {
         if ($top < 0 || $left < 0) {
-            throw new InvalidArgumentException("Left and top must be nonnegative");
+            throw new \InvalidArgumentException("Left and top must be nonnegative");
         }
         if ($height < 1 || $width < 1) {
-            throw new InvalidArgumentException("Height and width must be at least 1");
+            throw new \InvalidArgumentException("Height and width must be at least 1");
         }
         $right = $left + $width;
         $bottom = $top + $height;
         if ($bottom > $this->height || $right > $this->width) { //> this.height || right > this.width
-            throw new InvalidArgumentException("The region must fit inside the matrix");
+            throw new \InvalidArgumentException("The region must fit inside the matrix");
         }
         for ($y = $top; $y < $bottom; $y++) {
             $offset = $y * $this->rowSize;

@@ -74,7 +74,7 @@ class ErrorCorrectionLevel {
      */
     public static function forBits($bits) {
         if ($bits < 0 || $bits >= count(self::$FOR_BITS)) {
-            throw new InvalidArgumentException();
+            throw new \InvalidArgumentException();
         }
         $level = self::$FOR_BITS[$bits];
        // $lev = self::$$bit;

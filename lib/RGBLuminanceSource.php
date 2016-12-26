@@ -48,7 +48,7 @@ final class RGBLuminanceSource extends LuminanceSource {
         }
         parent::__construct($width, $height);
         if ($left + $width > $dataWidth || $top + $height > $dataHeight) {
-            throw new InvalidArgumentException("Crop rectangle does not fit within image data.");
+            throw new \InvalidArgumentException("Crop rectangle does not fit within image data.");
         }
         $this->luminances = $pixels;
         $this->dataWidth = $dataWidth;
@@ -249,7 +249,7 @@ function grayScaleToBitmap ($grayScale)
 //@Override
     public function getRow($y, $row=null) {
         if ($y < 0 || $y >= $this->getHeight()) {
-            throw new InvalidArgumentException("Requested row is outside the image: " + y);
+            throw new \InvalidArgumentException("Requested row is outside the image: " + y);
         }
         $width = $this->getWidth();
         if ($row == null || count($row) < $width) {
