@@ -2,14 +2,13 @@
   "name": "dijkma/qrcodedecoder",
   "description": "",
   "keywords": ["qrcode", "qr", "code", "reader"],
-  "homepage": "https://github.com/JelleDijkhuizen/endroidqrlaravelbundle",
+  "homepage": "https://github.com/khanamiryan/php-qrcode-detector-decoder",
   "type": "library",
   "license": "MIT",
   "authors": [
     {
-      "name": "Jelle Dijkhuizen",
-      "email": "jelle@dijkma.nl",
-      "homepage": "https://dijkma.nl"
+      "name": "Ashot Khanamiryan",
+      "homepage": "https://github.com/khanamiryan"
     }
   ],
   "require": {
