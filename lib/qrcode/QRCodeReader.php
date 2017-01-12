@@ -17,8 +17,6 @@
 
 namespace Zxing\Qrcode;
 
-require_once('detector/Detector.php');
-
 use Zxing\BarcodeFormat;
 use Zxing\BinaryBitmap;
 use Zxing\ChecksumException;

@@ -2,15 +2,26 @@
 This is a PHP library to detect and decode QR-codes.<br />This is first and only QR code reader that works without extensions.<br />
 Ported from [ZXing library](https://github.com/zxing/zxing)
 
+
+## Installation
+The recommended method of installing this library is via [Composer](https://getcomposer.org/).
+
+Run the following command from your project root:
+
+```bash
+$ composer require khanamiryan/qrcode-detector-decoder
+```
+
+
 ## Usage 
 ```php
-include_once('./lib/QrReader.php');
+require __DIR__ . "/vendor/autoload.php";
 $qrcode = new QrReader('path/to_image');
 $text = $qrcode->text(); //return decoded text from QR Code
 ```
 
 ## Requirements 
-* PHP >= 5.3
+* PHP >= 5.6
 * GD Library
 
 
