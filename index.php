@@ -1,6 +1,6 @@
 <?php
 
-include_once('./lib/QrReader.php');
+require __DIR__ . "/vendor/autoload.php";
 
 
 
