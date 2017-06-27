@@ -2,7 +2,7 @@
 
 namespace Khanamiryan\QrCodeTests;
 
-class QrReaderTest extends \PHPUnit_Framework_TestCase
+class QrReaderTest extends \PHPUnit\Framework\TestCase
 {
 
     public function testText1()
