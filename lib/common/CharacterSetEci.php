@@ -1,15 +1,13 @@
 <?php
 
-
 namespace Zxing\Common;
-use Zxing\Common\AbstractEnum;
+
 /**
  * Encapsulates a Character Set ECI, according to "Extended Channel
  * Interpretations" 5.3.1.1 of ISO 18004.
  */
 final class CharacterSetECI
 {
-    private static $name = null;
     /**#@+
      * Character set constants.
      */
@@ -41,13 +39,12 @@ final class CharacterSetECI
     const BIG5                 = 28;
     const GB18030              = 29;
     const EUC_KR               = 30;
-    /**#@-*/
     /**
      * Map between character names and their ECI values.
      *
      * @var array
      */
-    protected static $nameToEci = array(
+    protected static $nameToEci = [
         'ISO-8859-1'   => self::ISO8859_1,
         'ISO-8859-2'   => self::ISO8859_2,
         'ISO-8859-3'   => self::ISO8859_3,
@@ -74,36 +71,40 @@ final class CharacterSetECI
         'ASCII'        => self::ASCII,
         'GBK'          => self::GB18030,
         'EUC-KR'       => self::EUC_KR,
-    );
+    ];
+    /**#@-*/
     /**
      * Additional possible values for character sets.
      *
      * @var array
      */
-    protected static $additionalValues = array(
+    protected static $additionalValues = [
         self::CP437 => 2,
         self::ASCII => 170,
-    );
+    ];
+    private static $name = null;
+
     /**
      * Gets character set ECI by value.
      *
      * @param  string $name
+     *
      * @return CharacterSetEci|null
      */
     public static function getCharacterSetECIByValue($value)
     {
         if ($value < 0 || $value >= 900) {
-            throw new Exception\InvalidArgumentException('Value must be between 0 and 900');
+            throw new \InvalidArgumentException('Value must be between 0 and 900');
         }
         if (false !== ($key = array_search($value, self::$additionalValues))) {
             $value = $key;
         }
         array_search($value, self::$nameToEci);
-        try 
-        {
+        try {
             self::setName($value);
+
             return new self($value);
-        } catch (Exception\UnexpectedValueException $e) {
+        } catch (\UnexpectedValueException $e) {
             return null;
         }
     }
@@ -111,23 +112,23 @@ final class CharacterSetECI
     private static function setName($value)
     {
         foreach (self::$nameToEci as $name => $key) {
-            if($key == $value)
-            {
+            if ($key == $value) {
                 self::$name = $name;
+
                 return true;
             }
         }
-        if(self::$name == null)
-        {
+        if (self::$name == null) {
             foreach (self::$additionalValues as $name => $key) {
-                if($key == $value)
-                {
+                if ($key == $value) {
                     self::$name = $name;
+
                     return true;
                 }
             }
         }
     }
+
     /**
      * Gets character set ECI name.
      *
@@ -137,10 +138,12 @@ final class CharacterSetECI
     {
         return self::$name;
     }
+
     /**
      * Gets character set ECI by name.
      *
      * @param  string $name
+     *
      * @return CharacterSetEci|null
      */
     public static function getCharacterSetECIByName($name)
@@ -149,6 +152,7 @@ final class CharacterSetECI
         if (isset(self::$nameToEci[$name])) {
             return new self(self::$nameToEci[$name]);
         }
+
         return null;
     }
 }

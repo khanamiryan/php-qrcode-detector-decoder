@@ -4,6 +4,7 @@ namespace Zxing\Common\CharacterSetEci\AbstractEnum;
 
 use \Zxing\NotFoundException;
 use ReflectionClass;
+
 /**
  * A general enum implementation until we got SplEnum.
  */
@@ -31,6 +32,7 @@ final class AbstractEnum
      * @var boolean
      */
     protected $strict;
+
     /**
      * Creates a new enum.
      *
@@ -42,32 +44,27 @@ final class AbstractEnum
         $this->strict = $strict;
         $this->change($initialValue);
     }
+
     /**
      * Changes the value of the enum.
      *
      * @param  mixed $value
+     *
      * @return void
      */
     public function change($value)
     {
         if (!in_array($value, $this->getConstList(), $this->strict)) {
-            throw new Exception\UnexpectedValueException('Value not a const in enum ' . get_class($this));
+            throw new \UnexpectedValueException('Value not a const in enum ' . get_class($this));
         }
         $this->value = $value;
     }
-    /**
-     * Gets current value.
-     *
-     * @return mixed
-     */
-    public function get()
-    {
-        return $this->value;
-    }
+
     /**
      * Gets all constants (possible values) as an array.
      *
      * @param  boolean $includeDefault
+     *
      * @return array
      */
     public function getConstList($includeDefault = true)
@@ -81,8 +78,20 @@ final class AbstractEnum
         }
         $constants = $this->constants;
         unset($constants['__default']);
+
         return $constants;
     }
+
+    /**
+     * Gets current value.
+     *
+     * @return mixed
+     */
+    public function get()
+    {
+        return $this->value;
+    }
+
     /**
      * Gets the name of the enum.
      *
@@ -90,6 +99,6 @@ final class AbstractEnum
      */
     public function __toString()
     {
-        return array_search($this->value, $this->getConstList());
+        return (string)array_search($this->value, $this->getConstList());
     }
 }

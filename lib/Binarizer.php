@@ -15,8 +15,7 @@
 * limitations under the License.
 */
 
-
-namespace  Zxing;
+namespace Zxing;
 
 use Zxing\Common\BitArray;
 use Zxing\Common\BitMatrix;
@@ -29,15 +28,17 @@ use Zxing\Common\BitMatrix;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
-abstract class Binarizer {
-
+abstract class Binarizer
+{
     private $source;
 
-    protected function __construct($source) {
+    protected function __construct($source)
+    {
         $this->source = $source;
     }
 
-    public final function getLuminanceSource() {
+    public final function getLuminanceSource()
+    {
         return $this->source;
     }
 
@@ -49,9 +50,10 @@ abstract class Binarizer {
      * and passed in with each call for performance. However it is legal to keep more than one row
      * at a time if needed.
      *
-     * @param y The row to fetch, which must be in [0, bitmap height)
+     * @param y   The row to fetch, which must be in [0, bitmap height)
      * @param row An optional preallocated array. If null or too small, it will be ignored.
      *            If used, the Binarizer will call BitArray.clear(). Always use the returned object.
+     *
      * @return The array of bits for this row (true means black).
      * @throws NotFoundException if row can't be binarized
      */
@@ -74,16 +76,18 @@ abstract class Binarizer {
      * of 1 bit data. See Effective Java for why we can't use Java's clone() method.
      *
      * @param source The LuminanceSource this Binarizer will operate on.
+     *
      * @return A new concrete Binarizer implementation object.
      */
     public abstract function createBinarizer($source);
 
-    public final function getWidth() {
+    public final function getWidth()
+    {
         return $this->source->getWidth();
     }
 
-    public final function getHeight() {
+    public final function getHeight()
+    {
         return $this->source->getHeight();
     }
-
 }
