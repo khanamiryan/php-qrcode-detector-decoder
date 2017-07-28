@@ -17,23 +17,15 @@
 
 namespace Zxing\Qrcode;
 
-use Zxing\BarcodeFormat;
 use Zxing\BinaryBitmap;
 use Zxing\ChecksumException;
-use Zxing\DecodeHintType;
 use Zxing\FormatException;
 use Zxing\NotFoundException;
 use Zxing\Reader;
 use Zxing\Result;
-use Zxing\ResultMetadataType;
-use Zxing\ResultPoint;
 use Zxing\Common\BitMatrix;
-use Zxing\Common\DecoderResult;
-use Zxing\Common\DetectorResult;
 use Zxing\Qrcode\Decoder\Decoder;
-use Zxing\Qrcode\Decoder\QRCodeDecoderMetaData;
 use Zxing\Qrcode\Detector\Detector;
-
 
 /**
  * This implementation can detect and decode QR Codes in an image.
@@ -48,48 +40,49 @@ class QRCodeReader implements Reader
     public function __construct()
     {
         $this->decoder = new Decoder();
-
     }
 
+    /**
+     * @param BinaryBitmap $image
+     * @param null         $hints
+     *
+     * @return Result
+     * @throws \Zxing\FormatException
+     * @throws \Zxing\NotFoundException
+     */
     public function decode(BinaryBitmap $image, $hints = null)
-    {/* Map<DecodeHintType,?> hints*/
+    {
         $decoderResult = null;
-        $points        = [];
-        if ($hints != null && $hints['PURE_BARCODE']) {//hints.containsKey(DecodeHintType.PURE_BARCODE)) {
+        if ($hints !== null && $hints['PURE_BARCODE']) {
             $bits          = self::extractPureBits($image->getBlackMatrix());
             $decoderResult = $this->decoder->decode($bits, $hints);
             $points        = self::$NO_POINTS;
         } else {
-            $time = microtime(true);
             $detector       = new Detector($image->getBlackMatrix());
             $detectorResult = $detector->detect($hints);
-            echo sprintf('detect: %f', microtime(true) - $time),PHP_EOL;
 
-            $time = microtime(true);
             $decoderResult = $this->decoder->decode($detectorResult->getBits(), $hints);
             $points        = $detectorResult->getPoints();
-            echo sprintf('decode: %f', microtime(true) - $time),PHP_EOL;
         }
+        $result = new Result($decoderResult->getText(), $decoderResult->getRawBytes(), $points, 'QR_CODE');//BarcodeFormat.QR_CODE
 
-        // If the code was mirrored: swap the bottom-left and the top-right points.
-        if ($decoderResult->getOther() instanceof QRCodeDecoderMetaData) {
-            $decoderResult->getOther()->applyMirroredCorrection($points);
-        }
-
-        $result       = new Result($decoderResult->getText(), $decoderResult->getRawBytes(), $points, 'QR_CODE');//BarcodeFormat.QR_CODE
         $byteSegments = $decoderResult->getByteSegments();
-        if ($byteSegments != null) {
+        if ($byteSegments !== null) {
             $result->putMetadata('BYTE_SEGMENTS', $byteSegments);//ResultMetadataType.BYTE_SEGMENTS
         }
         $ecLevel = $decoderResult->getECLevel();
-        if ($ecLevel != null) {
+        if ($ecLevel !== null) {
             $result->putMetadata('ERROR_CORRECTION_LEVEL', $ecLevel);//ResultMetadataType.ERROR_CORRECTION_LEVEL
         }
         if ($decoderResult->hasStructuredAppend()) {
-            $result->putMetadata('STRUCTURED_APPEND_SEQUENCE',//ResultMetadataType.STRUCTURED_APPEND_SEQUENCE
-                $decoderResult->getStructuredAppendSequenceNumber());
-            $result->putMetadata('STRUCTURED_APPEND_PARITY',//ResultMetadataType.STRUCTURED_APPEND_PARITY
-                $decoderResult->getStructuredAppendParity());
+            $result->putMetadata(
+                'STRUCTURED_APPEND_SEQUENCE',//ResultMetadataType.STRUCTURED_APPEND_SEQUENCE
+                $decoderResult->getStructuredAppendSequenceNumber()
+            );
+            $result->putMetadata(
+                'STRUCTURED_APPEND_PARITY',//ResultMetadataType.STRUCTURED_APPEND_PARITY
+                $decoderResult->getStructuredAppendParity()
+            );
         }
 
         return $result;
@@ -103,10 +96,7 @@ class QRCodeReader implements Reader
      * @throws FormatException if a QR code cannot be decoded
      * @throws ChecksumException if error correction fails
      */
-    //@Override
 
-
-    // @Override
     /**
      * This method detects a code in a "pure" image -- that is, pure monochrome image
      * which contains only an unrotated, unskewed, image of a code, with some white border
@@ -115,11 +105,11 @@ class QRCodeReader implements Reader
      *
      * @see com.google.zxing.datamatrix.DataMatrixReader#extractPureBits(BitMatrix)
      */
-    private static function extractPureBits($image)
+    private static function extractPureBits(BitMatrix $image)
     {
         $leftTopBlack     = $image->getTopLeftOnBit();
         $rightBottomBlack = $image->getBottomRightOnBit();
-        if ($leftTopBlack == null || $rightBottomBlack == null) {
+        if ($leftTopBlack === null || $rightBottomBlack == null) {
             throw NotFoundException::getNotFoundInstance();
         }
 
@@ -193,13 +183,13 @@ class QRCodeReader implements Reader
         return $bits;
     }
 
-    //@Override
-    private static function moduleSize($leftTopBlack, $image)
+    private static function moduleSize($leftTopBlack, BitMatrix $image)
     {
-        $height      = $image->getHeight();
-        $width       = $image->getWidth();
-        $x           = $leftTopBlack[0];
-        $y           = $leftTopBlack[1];
+        $height = $image->getHeight();
+        $width  = $image->getWidth();
+        [$x, $y] = $leftTopBlack;
+        /*$x           = $leftTopBlack[0];
+        $y           = $leftTopBlack[1];*/
         $inBlack     = true;
         $transitions = 0;
         while ($x < $width && $y < $height) {

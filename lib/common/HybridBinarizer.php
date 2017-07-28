@@ -41,8 +41,8 @@ use Zxing\NotFoundException;
 final class HybridBinarizer extends GlobalHistogramBinarizer
 {
 
-// This class uses 5x5 blocks to compute local luminance, where each block is 8x8 pixels.
-// So this is the smallest dimension in each axis we can accept.
+    // This class uses 5x5 blocks to compute local luminance, where each block is 8x8 pixels.
+    // So this is the smallest dimension in each axis we can accept.
     private static $BLOCK_SIZE_POWER = 3;
     private static $BLOCK_SIZE = 8; // ...0100...00
     private static $BLOCK_SIZE_MASK = 7;   // ...0011...11
@@ -66,10 +66,9 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
      * constructor instead, but there are some advantages to doing it lazily, such as making
      * profiling easier, and not doing heavy lifting when callers don't expect it.
      */
-//@Override
     public function getBlackMatrix()
     {
-        if ($this->matrix != null) {
+        if ($this->matrix !== null) {
             return $this->matrix;
         }
         $source = $this->getLuminanceSource();
@@ -85,20 +84,18 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
             if (($height & self::$BLOCK_SIZE_MASK) != 0) {
                 $subHeight++;
             }
-            $blackPoints = $this->calculateBlackPoints($luminances, $subWidth, $subHeight, $width, $height);
+            $blackPoints = self::calculateBlackPoints($luminances, $subWidth, $subHeight, $width, $height);
 
             $newMatrix = new BitMatrix($width, $height);
             self::calculateThresholdForBlock($luminances, $subWidth, $subHeight, $width, $height, $blackPoints, $newMatrix);
             $this->matrix = $newMatrix;
         } else {
-// If the image is too small, fall back to the global histogram approach.
+            // If the image is too small, fall back to the global histogram approach.
             $this->matrix = parent::getBlackMatrix();
         }
 
         return $this->matrix;
     }
-
-//@Override
 
     /**
      * Calculates a single black point for each block of pixels and saves it away.
@@ -135,7 +132,7 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
                     for ($xx = 0; $xx < self::$BLOCK_SIZE; $xx++) {
                         $pixel = intval32bits((int)($luminances[(int)($offset + $xx)]) & 0xFF);
                         $sum   += $pixel;
-// still looking for good contrast
+                        // still looking for good contrast
                         if ($pixel < $min) {
                             $min = $pixel;
                         }
@@ -143,9 +140,9 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
                             $max = $pixel;
                         }
                     }
-// short-circuit min/max tests once dynamic range is met
+                    // short-circuit min/max tests once dynamic range is met
                     if ($max - $min > self::$MIN_DYNAMIC_RANGE) {
-// finish the rest of the rows quickly
+                        // finish the rest of the rows quickly
                         for ($yy++, $offset += $width; $yy < self::$BLOCK_SIZE; $yy++, $offset += $width) {
                             for ($xx = 0; $xx < self::$BLOCK_SIZE; $xx++) {
                                 $sum += intval32bits($luminances[$offset + $xx] & 0xFF);
@@ -154,25 +151,25 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
                     }
                 }
 
-// The default estimate is the average of the values in the block.
+                // The default estimate is the average of the values in the block.
                 $average = intval32bits($sum >> (self::$BLOCK_SIZE_POWER * 2));
                 if ($max - $min <= self::$MIN_DYNAMIC_RANGE) {
-// If variation within the block is low, assume this is a block with only light or only
-// dark pixels. In that case we do not want to use the average, as it would divide this
-// low contrast area into black and white pixels, essentially creating data out of noise.
-//
-// The default assumption is that the block is light/background. Since no estimate for
-// the level of dark pixels exists locally, use half the min for the block.
+                    // If variation within the block is low, assume this is a block with only light or only
+                    // dark pixels. In that case we do not want to use the average, as it would divide this
+                    // low contrast area into black and white pixels, essentially creating data out of noise.
+                    //
+                    // The default assumption is that the block is light/background. Since no estimate for
+                    // the level of dark pixels exists locally, use half the min for the block.
                     $average = (int)($min / 2);
 
                     if ($y > 0 && $x > 0) {
-// Correct the "white background" assumption for blocks that have neighbors by comparing
-// the pixels in this block to the previously calculated black points. This is based on
-// the fact that dark barcode symbology is always surrounded by some amount of light
-// background for which reasonable black point estimates were made. The bp estimated at
-// the boundaries is used for the interior.
+                        // Correct the "white background" assumption for blocks that have neighbors by comparing
+                        // the pixels in this block to the previously calculated black points. This is based on
+                        // the fact that dark barcode symbology is always surrounded by some amount of light
+                        // background for which reasonable black point estimates were made. The bp estimated at
+                        // the boundaries is used for the interior.
 
-// The (min < bp) is arbitrary but works better than other heuristics that were tried.
+                        // The (min < bp) is arbitrary but works better than other heuristics that were tried.
                         $averageNeighborBlackPoint =
                             (int)(($blackPoints[$y - 1][$x] + (2 * $blackPoints[$y][$x - 1]) + $blackPoints[$y - 1][$x - 1]) / 4);
                         if ($min < $averageNeighborBlackPoint) {
@@ -252,7 +249,7 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
 
         for ($y = 0, $offset = $yoffset * $stride + $xoffset; $y < self::$BLOCK_SIZE; $y++, $offset += $stride) {
             for ($x = 0; $x < self::$BLOCK_SIZE; $x++) {
-// Comparison needs to be <= so that black == 0 pixels are black even if the threshold is 0.
+                // Comparison needs to be <= so that black == 0 pixels are black even if the threshold is 0.
                 if (($luminances[$offset + $x] & 0xFF) <= $threshold) {
                     $matrix->set($xoffset + $x, $yoffset + $y);
                 }

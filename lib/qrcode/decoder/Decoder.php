@@ -46,23 +46,20 @@ final class Decoder
     {
         if (is_array($variable)) {
             return $this->decodeImage($variable, $hints);
-        } elseif (is_object($variable) && $variable instanceof BitMatrix) {
+        } elseif ($variable instanceof BitMatrix) {
             return $this->decodeBits($variable, $hints);
-        } elseif (is_object($variable) && $variable instanceof BitMatrixParser) {
+        } elseif ($variable instanceof BitMatrixParser) {
             return $this->decodeParser($variable, $hints);
-        } else {
-            die('decode error Decoder.php');
         }
-
-
+        die('decode error Decoder.php');
     }
 
     /**
      * <p>Convenience method that can decode a QR Code represented as a 2D array of booleans.
      * "true" is taken to mean a black module.</p>
      *
-     * @param image booleans representing white/black QR Code modules
-     * @param hints decoding hints that should be used to influence decoding
+     * @param array $image booleans representing white/black QR Code modules
+     * @param       hints  decoding hints that should be used to influence decoding
      *
      * @return text and bytes encoded within the QR Code
      * @throws FormatException if the QR Code cannot be decoded
@@ -87,8 +84,8 @@ final class Decoder
     /**
      * <p>Decodes a QR Code represented as a {@link BitMatrix}. A 1 or "true" is taken to mean a black module.</p>
      *
-     * @param bits  booleans representing white/black QR Code modules
-     * @param hints decoding hints that should be used to influence decoding
+     * @param BitMatrix $bits booleans representing white/black QR Code modules
+     * @param           hints decoding hints that should be used to influence decoding
      *
      * @return text and bytes encoded within the QR Code
      * @throws FormatException if the QR Code cannot be decoded
@@ -111,16 +108,16 @@ final class Decoder
 
         try {
 
-// Revert the bit matrix
+            // Revert the bit matrix
             $parser->remask();
 
-// Will be attempting a mirrored reading of the version and format info.
+            // Will be attempting a mirrored reading of the version and format info.
             $parser->setMirror(true);
 
-// Preemptively read the version.
+            // Preemptively read the version.
             $parser->readVersion();
 
-// Preemptively read the format information.
+            // Preemptively read the format information.
             $parser->readFormatInformation();
 
             /*
@@ -129,18 +126,18 @@ final class Decoder
             * that the QR code may be mirrored, and we should try once more with a
             * mirrored content.
             */
-// Prepare for a mirrored reading.
+            // Prepare for a mirrored reading.
             $parser->mirror();
 
             $result = $this->decode($parser, $hints);
 
-// Success! Notify the caller that the code was mirrored.
+            // Success! Notify the caller that the code was mirrored.
             $result->setOther(new QRCodeDecoderMetaData(true));
 
             return $result;
 
         } catch (FormatException $e) {// catch (FormatException | ChecksumException e) {
-// Throw the exception from the original reading
+            // Throw the exception from the original reading
             if ($fe != null) {
                 throw $fe;
             }

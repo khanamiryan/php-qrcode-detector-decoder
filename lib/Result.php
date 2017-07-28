@@ -24,14 +24,12 @@ namespace Zxing;
  */
 final class Result
 {
-
     private $text;
     private $rawBytes;
     private $resultPoints;
     private $format;
     private $resultMetadata;
     private $timestamp;
-
 
     public function __construct(
         $text,
@@ -46,7 +44,7 @@ final class Result
         $this->resultPoints   = $resultPoints;
         $this->format         = $format;
         $this->resultMetadata = null;
-        $this->timestamp      = $timestamp ? $timestamp : time();
+        $this->timestamp      = $timestamp ?: time();
     }
 
     /**
@@ -95,7 +93,7 @@ final class Result
 
     public function putMetadata($type, $value)
     {
-        if ($this->resultMetadata == null) {
+        if ($this->resultMetadata === null) {
             $this->resultMetadata = [];
         }
         $resultMetadata[$type] = $value;
@@ -103,8 +101,8 @@ final class Result
 
     public function putAllMetadata($metadata)
     {
-        if ($metadata != null) {
-            if ($this->resultMetadata == null) {
+        if ($metadata !== null) {
+            if ($this->resultMetadata === null) {
                 $this->resultMetadata = $metadata;
             } else {
                 $this->resultMetadata = array_merge($this->resultMetadata, $metadata);
@@ -115,9 +113,9 @@ final class Result
     public function addResultPoints($newPoints)
     {
         $oldPoints = $this->resultPoints;
-        if ($oldPoints == null) {
+        if ($oldPoints === null) {
             $this->resultPoints = $newPoints;
-        } else if ($newPoints != null && count($newPoints) > 0) {
+        } else if ($newPoints !== null && count($newPoints) > 0) {
             $allPoints          = fill_array(0, count($oldPoints) + count($newPoints), 0);
             $allPoints          = arraycopy($oldPoints, 0, $allPoints, 0, count($oldPoints));
             $allPoints          = arraycopy($newPoints, 0, $allPoints, count($oldPoints), count($newPoints));
@@ -130,7 +128,6 @@ final class Result
         return $this->timestamp;
     }
 
-    //@Override
     public function toString()
     {
         return $this->text;

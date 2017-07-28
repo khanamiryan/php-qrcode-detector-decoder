@@ -56,8 +56,7 @@ class GlobalHistogramBinarizer extends Binarizer
         $this->source     = $source;
     }
 
-// Applies simple sharpening to the row data to improve performance of the 1D Readers.
-//@Override
+    // Applies simple sharpening to the row data to improve performance of the 1D Readers.
     public function getBlackRow($y, $row = null)
     {
         $this->source = $this->getLuminanceSource();
@@ -75,13 +74,13 @@ class GlobalHistogramBinarizer extends Binarizer
             $pixel = $localLuminances[$x] & 0xff;
             $localBuckets[$pixel >> self::$LUMINANCE_SHIFT]++;
         }
-        $blackPoint = $this->estimateBlackPoint($localBuckets);
+        $blackPoint = self::estimateBlackPoint($localBuckets);
 
         $left   = $localLuminances[0] & 0xff;
         $center = $localLuminances[1] & 0xff;
         for ($x = 1; $x < $width - 1; $x++) {
             $right = $localLuminances[$x + 1] & 0xff;
-// A simple -1 4 -1 box filter with a weight of 2.
+            // A simple -1 4 -1 box filter with a weight of 2.
             $luminance = (($center * 4) - $left - $right) / 2;
             if ($luminance < $blackPoint) {
                 $row->set($x);
@@ -93,9 +92,7 @@ class GlobalHistogramBinarizer extends Binarizer
         return $row;
     }
 
-// Does not sharpen the data, as this call is intended to only be used by 2D Readers.
-//@Override
-
+    // Does not sharpen the data, as this call is intended to only be used by 2D Readers.
     private function initArrays($luminanceSize)
     {
         if (count($this->luminances) < $luminanceSize) {
@@ -106,11 +103,9 @@ class GlobalHistogramBinarizer extends Binarizer
         }
     }
 
-//@Override
-
     private static function estimateBlackPoint($buckets)
     {
-// Find the tallest peak in the histogram.
+        // Find the tallest peak in the histogram.
         $numBuckets     = count($buckets);
         $maxBucketCount = 0;
         $firstPeak      = 0;
@@ -125,12 +120,12 @@ class GlobalHistogramBinarizer extends Binarizer
             }
         }
 
-// Find the second-tallest peak which is somewhat far from the tallest peak.
+        // Find the second-tallest peak which is somewhat far from the tallest peak.
         $secondPeak      = 0;
         $secondPeakScore = 0;
         for ($x = 0; $x < $numBuckets; $x++) {
             $distanceToBiggest = $x - $firstPeak;
-// Encourage more distant second peaks by multiplying by square of distance.
+            // Encourage more distant second peaks by multiplying by square of distance.
             $score = $buckets[$x] * $distanceToBiggest * $distanceToBiggest;
             if ($score > $secondPeakScore) {
                 $secondPeak      = $x;
@@ -138,20 +133,20 @@ class GlobalHistogramBinarizer extends Binarizer
             }
         }
 
-// Make sure firstPeak corresponds to the black peak.
+        // Make sure firstPeak corresponds to the black peak.
         if ($firstPeak > $secondPeak) {
             $temp       = $firstPeak;
             $firstPeak  = $secondPeak;
             $secondPeak = $temp;
         }
 
-// If there is too little contrast in the image to pick a meaningful black point, throw rather
-// than waste time trying to decode the image, and risk false positives.
+        // If there is too little contrast in the image to pick a meaningful black point, throw rather
+        // than waste time trying to decode the image, and risk false positives.
         if ($secondPeak - $firstPeak <= $numBuckets / 16) {
             throw NotFoundException::getNotFoundInstance();
         }
 
-// Find a valley between them that is low and closer to the white peak.
+        // Find a valley between them that is low and closer to the white peak.
         $bestValley      = $secondPeak - 1;
         $bestValleyScore = -1;
         for ($x = $secondPeak - 1; $x > $firstPeak; $x--) {
@@ -173,8 +168,8 @@ class GlobalHistogramBinarizer extends Binarizer
         $height = $source->getHeight();
         $matrix = new BitMatrix($width, $height);
 
-// Quickly calculates the histogram by sampling four rows from the image. This proved to be
-// more robust on the blackbox tests than sampling a diagonal as we used to do.
+        // Quickly calculates the histogram by sampling four rows from the image. This proved to be
+        // more robust on the blackbox tests than sampling a diagonal as we used to do.
         $this->initArrays($width);
         $localBuckets = $this->buckets;
         for ($y = 1; $y < 5; $y++) {
@@ -186,11 +181,11 @@ class GlobalHistogramBinarizer extends Binarizer
                 $localBuckets[intval32bits($pixel >> self::$LUMINANCE_SHIFT)]++;
             }
         }
-        $blackPoint = $this->estimateBlackPoint($localBuckets);
+        $blackPoint = self::estimateBlackPoint($localBuckets);
 
-// We delay reading the entire image luminance until the black point estimation succeeds.
-// Although we end up reading four rows twice, it is consistent with our motto of
-// "fail quickly" which is necessary for continuous scanning.
+        // We delay reading the entire image luminance until the black point estimation succeeds.
+        // Although we end up reading four rows twice, it is consistent with our motto of
+        // "fail quickly" which is necessary for continuous scanning.
         $localLuminances = $source->getMatrix();
         for ($y = 0; $y < $height; $y++) {
             $offset = $y * $width;

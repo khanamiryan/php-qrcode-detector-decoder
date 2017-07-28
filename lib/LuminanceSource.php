@@ -65,7 +65,7 @@ abstract class LuminanceSource
     }
 
     /**
-     * @return Whether this subclass supports cropping.
+     * @return bool Whether this subclass supports cropping.
      */
     public function isCropSupported()
     {
@@ -153,8 +153,6 @@ abstract class LuminanceSource
         return $result;
     }
 
-//@Override
-
     /**
      * Fetches one row of luminance data from the underlying platform's bitmap. Values range from
      * 0 (black) to 255 (white). Because Java does not have an unsigned byte type, callers will have
@@ -170,5 +168,4 @@ abstract class LuminanceSource
      * An array containing the luminance data.
      */
     public abstract function getRow($y, $row);
-
 }

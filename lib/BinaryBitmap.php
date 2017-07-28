@@ -17,9 +17,7 @@
 
 namespace Zxing;
 
-use Zxing\Common\BitArray;
 use Zxing\Common\BitMatrix;
-
 
 /**
  * This class is the core bitmap class used by ZXing to represent 1 bit data. Reader objects
@@ -74,9 +72,9 @@ final class BinaryBitmap
     }
 
     /**
-     * @return Whether this bitmap can be cropped.
+     * @return bool Whether this bitmap can be cropped.
      */
-    public function isCropSupported()
+    public function isCropSupported(): bool
     {
         return $this->binarizer->getLuminanceSource()->isCropSupported();
     }
@@ -143,8 +141,6 @@ final class BinaryBitmap
         return '';
     }
 
-//@Override
-
     /**
      * Converts a 2D array of luminance data to 1 bit. As above, assume this method is expensive
      * and do not call it repeatedly. This method is intended for decoding 2D barcodes and may or
@@ -156,11 +152,11 @@ final class BinaryBitmap
      */
     public function getBlackMatrix(): BitMatrix
     {
-// The matrix is created on demand the first time it is requested, then cached. There are two
-// reasons for this:
-// 1. This work will never be done if the caller only installs 1D Reader objects, or if a
-//    1D Reader finds a barcode before the 2D Readers run.
-// 2. This work will only be done once even if the caller installs multiple 2D Readers.
+        // The matrix is created on demand the first time it is requested, then cached. There are two
+        // reasons for this:
+        // 1. This work will never be done if the caller only installs 1D Reader objects, or if a
+        //    1D Reader finds a barcode before the 2D Readers run.
+        // 2. This work will only be done once even if the caller installs multiple 2D Readers.
         if ($this->matrix === null) {
             $this->matrix = $this->binarizer->getBlackMatrix();
         }

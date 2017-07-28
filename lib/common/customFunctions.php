@@ -1,18 +1,11 @@
 <?php
 
 function arraycopy($srcArray, $srcPos, $destArray, $destPos, $length)
-{//System.arraycopy
-
+{
     $srcArrayToCopy = array_slice($srcArray, $srcPos, $length);
     array_splice($destArray, $destPos, $length, $srcArrayToCopy);
 
     return $destArray;
-}
-
-
-function overflow32($value)
-{//There is no need to overflow 64 bits to 32 bit
-    return $value;
 }
 
 function hashCode($s)
@@ -20,12 +13,11 @@ function hashCode($s)
     $h   = 0;
     $len = strlen($s);
     for ($i = 0; $i < $len; $i++) {
-        $h = overflow32(31 * $h + ord($s[$i]));
+        $h = (31 * $h + ord($s[$i]));
     }
 
     return $h;
 }
-
 
 function numberOfTrailingZeros($i)
 {
@@ -43,16 +35,18 @@ function intval32bits($value)
 {
     $value = ($value & 0xFFFFFFFF);
 
-    if ($value & 0x80000000)
+    if ($value & 0x80000000) {
         $value = -((~$value & 0xFFFFFFFF) + 1);
+    }
 
     return $value;
 }
 
 function uRShift($a, $b)
 {
-
-    if ($b == 0) return $a;
+    if ($b == 0) {
+        return $a;
+    }
 
     return ($a >> $b) & ~(1 << (8 * PHP_INT_SIZE - 1) >> ($b - 1));
 }
@@ -74,7 +68,6 @@ function sdvig3($num,$count=1){//>>> 32 bit
 
 function sdvig3($a, $b)
 {
-
     if ($a >= 0) {
         return bindec(decbin($a >> $b)); //simply right shift for positive number
     }
@@ -83,9 +76,7 @@ function sdvig3($a, $b)
 
     $bin = substr($bin, $b); // zero fill on the left side
 
-    $o = bindec($bin);
-
-    return $o;
+    return bindec($bin);
 }
 
 function floatToIntBits($float_val)
@@ -99,7 +90,7 @@ function fill_array($index, $count, $value)
 {
     if ($count <= 0) {
         return [0];
-    } else {
-        return array_fill($index, $count, $value);
     }
+
+    return array_fill($index, $count, $value);
 }
