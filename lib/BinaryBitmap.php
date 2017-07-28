@@ -29,20 +29,19 @@ use Zxing\Common\BitMatrix;
  */
 final class BinaryBitmap
 {
-
     private $binarizer;
     private $matrix;
 
-    public function __construct($binarizer)
+    public function __construct(Binarizer $binarizer)
     {
-        if ($binarizer == null) {
+        if ($binarizer === null) {
             throw new \InvalidArgumentException("Binarizer must be non-null.");
         }
         $this->binarizer = $binarizer;
     }
 
     /**
-     * @return The width of the bitmap.
+     * @return int The width of the bitmap.
      */
     public function getWidth()
     {
@@ -50,7 +49,7 @@ final class BinaryBitmap
     }
 
     /**
-     * @return The height of the bitmap.
+     * @return int The height of the bitmap.
      */
     public function getHeight()
     {
@@ -66,7 +65,7 @@ final class BinaryBitmap
      * @param row An optional preallocated array. If null or too small, it will be ignored.
      *            If used, the Binarizer will call BitArray.clear(). Always use the returned object.
      *
-     * @return The array of bits for this row (true means black).
+     * @return array The array of bits for this row (true means black).
      * @throws NotFoundException if row can't be binarized
      */
     public function getBlackRow($y, $row)
@@ -91,7 +90,7 @@ final class BinaryBitmap
      * @param width  The width of the rectangle to crop.
      * @param height The height of the rectangle to crop.
      *
-     * @return A cropped version of this object.
+     * @return BinaryBitmap A cropped version of this object.
      */
     public function crop($left, $top, $width, $height)
     {
@@ -112,7 +111,7 @@ final class BinaryBitmap
      * Returns a new object with rotated image data by 90 degrees counterclockwise.
      * Only callable if {@link #isRotateSupported()} is true.
      *
-     * @return A rotated version of this object.
+     * @return BinaryBitmap A rotated version of this object.
      */
     public function rotateCounterClockwise()
     {
@@ -125,7 +124,7 @@ final class BinaryBitmap
      * Returns a new object with rotated image data by 45 degrees counterclockwise.
      * Only callable if {@link #isRotateSupported()} is true.
      *
-     * @return A rotated version of this object.
+     * @return BinaryBitmap A rotated version of this object.
      */
     public function rotateCounterClockwise45()
     {
@@ -139,8 +138,9 @@ final class BinaryBitmap
         try {
             return $this->getBlackMatrix()->toString();
         } catch (NotFoundException $e) {
-            return "";
         }
+
+        return '';
     }
 
 //@Override
@@ -151,17 +151,17 @@ final class BinaryBitmap
      * may not apply sharpening. Therefore, a row from this matrix may not be identical to one
      * fetched using getBlackRow(), so don't mix and match between them.
      *
-     * @return The 2D array of bits for the image (true means black).
+     * @return BitMatrix The 2D array of bits for the image (true means black).
      * @throws NotFoundException if image can't be binarized to make a matrix
      */
-    public function getBlackMatrix()
+    public function getBlackMatrix(): BitMatrix
     {
 // The matrix is created on demand the first time it is requested, then cached. There are two
 // reasons for this:
 // 1. This work will never be done if the caller only installs 1D Reader objects, or if a
 //    1D Reader finds a barcode before the 2D Readers run.
 // 2. This work will only be done once even if the caller installs multiple 2D Readers.
-        if ($this->matrix == null) {
+        if ($this->matrix === null) {
             $this->matrix = $this->binarizer->getBlackMatrix();
         }
 

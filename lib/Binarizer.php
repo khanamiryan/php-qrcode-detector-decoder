@@ -37,6 +37,9 @@ abstract class Binarizer
         $this->source = $source;
     }
 
+    /**
+     * @return LuminanceSource
+     */
     public final function getLuminanceSource()
     {
         return $this->source;
@@ -54,7 +57,7 @@ abstract class Binarizer
      * @param row An optional preallocated array. If null or too small, it will be ignored.
      *            If used, the Binarizer will call BitArray.clear(). Always use the returned object.
      *
-     * @return The array of bits for this row (true means black).
+     * @return array The array of bits for this row (true means black).
      * @throws NotFoundException if row can't be binarized
      */
     public abstract function getBlackRow($y, $row);
@@ -65,7 +68,7 @@ abstract class Binarizer
      * may not apply sharpening. Therefore, a row from this matrix may not be identical to one
      * fetched using getBlackRow(), so don't mix and match between them.
      *
-     * @return The 2D array of bits for the image (true means black).
+     * @return BitMatrix The 2D array of bits for the image (true means black).
      * @throws NotFoundException if image can't be binarized to make a matrix
      */
     public abstract function getBlackMatrix();
@@ -77,7 +80,7 @@ abstract class Binarizer
      *
      * @param source The LuminanceSource this Binarizer will operate on.
      *
-     * @return A new concrete Binarizer implementation object.
+     * @return Binarizer A new concrete Binarizer implementation object.
      */
     public abstract function createBinarizer($source);
 

@@ -81,7 +81,8 @@ final class ReedSolomonDecoder
         $omega           = $sigmaOmega[1];
         $errorLocations  = $this->findErrorLocations($sigma);
         $errorMagnitudes = $this->findErrorMagnitudes($omega, $errorLocations);
-        for ($i = 0; $i < count($errorLocations); $i++) {
+        $errorLocationsCount = count($errorLocations);
+        for ($i = 0; $i < $errorLocationsCount; $i++) {
             $position = count($received) - 1 - $this->field->log($errorLocations[$i]);
             if ($position < 0) {
                 throw new ReedSolomonException("Bad error location");

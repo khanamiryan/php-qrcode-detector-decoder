@@ -115,9 +115,9 @@ class Detector
 // If we didn't find alignment pattern... well try anyway without it
         }
 
-        $transform = $this->createTransform($topLeft, $topRight, $bottomLeft, $alignmentPattern, $dimension);
+        $transform = self::createTransform($topLeft, $topRight, $bottomLeft, $alignmentPattern, $dimension);
 
-        $bits = $this->sampleGrid($this->image, $transform, $dimension);
+        $bits = self::sampleGrid($this->image, $transform, $dimension);
 
         $points = [];
         if ($alignmentPattern == null) {
@@ -148,9 +148,7 @@ class Detector
      *
      * @return estimated module size
      */
-    protected final function calculateModuleSize($topLeft,
-                                                 $topRight,
-                                                 $bottomLeft)
+    protected final function calculateModuleSize($topLeft, $topRight, $bottomLeft)
     {
 // Take the average
         return ($this->calculateModuleSizeOneWay($topLeft, $topRight) +

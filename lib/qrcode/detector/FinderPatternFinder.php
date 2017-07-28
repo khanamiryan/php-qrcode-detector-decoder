@@ -17,11 +17,10 @@
 
 namespace Zxing\Qrcode\Detector;
 
-use Zxing\DecodeHintType;
+use Zxing\BinaryBitmap;
+use Zxing\Common\BitMatrix;
 use Zxing\NotFoundException;
 use Zxing\ResultPoint;
-use Zxing\ResultPointCallback;
-use Zxing\Common\BitMatrix;
 
 /**
  * <p>This class attempts to find finder patterns in a QR Code. Finder patterns are the square
@@ -46,7 +45,7 @@ class FinderPatternFinder
     /**
      * <p>Creates a finder that will search the image for three finder patterns.</p>
      *
-     * @param image image to search
+     * @param BitMatrix $image image to search
      */
     public function __construct($image, $resultPointCallback = null)
     {
@@ -97,7 +96,7 @@ class FinderPatternFinder
                 } else { // White pixel
                     if (($currentState & 1) == 0) { // Counting black pixels
                         if ($currentState == 4) { // A winner?
-                            if ($this->foundPatternCross($stateCount)) { // Yes
+                            if (self::foundPatternCross($stateCount)) { // Yes
                                 $confirmed = $this->handlePossibleCenter($stateCount, $i, $j, $pureBarcode);
                                 if ($confirmed) {
                                     // Start examining every other line. Checking each line turned out to be too
@@ -121,8 +120,6 @@ class FinderPatternFinder
                                         }
                                     }
                                 } else {
-
-
                                     $stateCount[0] = $stateCount[2];
                                     $stateCount[1] = $stateCount[3];
                                     $stateCount[2] = $stateCount[4];
@@ -154,7 +151,7 @@ class FinderPatternFinder
                     }
                 }
             }
-            if ($this->foundPatternCross($stateCount)) {
+            if (self::foundPatternCross($stateCount)) {
                 $confirmed = $this->handlePossibleCenter($stateCount, $i, $maxJ, $pureBarcode);
                 if ($confirmed) {
                     $iSkip = $stateCount[0];
@@ -346,7 +343,7 @@ class FinderPatternFinder
             return NAN;
         }
 
-        return $this->foundPatternCross($stateCount) ? $this->centerFromEnd($stateCount, $i) : NAN;
+        return self::foundPatternCross($stateCount) ? $this->centerFromEnd($stateCount, $i) : NAN;
     }
 
     private function getCrossCheckStateCount()
@@ -523,7 +520,7 @@ class FinderPatternFinder
 
         return
             abs($stateCountTotal - $originalStateCountTotal) < 2 * $originalStateCountTotal &&
-            $this->foundPatternCross($stateCount);
+            self::foundPatternCross($stateCount);
     }
 
     /**
@@ -595,7 +592,7 @@ class FinderPatternFinder
     }
 
     /**
-     * @return the 3 best {@link FinderPattern}s from our list of candidates. The "best" are
+     * @return array the 3 best {@link FinderPattern}s from our list of candidates. The "best" are
      *         those that have been detected at least {@link #CENTER_QUORUM} times, and whose module
      *         size differs from the average among those patterns the least
      * @throws NotFoundException if 3 such finder patterns do not exist
@@ -682,7 +679,6 @@ class FinderPatternFinder
             } else {
                 return -1;
             }
-
         } else {
             return $center2->getCount() - $center1->getCount();
         }

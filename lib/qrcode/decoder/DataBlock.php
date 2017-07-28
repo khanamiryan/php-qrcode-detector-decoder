@@ -71,7 +71,8 @@ final class DataBlock
         $result          = [];//new DataBlock[$totalBlocks];
         $numResultBlocks = 0;
         foreach ($ecBlockArray as $ecBlock) {
-            for ($i = 0; $i < $ecBlock->getCount(); $i++) {
+            $ecBlockCount = $ecBlock->getCount();
+            for ($i = 0; $i < $ecBlockCount; $i++) {
                 $numDataCodewords           = $ecBlock->getDataCodewords();
                 $numBlockCodewords          = $ecBlocks->getECCodewordsPerBlock() + $numDataCodewords;
                 $result[$numResultBlocks++] = new DataBlock($numDataCodewords, fill_array(0, $numBlockCodewords, 0));

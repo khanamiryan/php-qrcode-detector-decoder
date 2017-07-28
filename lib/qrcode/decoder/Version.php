@@ -446,7 +446,8 @@ class Version
     {
         $bestDifference = PHP_INT_MAX;
         $bestVersion    = 0;
-        for ($i = 0; $i < count(self::$VERSION_DECODE_INFO); $i++) {
+        $versionInfoCount = count(self::$VERSION_DECODE_INFO);
+        for ($i = 0; $i < $versionInfoCount; $i++) {
             $targetVersion = self::$VERSION_DECODE_INFO[$i];
 // Do the version info bits match exactly? done.
             if ($targetVersion == $versionBits) {

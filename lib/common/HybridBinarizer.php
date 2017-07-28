@@ -88,7 +88,7 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
             $blackPoints = $this->calculateBlackPoints($luminances, $subWidth, $subHeight, $width, $height);
 
             $newMatrix = new BitMatrix($width, $height);
-            $this->calculateThresholdForBlock($luminances, $subWidth, $subHeight, $width, $height, $blackPoints, $newMatrix);
+            self::calculateThresholdForBlock($luminances, $subWidth, $subHeight, $width, $height, $blackPoints, $newMatrix);
             $this->matrix = $newMatrix;
         } else {
 // If the image is too small, fall back to the global histogram approach.

@@ -60,11 +60,15 @@ class QRCodeReader implements Reader
             $decoderResult = $this->decoder->decode($bits, $hints);
             $points        = self::$NO_POINTS;
         } else {
+            $time = microtime(true);
             $detector       = new Detector($image->getBlackMatrix());
             $detectorResult = $detector->detect($hints);
+            echo sprintf('detect: %f', microtime(true) - $time),PHP_EOL;
 
+            $time = microtime(true);
             $decoderResult = $this->decoder->decode($detectorResult->getBits(), $hints);
             $points        = $detectorResult->getPoints();
+            echo sprintf('decode: %f', microtime(true) - $time),PHP_EOL;
         }
 
         // If the code was mirrored: swap the bottom-left and the top-right points.

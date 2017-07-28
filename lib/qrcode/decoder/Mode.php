@@ -45,7 +45,7 @@ class Mode
         $this->bits                          = $bits;
     }
 
-    static function Init()
+    public static function Init()
     {
 
 

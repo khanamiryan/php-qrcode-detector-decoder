@@ -1,14 +1,10 @@
 <?php
 
-
 namespace Zxing;
 
 /**
  * This class is used to help decode images from files which arrive as GD Resource
  * It does not support rotation.
- *
- *
- *
  */
 final class IMagickLuminanceSource extends LuminanceSource
 {
@@ -44,7 +40,7 @@ final class IMagickLuminanceSource extends LuminanceSource
         $this->top        = $top;
     }
 
-    public function _IMagickLuminanceSource($image, $width, $height)
+    public function _IMagickLuminanceSource(\Imagick $image, $width, $height)
     {
         parent::__construct($width, $height);
 
@@ -66,8 +62,8 @@ final class IMagickLuminanceSource extends LuminanceSource
         $array = [];
         $rgb   = [];
 
-        for ($i = 0; $i < count($pixels); $i += 3) {
-
+        $countPixels = count($pixels);
+        for ($i = 0; $i < $countPixels; $i += 3) {
             $r = $pixels[$i] & 0xff;
             $g = $pixels[$i + 1] & 0xff;
             $b = $pixels[$i + 2] & 0xff;
@@ -86,7 +82,7 @@ final class IMagickLuminanceSource extends LuminanceSource
     public function getRow($y, $row = null)
     {
         if ($y < 0 || $y >= $this->getHeight()) {
-            throw new \InvalidArgumentException("Requested row is outside the image: " + y);
+            throw new \InvalidArgumentException('Requested row is outside the image: ' . $y);
         }
         $width = $this->getWidth();
         if ($row == null || count($row) < $width) {

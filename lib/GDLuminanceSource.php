@@ -110,7 +110,7 @@ final class GDLuminanceSource extends LuminanceSource
     public function getRow($y, $row = null)
     {
         if ($y < 0 || $y >= $this->getHeight()) {
-            throw new \InvalidArgumentException("Requested row is outside the image: " + y);
+            throw new \InvalidArgumentException('Requested row is outside the image: ' . $y);
         }
         $width = $this->getWidth();
         if ($row == null || count($row) < $width) {
