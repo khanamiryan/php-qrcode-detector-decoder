@@ -1,5 +1,5 @@
 {
-  "name": "khanamiryan/qrcode-detector-decoder",
+  "name": "maestroprog/qrcode-detector-decoder",
   "type": "library",
   "description": "QR code decoder / reader",
   "keywords": [
@@ -7,13 +7,19 @@
     "zxing",
     "barcode"
   ],
-  "homepage": "https://github.com/khanamiryan/php-qrcode-detector-decoder",
+  "homepage": "https://github.com/maestroprog/php-qrcode-detector-decoder",
   "license": "MIT",
   "authors": [
     {
       "name": "Ashot Khanamiryan",
       "email": "a.khanamiryan@gmail.com",
       "homepage": "https://github.com/khanamiryan",
+      "role": "Developer"
+    },
+    {
+      "name": "Ruslan Yarullin",
+      "email": "maestroprog@gmail.com",
+      "homepage": "https://github.com/maestroprog",
       "role": "Developer"
     }
   ],
