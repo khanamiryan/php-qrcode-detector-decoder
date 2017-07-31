@@ -80,7 +80,7 @@ class Detector
         if ($moduleSize < 1.0) {
             throw NotFoundException::getNotFoundInstance();
         }
-        $dimension               = (int)$this->computeDimension($topLeft, $topRight, $bottomLeft, $moduleSize);
+        $dimension               = (int)self::computeDimension($topLeft, $topRight, $bottomLeft, $moduleSize);
         $provisionalVersion      = Version::getProvisionalVersionForDimension($dimension);
         $modulesBetweenFPCenters = $provisionalVersion->getDimensionForVersion() - 7;
 

@@ -158,7 +158,7 @@ class GlobalHistogramBinarizer extends Binarizer
             }
         }
 
-        return intval32bits($bestValley << self::$LUMINANCE_SHIFT);
+        return ($bestValley << self::$LUMINANCE_SHIFT);
     }
 
     public function getBlackMatrix()
@@ -177,8 +177,8 @@ class GlobalHistogramBinarizer extends Binarizer
             $localLuminances = $source->getRow($row, $this->luminances);
             $right           = (int)(($width * 4) / 5);
             for ($x = (int)($width / 5); $x < $right; $x++) {
-                $pixel = intval32bits($localLuminances[(int)($x)] & 0xff);
-                $localBuckets[intval32bits($pixel >> self::$LUMINANCE_SHIFT)]++;
+                $pixel = ($localLuminances[(int)($x)] & 0xff);
+                $localBuckets[($pixel >> self::$LUMINANCE_SHIFT)]++;
             }
         }
         $blackPoint = self::estimateBlackPoint($localBuckets);

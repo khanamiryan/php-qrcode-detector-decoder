@@ -333,7 +333,7 @@ final class BitArray
     {
         $key = (int)($i / 32);
 
-        return intval32bits($this->bits[$key] & (1 << ($i & 0x1F))) != 0;
+        return ($this->bits[$key] & (1 << ($i & 0x1F))) != 0;
     }
 
     /**

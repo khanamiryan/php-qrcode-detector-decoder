@@ -31,24 +31,14 @@ function numberOfTrailingZeros($i)
     return $num;
 }
 
-function intval32bits($value)
-{
-    $value = ($value & 0xFFFFFFFF);
-
-    if ($value & 0x80000000) {
-        $value = -((~$value & 0xFFFFFFFF) + 1);
-    }
-
-    return $value;
-}
-
 function uRShift($a, $b)
 {
-    if ($b == 0) {
+    static $mask = (8 * PHP_INT_SIZE - 1);
+    if ($b === 0) {
         return $a;
     }
 
-    return ($a >> $b) & ~(1 << (8 * PHP_INT_SIZE - 1) >> ($b - 1));
+    return ($a >> $b) & ~(1 << $mask >> ($b - 1));
 }
 
 /*

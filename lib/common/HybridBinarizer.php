@@ -114,13 +114,13 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
             $blackPoints[$key] = fill_array(0, $subWidth, 0);
         }
         for ($y = 0; $y < $subHeight; $y++) {
-            $yoffset    = intval32bits($y << self::$BLOCK_SIZE_POWER);
+            $yoffset    = ($y << self::$BLOCK_SIZE_POWER);
             $maxYOffset = $height - self::$BLOCK_SIZE;
             if ($yoffset > $maxYOffset) {
                 $yoffset = $maxYOffset;
             }
             for ($x = 0; $x < $subWidth; $x++) {
-                $xoffset    = intval32bits($x << self::$BLOCK_SIZE_POWER);
+                $xoffset    = ($x << self::$BLOCK_SIZE_POWER);
                 $maxXOffset = $width - self::$BLOCK_SIZE;
                 if ($xoffset > $maxXOffset) {
                     $xoffset = $maxXOffset;
@@ -130,7 +130,7 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
                 $max = 0;
                 for ($yy = 0, $offset = $yoffset * $width + $xoffset; $yy < self::$BLOCK_SIZE; $yy++, $offset += $width) {
                     for ($xx = 0; $xx < self::$BLOCK_SIZE; $xx++) {
-                        $pixel = intval32bits((int)($luminances[(int)($offset + $xx)]) & 0xFF);
+                        $pixel = ((int)($luminances[(int)($offset + $xx)]) & 0xFF);
                         $sum   += $pixel;
                         // still looking for good contrast
                         if ($pixel < $min) {
@@ -145,14 +145,14 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
                         // finish the rest of the rows quickly
                         for ($yy++, $offset += $width; $yy < self::$BLOCK_SIZE; $yy++, $offset += $width) {
                             for ($xx = 0; $xx < self::$BLOCK_SIZE; $xx++) {
-                                $sum += intval32bits($luminances[$offset + $xx] & 0xFF);
+                                $sum += ($luminances[$offset + $xx] & 0xFF);
                             }
                         }
                     }
                 }
 
                 // The default estimate is the average of the values in the block.
-                $average = intval32bits($sum >> (self::$BLOCK_SIZE_POWER * 2));
+                $average = ($sum >> (self::$BLOCK_SIZE_POWER * 2));
                 if ($max - $min <= self::$MIN_DYNAMIC_RANGE) {
                     // If variation within the block is low, assume this is a block with only light or only
                     // dark pixels. In that case we do not want to use the average, as it would divide this
@@ -199,13 +199,13 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
         $matrix
     ) {
         for ($y = 0; $y < $subHeight; $y++) {
-            $yoffset    = intval32bits($y << self::$BLOCK_SIZE_POWER);
+            $yoffset    = ($y << self::$BLOCK_SIZE_POWER);
             $maxYOffset = $height - self::$BLOCK_SIZE;
             if ($yoffset > $maxYOffset) {
                 $yoffset = $maxYOffset;
             }
             for ($x = 0; $x < $subWidth; $x++) {
-                $xoffset    = intval32bits($x << self::$BLOCK_SIZE_POWER);
+                $xoffset    = ($x << self::$BLOCK_SIZE_POWER);
                 $maxXOffset = $width - self::$BLOCK_SIZE;
                 if ($xoffset > $maxXOffset) {
                     $xoffset = $maxXOffset;

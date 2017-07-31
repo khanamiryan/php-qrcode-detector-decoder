@@ -97,4 +97,9 @@ final class QrReader
 
         return $this->result;
     }
+
+    public function getResult()
+    {
+        return $this->result;
+    }
 }

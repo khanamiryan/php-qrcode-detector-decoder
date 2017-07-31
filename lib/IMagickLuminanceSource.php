@@ -16,7 +16,7 @@ final class IMagickLuminanceSource extends LuminanceSource
     private $image;
 
     public function __construct(
-        $image,
+        \Imagick $image,
         $dataWidth,
         $dataHeight,
         $left = null,
@@ -57,7 +57,7 @@ final class IMagickLuminanceSource extends LuminanceSource
 
         $image->setImageColorspace(\Imagick::COLORSPACE_GRAY);
         // $image->newPseudoImage(0, 0, "magick:rose");
-        $pixels = $image->exportImagePixels(1, 1, $width, $height, "RGB", \Imagick::COLORSPACE_RGB);
+        $pixels = $image->exportImagePixels(1, 1, $width, $height, "RGB", \Imagick::PIXEL_CHAR);
 
         $array = [];
         $rgb   = [];
@@ -137,6 +137,8 @@ final class IMagickLuminanceSource extends LuminanceSource
 //@Override
     public function crop($left, $top, $width, $height)
     {
+        return $this->luminances->cropImage($width, $height, $left, $top);
+
         return new GDLuminanceSource($this->luminances,
             $this->dataWidth,
             $this->dataHeight,

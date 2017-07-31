@@ -142,8 +142,8 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
         for ($y = 0; $y < $height; $y++) {
             $outputOffset = $y * $width;
             for ($x = 0; $x < $width; $x++) {
-                $grey                       = intval32bits($yuv[$inputOffset + $x * self::$THUMBNAIL_SCALE_FACTOR] & 0xff);
-                $pixels[$outputOffset + $x] = intval32bits(0xFF000000 | ($grey * 0x00010101));
+                $grey                       = ($yuv[$inputOffset + $x * self::$THUMBNAIL_SCALE_FACTOR] & 0xff);
+                $pixels[$outputOffset + $x] = (0xFF000000 | ($grey * 0x00010101));
             }
             $inputOffset += $this->dataWidth * self::$THUMBNAIL_SCALE_FACTOR;
         }
