@@ -24,11 +24,11 @@
     "phpunit/phpunit": "^5.7"
   },
   "autoload": {
-    "classmap": [
-      "lib/"
-    ],
+    "psr-4": {
+      "Zxing\\": "lib/"
+    },
     "files": [
-      "lib/common/customFunctions.php"
+      "lib/Common/customFunctions.php"
     ]
   }
 }
