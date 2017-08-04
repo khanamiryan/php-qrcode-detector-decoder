@@ -1,5 +1,5 @@
 {
-  "name": "maestroprog/qrcode-detector-decoder",
+  "name": "khanamiryan/qrcode-detector-decoder",
   "type": "library",
   "description": "QR code decoder / reader",
   "keywords": [
@@ -14,12 +14,6 @@
       "name": "Ashot Khanamiryan",
       "email": "a.khanamiryan@gmail.com",
       "homepage": "https://github.com/khanamiryan",
-      "role": "Developer"
-    },
-    {
-      "name": "Ruslan Yarullin",
-      "email": "maestroprog@gmail.com",
-      "homepage": "https://github.com/maestroprog",
       "role": "Developer"
     }
   ],
