@@ -59,8 +59,7 @@ class FinderPatternFinder
 
     final public function find($hints)
     {/*final FinderPatternInfo find(Map<DecodeHintType,?> hints) throws NotFoundException {*/
-//        $tryHarder   = $hints != null && $hints['TRY_HARDER'];
-        $tryHarder   = true;
+        $tryHarder = true;//$hints != null && $hints['TRY_HARDER'];
         $pureBarcode = $hints != null && $hints['PURE_BARCODE'];
         $maxI        = $this->image->getHeight();
         $maxJ        = $this->image->getWidth();
@@ -101,7 +100,7 @@ class FinderPatternFinder
                                 if ($confirmed) {
                                     // Start examining every other line. Checking each line turned out to be too
                                     // expensive and didn't improve performance.
-                                    $iSkip = 2;
+                                    $iSkip = 3;
                                     if ($this->hasSkipped) {
                                         $done = $this->haveMultiplyConfirmedCenters();
                                     } else {
