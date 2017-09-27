@@ -60,7 +60,7 @@ final class IMagickLuminanceSource extends LuminanceSource {
 
         $image->setImageColorspace (\Imagick::COLORSPACE_GRAY);
        // $image->newPseudoImage(0, 0, "magick:rose");
-        $pixels = $image->exportImagePixels(1, 1, $width, $height, "RGB", \Imagick::COLORSPACE_RGB);
+        $pixels = $image->exportImagePixels(1, 1, $width, $height, "RGB", \Imagick::PIXEL_CHAR);
 
         $array = array();
         $rgb = array();
