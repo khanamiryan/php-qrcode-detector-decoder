@@ -15,24 +15,33 @@
 * limitations under the License.
 */
 
-namespace Zxing;
+namespace Zxing\Common;
 
 /**
- * Thrown when a barcode was not found in the image. It might have been
- * partially detected but could not be confirmed.
+ * <p>Encapsulates the result of detecting a barcode in an image. This includes the raw
+ * matrix of black/white pixels corresponding to the barcode, and possibly points of interest
+ * in the image, like the location of finder patterns or corners of the barcode in the image.</p>
  *
  * @author Sean Owen
  */
-final class NotFoundException extends ReaderException
+class DetectorResult
 {
-    private static $instance;
+    private $bits;
+    private $points;
 
-    public static function getNotFoundInstance()
+    public function __construct($bits, $points)
     {
-        if (!self::$instance) {
-            self::$instance = new NotFoundException();
-        }
+        $this->bits   = $bits;
+        $this->points = $points;
+    }
 
-        return self::$instance;
+    public final function getBits()
+    {
+        return $this->bits;
+    }
+
+    public final function getPoints()
+    {
+        return $this->points;
     }
 }

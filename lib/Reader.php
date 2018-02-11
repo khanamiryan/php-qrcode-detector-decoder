@@ -2,12 +2,9 @@
 
 namespace Zxing;
 
-interface Reader {
+interface Reader
+{
+    public function decode(BinaryBitmap $image);
 
-    public function decode($image);
-
-
-    public  function reset();
-
-
+    public function reset();
 }
