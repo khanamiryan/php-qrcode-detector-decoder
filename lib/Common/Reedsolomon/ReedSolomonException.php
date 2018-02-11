@@ -15,24 +15,14 @@
 * limitations under the License.
 */
 
-namespace Zxing;
+namespace Zxing\Common\Reedsolomon;
 
 /**
- * Thrown when a barcode was not found in the image. It might have been
- * partially detected but could not be confirmed.
+ * <p>Thrown when an exception occurs during Reed-Solomon decoding, such as when
+ * there are too many errors to correct.</p>
  *
  * @author Sean Owen
  */
-final class NotFoundException extends ReaderException
+final class ReedSolomonException extends \Exception
 {
-    private static $instance;
-
-    public static function getNotFoundInstance()
-    {
-        if (!self::$instance) {
-            self::$instance = new NotFoundException();
-        }
-
-        return self::$instance;
-    }
 }

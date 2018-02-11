@@ -23,22 +23,20 @@ namespace Zxing;
  *
  * @author Sean Owen
  */
-final class ChecksumException extends ReaderException {
+final class ChecksumException extends ReaderException
+{
+    private static $instance;
 
-  private static $instance;
+    public static function getChecksumInstance($cause = null)
+    {
+        if (self::$isStackTrace) {
+            return new ChecksumException($cause);
+        } else {
+            if (!self::$instance) {
+                self::$instance = new ChecksumException($cause);
+            }
 
-
-
-  public static function  getChecksumInstance($cause=null) {
-    if (self::$isStackTrace) {
-      return new ChecksumException($cause);
-    } else {
-        if(!self::$instance){
-            self::$instance = new ChecksumException($cause);
+            return self::$instance;
         }
-      return self::$instance;
     }
-  }
-
-
 }
