@@ -7,7 +7,7 @@
     "zxing",
     "barcode"
   ],
-  "homepage": "https://github.com/maestroprog/php-qrcode-detector-decoder",
+  "homepage": "https://github.com/khanamiryan/php-qrcode-detector-decoder/",
   "license": "MIT",
   "authors": [
     {
