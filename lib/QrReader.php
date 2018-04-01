@@ -74,7 +74,7 @@ final class QrReader
         $this->reader = new QRCodeReader();
     }
 
-    public function decode(): void
+    public function decode()
     {
         try {
             $this->result = $this->reader->decode($this->bitmap);
