@@ -74,7 +74,7 @@ final class BinaryBitmap
     /**
      * @return bool Whether this bitmap can be cropped.
      */
-    public function isCropSupported(): bool
+    public function isCropSupported()
     {
         return $this->binarizer->getLuminanceSource()->isCropSupported();
     }
@@ -150,7 +150,7 @@ final class BinaryBitmap
      * @return BitMatrix The 2D array of bits for the image (true means black).
      * @throws NotFoundException if image can't be binarized to make a matrix
      */
-    public function getBlackMatrix(): BitMatrix
+    public function getBlackMatrix()
     {
         // The matrix is created on demand the first time it is requested, then cached. There are two
         // reasons for this:

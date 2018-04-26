@@ -187,7 +187,8 @@ class QRCodeReader implements Reader
     {
         $height = $image->getHeight();
         $width  = $image->getWidth();
-        [$x, $y] = $leftTopBlack;
+        $x           = $leftTopBlack[0];
+        $y           = $leftTopBlack[1];
         /*$x           = $leftTopBlack[0];
         $y           = $leftTopBlack[1];*/
         $inBlack     = true;
