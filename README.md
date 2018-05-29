@@ -16,7 +16,7 @@ $ composer require khanamiryan/qrcode-detector-decoder
 ## Usage 
 ```php
 require __DIR__ . "/vendor/autoload.php";
-$qrcode = new QrReader('path/to_image');
+$qrcode = new Zxing\QrReader('path/to_image');
 $text = $qrcode->text(); //return decoded text from QR Code
 ```
 
