@@ -4,7 +4,7 @@ namespace Khanamiryan\QrCodeTests;
 
 use Zxing\QrReader;
 
-class QrReaderTest extends \PHPUnit\Framework\TestCase
+class QrReaderTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testText1()
