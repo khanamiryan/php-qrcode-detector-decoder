@@ -66,7 +66,7 @@ class Mode
      * @param bits four bits encoding a QR Code data mode
      *
      * @return Mode encoded by these bits
-     * @throws IllegalArgumentException if bits do not correspond to a known mode
+     * @throws InvalidArgumentException if bits do not correspond to a known mode
      */
     public static function forBits($bits)
     {
