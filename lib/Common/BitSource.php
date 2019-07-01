@@ -63,7 +63,7 @@ final class BitSource
      *
      * @return int representing the bits read. The bits will appear as the least-significant
      *         bits of the int
-     * @throws IllegalArgumentException if numBits isn't in [1,32] or more than is available
+     * @throws InvalidArgumentException if numBits isn't in [1,32] or more than is available
      */
     public function readBits($numBits)
     {
