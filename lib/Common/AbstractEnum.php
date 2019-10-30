@@ -1,6 +1,6 @@
 <?php
 
-namespace Zxing\Common\CharacterSetEci\AbstractEnum;
+namespace Zxing\Common;
 
 use \Zxing\NotFoundException;
 use ReflectionClass;
