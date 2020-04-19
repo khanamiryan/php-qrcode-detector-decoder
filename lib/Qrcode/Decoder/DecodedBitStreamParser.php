@@ -266,8 +266,8 @@ final class DecodedBitStreamParser
         if ($fc1InEffect) {
             // We need to massage the result a bit if in an FNC1 mode:
             for ($i = $start; $i < strlen($result); $i++) {
-                if ($result{$i} == '%') {
-                    if ($i < strlen($result) - 1 && $result{$i + 1} == '%') {
+                if ($result[$i] == '%') {
+                    if ($i < strlen($result) - 1 && $result[$i + 1] == '%') {
                         // %% is rendered as %
                         $result = substr_replace($result, '', $i + 1, 1);//deleteCharAt(i + 1);
                     } else {
