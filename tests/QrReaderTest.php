@@ -13,6 +13,6 @@ class QrReaderTest extends TestCase
         $image = __DIR__ . "/qrcodes/hello_world.png";
 
         $qrcode = new QrReader($image);
-        self::assertSame("Hello world!", $qrcode->text());
+        $this->assertSame("Hello world!", $qrcode->text());
     }
 }
