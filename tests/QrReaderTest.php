@@ -2,9 +2,10 @@
 
 namespace Khanamiryan\QrCodeTests;
 
+use PHPUnit\Framework\TestCase;
 use Zxing\QrReader;
 
-class QrReaderTest extends \PHPUnit\Framework\TestCase
+class QrReaderTest extends TestCase
 {
 
     public function testText1()
