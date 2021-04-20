@@ -52,7 +52,7 @@ final class GDLuminanceSource extends LuminanceSource
         $this->dataHeight = $height;
         $this->left       = 0;
         $this->top        = 0;
-        $this->$gdImage   = $gdImage;
+        $this->gdImage    = $gdImage;
 
 
 // In order to measure pure decoding speed, we convert the entire image to a greyscale array
@@ -65,8 +65,8 @@ final class GDLuminanceSource extends LuminanceSource
 
         for ($j = 0; $j < $height; $j++) {
             for ($i = 0; $i < $width; $i++) {
-                $argb  = imagecolorat($this->$gdImage, $i, $j);
-                $pixel = imagecolorsforindex($this->$gdImage, $argb);
+                $argb  = imagecolorat($this->gdImage, $i, $j);
+                $pixel = imagecolorsforindex($this->gdImage, $argb);
                 $r     = $pixel['red'];
                 $g     = $pixel['green'];
                 $b     = $pixel['blue'];
