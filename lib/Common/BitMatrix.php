@@ -40,7 +40,7 @@ final class BitMatrix
         $pos         = 0;
         while ($pos < strlen($stringRepresentation)) {
             if ($stringRepresentation[$pos] == '\n' ||
-                $stringRepresentation->{$pos} == '\r') {
+                $stringRepresentation[$pos] == '\r') {
                 if ($bitsPos > $rowStartPos) {
                     if ($rowLength == -1) {
                         $rowLength = $bitsPos - $rowStartPos;
