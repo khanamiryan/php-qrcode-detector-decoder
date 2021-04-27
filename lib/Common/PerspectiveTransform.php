@@ -112,6 +112,9 @@ final class PerspectiveTransform
             $dy1         = $y1 - $y2;
             $dy2         = $y3 - $y2;
             $denominator = $dx1 * $dy2 - $dx2 * $dy1;
+            if ((int)$denominator === 0) {
+                throw new \Exception('Cannot divide by 0, reduce error correction level and try again');
+            }
             $a13         = ($dx3 * $dy2 - $dx2 * $dy3) / $denominator;
             $a23         = ($dx1 * $dy3 - $dx3 * $dy1) / $denominator;
 
