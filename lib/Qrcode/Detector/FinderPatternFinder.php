@@ -59,7 +59,7 @@ class FinderPatternFinder
 
     final public function find($hints)
     {/*final FinderPatternInfo find(Map<DecodeHintType,?> hints) throws NotFoundException {*/
-        $tryHarder = true;//$hints != null && $hints['TRY_HARDER'];
+        $tryHarder 	 = $hints != null && $hints['TRY_HARDER'];
         $pureBarcode = $hints != null && $hints['PURE_BARCODE'];
         $maxI        = $this->image->getHeight();
         $maxJ        = $this->image->getWidth();
