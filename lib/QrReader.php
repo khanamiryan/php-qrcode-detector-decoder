@@ -91,7 +91,7 @@ final class QrReader
     {
         $this->decode();
 
-        if (method_exists($this->result, 'toString')) {
+        if ($this->result !== false && method_exists($this->result, 'toString')) {
             return $this->result->toString();
         }
 
