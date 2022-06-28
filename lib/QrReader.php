@@ -74,10 +74,10 @@ final class QrReader
         $this->reader = new QRCodeReader();
     }
 
-    public function decode()
+    public function decode($hints = null)
     {
         try {
-            $this->result = $this->reader->decode($this->bitmap);
+            $this->result = $this->reader->decode($this->bitmap, $hints);
         } catch (NotFoundException $er) {
             $this->result = false;
         } catch (FormatException $er) {
@@ -87,9 +87,9 @@ final class QrReader
         }
     }
 
-    public function text()
+    public function text($hints = null)
     {
-        $this->decode();
+        $this->decode($hints);
 
         if ($this->result !== false && method_exists($this->result, 'toString')) {
             return $this->result->toString();
