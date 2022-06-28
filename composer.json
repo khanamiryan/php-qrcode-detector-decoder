@@ -40,5 +40,10 @@
     "check-cs": "./vendor/bin/ecs check",
     "fix-cs": "./vendor/bin/ecs check --fix",
     "tests": "./vendor/bin/phpunit"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Khanamiryan\\QrCodeTests\\": "tests/"
+    }
   }
 }
