@@ -48,12 +48,12 @@ final class AlignmentPatternFinder
 	/**
 	 * <p>Creates a finder that will look in a portion of the whole image.</p>
 	 *
-	 * @param image      $image to search
-	 * @param left     $startX column from which to start searching
-	 * @param top     $startY row from which to start searching
-	 * @param width      $width of region to search
-	 * @param height     $height of region to search
-	 * @param estimated $moduleSize module size so far
+	 * @param \Imagick image      $image to search
+	 * @param int left     $startX column from which to start searching
+	 * @param int top     $startY row from which to start searching
+	 * @param float width      $width of region to search
+	 * @param float height     $height of region to search
+	 * @param float estimated $moduleSize module size so far
 	 */
 	public function __construct(
 		$image,
@@ -222,9 +222,9 @@ final class AlignmentPatternFinder
 	 * "cross-checks" by scanning down vertically through the center of the possible
 	 * alignment pattern to see if the same proportion is detected.</p>
 	 *
-	 * @param row   $startI where an alignment pattern was detected
-	 * @param center  $centerJ of the section that appears to cross an alignment pattern
-	 * @param maximum $maxCount reasonable number of modules that should be
+	 * @param int row   $startI where an alignment pattern was detected
+	 * @param float center  $centerJ of the section that appears to cross an alignment pattern
+	 * @param int maximum $maxCount reasonable number of modules that should be
 	 *                 observed in any reading state, based on the results of the horizontal scan
 	 *
 	 * @return float vertical center of alignment pattern, or {@link Float#NaN} if not found

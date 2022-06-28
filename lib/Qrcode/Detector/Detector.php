@@ -47,7 +47,7 @@ class Detector
 	/**
 	 * <p>Detects a QR Code in an image.</p>
 	 *
-	 * @param optional $hints hints to detector
+	 * @param array|null optional $hints hints to detector
 	 *
 	 * @return {@link DetectorResult} encapsulating results of detecting a QR Code
 	 * @throws NotFoundException if QR Code cannot be found
