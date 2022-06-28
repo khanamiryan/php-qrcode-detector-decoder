@@ -28,144 +28,143 @@ namespace Zxing;
  */
 abstract class LuminanceSource
 {
+	private $width;
+	private $height;
 
-    private $width;
-    private $height;
+	public function __construct($width, $height)
+	{
+		$this->width = $width;
+		$this->height = $height;
+	}
 
-    public function __construct($width, $height)
-    {
-        $this->width  = $width;
-        $this->height = $height;
-    }
+	/**
+	 * Fetches luminance data for the underlying bitmap. Values should be fetched using:
+	 * {@code int luminance = array[y * width + x] & 0xff}
+	 *
+	 * @return A row-major 2D array of luminance values. Do not use result.length as it may be
+	 *         larger than width * height bytes on some platforms. Do not modify the contents
+	 *         of the result.
+	 */
+	abstract public function getMatrix();
 
-    /**
-     * Fetches luminance data for the underlying bitmap. Values should be fetched using:
-     * {@code int luminance = array[y * width + x] & 0xff}
-     *
-     * @return A row-major 2D array of luminance values. Do not use result.length as it may be
-     *         larger than width * height bytes on some platforms. Do not modify the contents
-     *         of the result.
-     */
-    public abstract function getMatrix();
+	/**
+	 * @return float The width of the bitmap.
+	 */
+	final public function getWidth()
+	{
+		return $this->width;
+	}
 
-    /**
-     * @return The width of the bitmap.
-     */
-    public final function getWidth()
-    {
-        return $this->width;
-    }
+	/**
+	 * @return float The height of the bitmap.
+	 */
+	final public function getHeight()
+	{
+		return $this->height;
+	}
 
-    /**
-     * @return The height of the bitmap.
-     */
-    public final function getHeight()
-    {
-        return $this->height;
-    }
+	/**
+	 * @return bool Whether this subclass supports cropping.
+	 */
+	public function isCropSupported()
+	{
+		return false;
+	}
 
-    /**
-     * @return bool Whether this subclass supports cropping.
-     */
-    public function isCropSupported()
-    {
-        return false;
-    }
+	/**
+	 * Returns a new object with cropped image data. Implementations may keep a reference to the
+	 * original data rather than a copy. Only callable if isCropSupported() is true.
+	 *
+	 * @param $left   The left coordinate, which must be in [0,getWidth())
+	 * @param $top    The top coordinate, which must be in [0,getHeight())
+	 * @param $width  The width of the rectangle to crop.
+	 * @param $height The height of the rectangle to crop.
+	 *
+	 * @return A cropped version of this object.
+	 */
+	public function crop($left, $top, $width, $height)
+	{
+		throw new \Exception("This luminance source does not support cropping.");
+	}
 
-    /**
-     * Returns a new object with cropped image data. Implementations may keep a reference to the
-     * original data rather than a copy. Only callable if isCropSupported() is true.
-     *
-     * @param left   The left coordinate, which must be in [0,getWidth())
-     * @param top    The top coordinate, which must be in [0,getHeight())
-     * @param width  The width of the rectangle to crop.
-     * @param height The height of the rectangle to crop.
-     *
-     * @return A cropped version of this object.
-     */
-    public function crop($left, $top, $width, $height)
-    {
-        throw new \Exception("This luminance source does not support cropping.");
-    }
+	/**
+	 * @return Whether this subclass supports counter-clockwise rotation.
+	 */
+	public function isRotateSupported()
+	{
+		return false;
+	}
 
-    /**
-     * @return Whether this subclass supports counter-clockwise rotation.
-     */
-    public function isRotateSupported()
-    {
-        return false;
-    }
+	/**
+	 * @return a wrapper of this {@code LuminanceSource} which inverts the luminances it returns -- black becomes
+	 *  white and vice versa, and each value becomes (255-value).
+	 */
+	public function invert()
+	{
+		return new InvertedLuminanceSource($this);
+	}
 
-    /**
-     * @return a wrapper of this {@code LuminanceSource} which inverts the luminances it returns -- black becomes
-     *  white and vice versa, and each value becomes (255-value).
-     */
-    public function invert()
-    {
-        return new InvertedLuminanceSource($this);
-    }
+	/**
+	 * Returns a new object with rotated image data by 90 degrees counterclockwise.
+	 * Only callable if {@link #isRotateSupported()} is true.
+	 *
+	 * @return A rotated version of this object.
+	 */
+	public function rotateCounterClockwise()
+	{
+		throw new \Exception("This luminance source does not support rotation by 90 degrees.");
+	}
 
-    /**
-     * Returns a new object with rotated image data by 90 degrees counterclockwise.
-     * Only callable if {@link #isRotateSupported()} is true.
-     *
-     * @return A rotated version of this object.
-     */
-    public function rotateCounterClockwise()
-    {
-        throw new \Exception("This luminance source does not support rotation by 90 degrees.");
-    }
+	/**
+	 * Returns a new object with rotated image data by 45 degrees counterclockwise.
+	 * Only callable if {@link #isRotateSupported()} is true.
+	 *
+	 * @return A rotated version of this object.
+	 */
+	public function rotateCounterClockwise45()
+	{
+		throw new \Exception("This luminance source does not support rotation by 45 degrees.");
+	}
 
-    /**
-     * Returns a new object with rotated image data by 45 degrees counterclockwise.
-     * Only callable if {@link #isRotateSupported()} is true.
-     *
-     * @return A rotated version of this object.
-     */
-    public function rotateCounterClockwise45()
-    {
-        throw new \Exception("This luminance source does not support rotation by 45 degrees.");
-    }
+	final public function toString()
+	{
+		$row = [];
+		$result = '';
+		for ($y = 0; $y < $this->height; $y++) {
+			$row = $this->getRow($y, $row);
+			for ($x = 0; $x < $this->width; $x++) {
+				$luminance = $row[$x] & 0xFF;
+				$c = '';
+				if ($luminance < 0x40) {
+					$c = '#';
+				} elseif ($luminance < 0x80) {
+					$c = '+';
+				} elseif ($luminance < 0xC0) {
+					$c = '.';
+				} else {
+					$c = ' ';
+				}
+				$result .= ($c);
+			}
+			$result .= ('\n');
+		}
 
-    public final function toString()
-    {
-        $row    = [];
-        $result = '';
-        for ($y = 0; $y < $this->height; $y++) {
-            $row = $this->getRow($y, $row);
-            for ($x = 0; $x < $this->width; $x++) {
-                $luminance = $row[$x] & 0xFF;
-                $c         = '';
-                if ($luminance < 0x40) {
-                    $c = '#';
-                } else if ($luminance < 0x80) {
-                    $c = '+';
-                } else if ($luminance < 0xC0) {
-                    $c = '.';
-                } else {
-                    $c = ' ';
-                }
-                $result .= ($c);
-            }
-            $result .= ('\n');
-        }
+		return $result;
+	}
 
-        return $result;
-    }
-
-    /**
-     * Fetches one row of luminance data from the underlying platform's bitmap. Values range from
-     * 0 (black) to 255 (white). Because Java does not have an unsigned byte type, callers will have
-     * to bitwise and with 0xff for each value. It is preferable for implementations of this method
-     * to only fetch this row rather than the whole image, since no 2D Readers may be installed and
-     * getMatrix() may never be called.
-     *
-     * @param $y   ; The row to fetch, which must be in [0,getHeight())
-     * @param $row ; An optional preallocated array. If null or too small, it will be ignored.
-     *             Always use the returned object, and ignore the .length of the array.
-     *
-     * @return array
-     * An array containing the luminance data.
-     */
-    public abstract function getRow($y, $row);
+	/**
+	 * Fetches one row of luminance data from the underlying platform's bitmap. Values range from
+	 * 0 (black) to 255 (white). Because Java does not have an unsigned byte type, callers will have
+	 * to bitwise and with 0xff for each value. It is preferable for implementations of this method
+	 * to only fetch this row rather than the whole image, since no 2D Readers may be installed and
+	 * getMatrix() may never be called.
+	 *
+	 * @param $y   ; The row to fetch, which must be in [0,getHeight())
+	 * @param $row ; An optional preallocated array. If null or too small, it will be ignored.
+	 *             Always use the returned object, and ignore the .length of the array.
+	 *
+	 * @return array
+	 * An array containing the luminance data.
+	 */
+	abstract public function getRow($y, $row);
 }
