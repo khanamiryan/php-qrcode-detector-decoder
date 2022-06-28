@@ -29,9 +29,18 @@ final class RGBLuminanceSource extends LuminanceSource
 	public $luminances;
 	private $dataWidth;
 	private $dataHeight;
-	private $left;
-	private $top;
-	private $pixels;
+	/**
+  * @var mixed|int
+  */
+ private $left;
+	/**
+  * @var mixed|int
+  */
+ private $top;
+	/**
+  * @var mixed|null
+  */
+ private $pixels;
 
 
 	public function __construct(
@@ -59,7 +68,7 @@ final class RGBLuminanceSource extends LuminanceSource
 		$this->top = $top;
 	}
 
-	public function RGBLuminanceSource_($width, $height, $pixels)
+	public function RGBLuminanceSource_($width, $height, $pixels): void
 	{
 		parent::__construct($width, $height);
 
@@ -173,7 +182,7 @@ final class RGBLuminanceSource extends LuminanceSource
 	public function grayScaleToBitmap($grayScale)
 	{
 		$middle = $this->getMiddleBrightnessPerArea($grayScale);
-		$sqrtNumArea = count($middle);
+		$sqrtNumArea = is_countable($middle) ? count($middle) : 0;
 		$areaWidth = floor($this->dataWidth / $sqrtNumArea);
 		$areaHeight = floor($this->dataHeight / $sqrtNumArea);
 		$bitmap = fill_array(0, $this->dataWidth * $this->dataHeight, 0);
@@ -242,10 +251,10 @@ final class RGBLuminanceSource extends LuminanceSource
 	public function getRow($y, $row = null)
 	{
 		if ($y < 0 || $y >= $this->getHeight()) {
-			throw new \InvalidArgumentException("Requested row is outside the image: " + y);
+			throw new \InvalidArgumentException("Requested row is outside the image: " + \Y);
 		}
 		$width = $this->getWidth();
-		if ($row == null || count($row) < $width) {
+		if ($row == null || (is_countable($row) ? count($row) : 0) < $width) {
 			$row = [];
 		}
 		$offset = ($y + $this->top) * $this->dataWidth + $this->left;
@@ -295,7 +304,7 @@ final class RGBLuminanceSource extends LuminanceSource
 	}
 
 	//@Override
-	public function crop($left, $top, $width, $height)
+	public function crop($left, $top, $width, $height): \Zxing\RGBLuminanceSource
 	{
 		return new RGBLuminanceSource(
 			$this->luminances,

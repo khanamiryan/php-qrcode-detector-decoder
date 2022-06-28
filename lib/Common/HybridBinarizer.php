@@ -40,13 +40,13 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
 {
 	// This class uses 5x5 blocks to compute local luminance, where each block is 8x8 pixels.
 	// So this is the smallest dimension in each axis we can accept.
-	private static $BLOCK_SIZE_POWER = 3;
-	private static $BLOCK_SIZE = 8; // ...0100...00
-	private static $BLOCK_SIZE_MASK = 7;   // ...0011...11
-	private static $MINIMUM_DIMENSION = 40;
-	private static $MIN_DYNAMIC_RANGE = 24;
+	private static int $BLOCK_SIZE_POWER = 3;
+	private static int $BLOCK_SIZE = 8; // ...0100...00
+	private static int $BLOCK_SIZE_MASK = 7;   // ...0011...11
+	private static int $MINIMUM_DIMENSION = 40;
+	private static int $MIN_DYNAMIC_RANGE = 24;
 
-	private $matrix;
+	private ?\Zxing\Common\BitMatrix $matrix = null;
 
 	public function __construct($source)
 	{
@@ -194,7 +194,7 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
 		$height,
 		$blackPoints,
 		$matrix
-	) {
+	): void {
 		for ($y = 0; $y < $subHeight; $y++) {
 			$yoffset = ($y << self::$BLOCK_SIZE_POWER);
 			$maxYOffset = $height - self::$BLOCK_SIZE;
@@ -242,7 +242,7 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
 		$threshold,
 		$stride,
 		$matrix
-	) {
+	): void {
 		for ($y = 0, $offset = $yoffset * $stride + $xoffset; $y < self::$BLOCK_SIZE; $y++, $offset += $stride) {
 			for ($x = 0; $x < self::$BLOCK_SIZE; $x++) {
 				// Comparison needs to be <= so that black == 0 pixels are black even if the threshold is 0.
@@ -253,7 +253,7 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
 		}
 	}
 
-	public function createBinarizer($source)
+	public function createBinarizer($source): \Zxing\Common\HybridBinarizer
 	{
 		return new HybridBinarizer($source);
 	}

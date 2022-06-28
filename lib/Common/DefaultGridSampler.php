@@ -81,7 +81,7 @@ final class DefaultGridSampler extends GridSampler
 		$bits = new BitMatrix($dimensionX, $dimensionY);
 		$points = fill_array(0, 2 * $dimensionX, 0.0);
 		for ($y = 0; $y < $dimensionY; $y++) {
-			$max = count($points);
+			$max = is_countable($points) ? count($points) : 0;
 			$iValue = (float)$y + 0.5;
 			for ($x = 0; $x < $max; $x += 2) {
 				$points[$x] = (float)($x / 2) + 0.5;
@@ -90,7 +90,7 @@ final class DefaultGridSampler extends GridSampler
 			$transform->transformPoints($points);
 			// Quick check to see if points transformed to something inside the image;
 			// sufficient to check the endpoints
-			$this->checkAndNudgePoints($image, $points);
+			self::checkAndNudgePoints($image, $points);
 			try {
 				for ($x = 0; $x < $max; $x += 2) {
 					if ($image->get((int)$points[$x], (int)$points[$x + 1])) {
@@ -98,7 +98,7 @@ final class DefaultGridSampler extends GridSampler
 						$bits->set($x / 2, $y);
 					}
 				}
-			} catch (\Exception $aioobe) {//ArrayIndexOutOfBoundsException
+			} catch (\Exception) {//ArrayIndexOutOfBoundsException
 				// This feels wrong, but, sometimes if the finder patterns are misidentified, the resulting
 				// transform gets "twisted" such that it maps a straight line of points to a set of points
 				// whose endpoints are in bounds, but others are not. There is probably some mathematical

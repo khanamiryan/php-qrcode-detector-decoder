@@ -26,7 +26,7 @@ namespace Zxing;
  */
 final class FormatException extends ReaderException
 {
-	private static $instance;
+	private static ?\Zxing\FormatException $instance = null;
 
 	public function __construct($cause = null)
 	{

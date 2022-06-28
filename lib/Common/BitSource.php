@@ -28,18 +28,16 @@ namespace Zxing\Common;
  */
 final class BitSource
 {
-	private $bytes;
-	private $byteOffset = 0;
-	private $bitOffset = 0;
+	private int $byteOffset = 0;
+	private int $bitOffset = 0;
 
 	/**
 	 * @param bytes $bytes from which this will read bits. Bits will be read from the first byte first.
 	 *              Bits are read within a byte from most-significant to least-significant bit.
 	 */
-	public function __construct($bytes)
-	{
-		$this->bytes = $bytes;
-	}
+	public function __construct(private $bytes)
+ {
+ }
 
 	/**
 	 * @return index of next bit in current byte which would be read by the next call to {@link #readBits(int)}.
@@ -112,6 +110,6 @@ final class BitSource
 	 */
 	public function available()
 	{
-		return 8 * (count($this->bytes) - $this->byteOffset) - $this->bitOffset;
+		return 8 * ((is_countable($this->bytes) ? count($this->bytes) : 0) - $this->byteOffset) - $this->bitOffset;
 	}
 }

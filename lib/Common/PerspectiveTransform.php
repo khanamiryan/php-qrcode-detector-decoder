@@ -26,37 +26,9 @@ namespace Zxing\Common;
  */
 final class PerspectiveTransform
 {
-	private $a11;
-	private $a12;
-	private $a13;
-	private $a21;
-	private $a22;
-	private $a23;
-	private $a31;
-	private $a32;
-	private $a33;
-
-	private function __construct(
-		$a11,
-		$a21,
-		$a31,
-		$a12,
-		$a22,
-		$a32,
-		$a13,
-		$a23,
-		$a33
-	) {
-		$this->a11 = $a11;
-		$this->a12 = $a12;
-		$this->a13 = $a13;
-		$this->a21 = $a21;
-		$this->a22 = $a22;
-		$this->a23 = $a23;
-		$this->a31 = $a31;
-		$this->a32 = $a32;
-		$this->a33 = $a33;
-	}
+	private function __construct(private $a11, private $a21, private $a31, private $a12, private $a22, private $a32, private $a13, private $a23, private $a33)
+ {
+ }
 
 	public static function quadrilateralToQuadrilateral(
 		$x0,
@@ -96,7 +68,7 @@ final class PerspectiveTransform
 		return self::squareToQuadrilateral($x0, $y0, $x1, $y1, $x2, $y2, $x3, $y3)->buildAdjoint();
 	}
 
-	public function buildAdjoint()
+	public function buildAdjoint(): \Zxing\Common\PerspectiveTransform
 	{
 		// Adjoint is the transpose of the cofactor matrix:
 		return new PerspectiveTransform(
@@ -121,7 +93,7 @@ final class PerspectiveTransform
 		$y2,
 		$x3,
 		$y3
-	) {
+	): \Zxing\Common\PerspectiveTransform {
 		$dx3 = $x0 - $x1 + $x2 - $x3;
 		$dy3 = $y0 - $y1 + $y2 - $y3;
 		if ($dx3 == 0.0 && $dy3 == 0.0) {
@@ -160,7 +132,7 @@ final class PerspectiveTransform
 		}
 	}
 
-	public function times($other)
+	public function times($other): \Zxing\Common\PerspectiveTransform
 	{
 		return new PerspectiveTransform(
 			$this->a11 * $other->a11 + $this->a21 * $other->a12 + $this->a31 * $other->a13,
@@ -175,14 +147,14 @@ final class PerspectiveTransform
 		);
 	}
 
-	public function transformPoints(&$points, &$yValues = 0)
+	public function transformPoints(&$points, &$yValues = 0): void
 	{
 		if ($yValues) {
 			$this->transformPoints_($points, $yValues);
 
 			return;
 		}
-		$max = count($points);
+		$max = is_countable($points) ? count($points) : 0;
 		$a11 = $this->a11;
 		$a12 = $this->a12;
 		$a13 = $this->a13;
@@ -201,9 +173,9 @@ final class PerspectiveTransform
 		}
 	}
 
-	public function transformPoints_(&$xValues, &$yValues)
+	public function transformPoints_(&$xValues, &$yValues): void
 	{
-		$n = count($xValues);
+		$n = is_countable($xValues) ? count($xValues) : 0;
 		for ($i = 0; $i < $n; $i++) {
 			$x = $xValues[$i];
 			$y = $yValues[$i];

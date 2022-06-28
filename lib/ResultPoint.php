@@ -27,8 +27,8 @@ use Zxing\Common\Detector\MathUtils;
  */
 class ResultPoint
 {
-	private $x;
-	private $y;
+	private float $x;
+	private float $y;
 
 	public function __construct($x, $y)
 	{

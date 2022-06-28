@@ -39,33 +39,24 @@ final class GenericGF
 	public static $AZTEC_DATA_8;
 	public static $MAXICODE_FIELD_64;
 
-	private $expTable;
-	private $logTable;
-	private $zero;
-	private $one;
-	private $size;
-	private $primitive;
-	private $generatorBase;
+	private array $expTable = [];
+	private array $logTable = [];
+	private readonly \Zxing\Common\Reedsolomon\GenericGFPoly $zero;
+	private readonly \Zxing\Common\Reedsolomon\GenericGFPoly $one;
 
 	/**
-	 * Create a representation of GF(size) using the given primitive polynomial.
-	 *
-	 * @param irreducible $primitive polynomial whose coefficients are represented by
-	 *                  the bits of an int, where the least-significant bit represents the constant
-	 *                  coefficient
-	 * @param the      $size size of the field
-	 * @param the         $b factor b in the generator polynomial can be 0- or 1-based
-	 *                  (g(x) = (x+a^b)(x+a^(b+1))...(x+a^(b+2t-1))).
-	 *                  In most cases it should be 1, but for QR code it is 0.
-	 */
-	public function __construct($primitive, $size, $b)
+ * Create a representation of GF(size) using the given primitive polynomial.
+ *
+ * @param irreducible $primitive polynomial whose coefficients are represented by
+ *                  the bits of an int, where the least-significant bit represents the constant
+ *                  coefficient
+ * @param the      $size size of the field
+  * @param the $generatorBase factor b in the generator polynomial can be 0- or 1-based
+                  (g(x) = (x+a^b)(x+a^(b+1))...(x+a^(b+2t-1))).
+                  In most cases it should be 1, but for QR code it is 0.
+ */
+ public function __construct(private $primitive, private $size, private $generatorBase)
 	{
-		$this->primitive = $primitive;
-		$this->size = $size;
-		$this->generatorBase = $b;
-
-		$this->expTable = [];
-		$this->logTable = [];
 		$x = 1;
 		for ($i = 0; $i < $size; $i++) {
 			$this->expTable[$i] = $x;
@@ -83,7 +74,7 @@ final class GenericGF
 		$this->one = new GenericGFPoly($this, [1]);
 	}
 
-	public static function Init()
+	public static function Init(): void
 	{
 		self::$AZTEC_DATA_12 = new GenericGF(0x1069, 4096, 1); // x^12 + x^6 + x^5 + x^3 + 1
 		self::$AZTEC_DATA_10 = new GenericGF(0x409, 1024, 1); // x^10 + x^3 + 1

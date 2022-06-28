@@ -30,12 +30,9 @@ use Zxing\Common\BitMatrix;
  */
 abstract class Binarizer
 {
-	private $source;
-
-	protected function __construct($source)
-	{
-		$this->source = $source;
-	}
+	protected function __construct(private $source)
+ {
+ }
 
 	/**
 	 * @return LuminanceSource

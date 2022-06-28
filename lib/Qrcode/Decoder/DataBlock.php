@@ -26,14 +26,11 @@ namespace Zxing\Qrcode\Decoder;
  */
 final class DataBlock
 {
-	private $numDataCodewords;
-	private $codewords; //byte[]
+	//byte[]
 
-	private function __construct($numDataCodewords, $codewords)
-	{
-		$this->numDataCodewords = $numDataCodewords;
-		$this->codewords = $codewords;
-	}
+	private function __construct(private $numDataCodewords, private $codewords)
+ {
+ }
 
 	/**
 	 * <p>When QR Codes use multiple data blocks, they are actually interleaved.
@@ -53,7 +50,7 @@ final class DataBlock
 		$ecLevel
 	)
 	{
-		if (count($rawCodewords) != $version->getTotalCodewords()) {
+		if ((is_countable($rawCodewords) ? count($rawCodewords) : 0) != $version->getTotalCodewords()) {
 			throw new \InvalidArgumentException();
 		}
 
@@ -82,10 +79,10 @@ final class DataBlock
 
 		// All blocks have the same amount of data, except that the last n
 		// (where n may be 0) have 1 more byte. Figure out where these start.
-		$shorterBlocksTotalCodewords = count($result[0]->codewords);
+		$shorterBlocksTotalCodewords = is_countable($result[0]->codewords) ? count($result[0]->codewords) : 0;
 		$longerBlocksStartAt = count($result) - 1;
 		while ($longerBlocksStartAt >= 0) {
-			$numCodewords = count($result[$longerBlocksStartAt]->codewords);
+			$numCodewords = is_countable($result[$longerBlocksStartAt]->codewords) ? count($result[$longerBlocksStartAt]->codewords) : 0;
 			if ($numCodewords == $shorterBlocksTotalCodewords) {
 				break;
 			}
@@ -107,7 +104,7 @@ final class DataBlock
 			$result[$j]->codewords[$shorterBlocksNumDataCodewords] = $rawCodewords[$rawCodewordsOffset++];
 		}
 		// Now add in error correction blocks
-		$max = count($result[0]->codewords);
+		$max = is_countable($result[0]->codewords) ? count($result[0]->codewords) : 0;
 		for ($i = $shorterBlocksNumDataCodewords; $i < $max; $i++) {
 			for ($j = 0; $j < $numResultBlocks; $j++) {
 				$iOffset = $j < $longerBlocksStartAt ? $i : $i + 1;

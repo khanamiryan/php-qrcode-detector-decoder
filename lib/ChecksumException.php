@@ -25,7 +25,7 @@ namespace Zxing;
  */
 final class ChecksumException extends ReaderException
 {
-	private static $instance;
+	private static ?\Zxing\ChecksumException $instance = null;
 
 	public static function getChecksumInstance($cause = null)
 	{

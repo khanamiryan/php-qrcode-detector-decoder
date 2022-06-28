@@ -36,13 +36,11 @@ use Zxing\ResultPointCallback;
  */
 class Detector
 {
-	private $image;
 	private $resultPointCallback;
 
-	public function __construct($image)
-	{
-		$this->image = $image;
-	}
+	public function __construct(private $image)
+ {
+ }
 
 	/**
 	 * <p>Detects a QR Code in an image.</p>
@@ -66,7 +64,7 @@ class Detector
 		return $this->processFinderPatternInfo($info);
 	}
 
-	final protected function processFinderPatternInfo($info)
+	final protected function processFinderPatternInfo($info): \Zxing\Common\DetectorResult
 	{
 		$topLeft = $info->getTopLeft();
 		$topRight = $info->getTopRight();
@@ -82,7 +80,7 @@ class Detector
 
 		$alignmentPattern = null;
 		// Anything above version 1 has an alignment pattern
-		if (count($provisionalVersion->getAlignmentPatternCenters()) > 0) {
+		if ((is_countable($provisionalVersion->getAlignmentPatternCenters()) ? count($provisionalVersion->getAlignmentPatternCenters()) : 0) > 0) {
 
 // Guess where a "bottom right" finder pattern would have been
 			$bottomRightX = $topRight->getX() - $topLeft->getX() + $bottomLeft->getX();
@@ -104,7 +102,7 @@ class Detector
 						(float)$i
 					);
 					break;
-				} catch (NotFoundException $re) {
+				} catch (NotFoundException) {
 					// try next round
 				}
 			}

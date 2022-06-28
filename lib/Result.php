@@ -24,25 +24,19 @@ namespace Zxing;
  */
 final class Result
 {
-	private $text;
-	private $rawBytes;
-	private $resultPoints;
-	private $format;
-	private $resultMetadata;
+	/**
+  * @var mixed[]|mixed
+  */
+ private $resultMetadata = null;
 	private $timestamp;
 
 	public function __construct(
-		$text,
-		$rawBytes,
-		$resultPoints,
-		$format,
+		private $text,
+		private $rawBytes,
+		private $resultPoints,
+		private $format,
 		$timestamp = ''
 	) {
-		$this->text = $text;
-		$this->rawBytes = $rawBytes;
-		$this->resultPoints = $resultPoints;
-		$this->format = $format;
-		$this->resultMetadata = null;
 		$this->timestamp = $timestamp ?: time();
 	}
 
@@ -90,15 +84,16 @@ final class Result
 		return $this->resultMetadata;
 	}
 
-	public function putMetadata($type, $value)
+	public function putMetadata($type, $value): void
 	{
-		if ($this->resultMetadata === null) {
+		$resultMetadata = [];
+  if ($this->resultMetadata === null) {
 			$this->resultMetadata = [];
 		}
 		$resultMetadata[$type] = $value;
 	}
 
-	public function putAllMetadata($metadata)
+	public function putAllMetadata($metadata): void
 	{
 		if ($metadata !== null) {
 			if ($this->resultMetadata === null) {
@@ -109,15 +104,15 @@ final class Result
 		}
 	}
 
-	public function addResultPoints($newPoints)
+	public function addResultPoints($newPoints): void
 	{
 		$oldPoints = $this->resultPoints;
 		if ($oldPoints === null) {
 			$this->resultPoints = $newPoints;
-		} elseif ($newPoints !== null && count($newPoints) > 0) {
-			$allPoints = fill_array(0, count($oldPoints) + count($newPoints), 0);
-			$allPoints = arraycopy($oldPoints, 0, $allPoints, 0, count($oldPoints));
-			$allPoints = arraycopy($newPoints, 0, $allPoints, count($oldPoints), count($newPoints));
+		} elseif ($newPoints !== null && (is_countable($newPoints) ? count($newPoints) : 0) > 0) {
+			$allPoints = fill_array(0, (is_countable($oldPoints) ? count($oldPoints) : 0) + (is_countable($newPoints) ? count($newPoints) : 0), 0);
+			$allPoints = arraycopy($oldPoints, 0, $allPoints, 0, is_countable($oldPoints) ? count($oldPoints) : 0);
+			$allPoints = arraycopy($newPoints, 0, $allPoints, is_countable($oldPoints) ? count($oldPoints) : 0, is_countable($newPoints) ? count($newPoints) : 0);
 			$this->resultPoints = $allPoints;
 		}
 	}

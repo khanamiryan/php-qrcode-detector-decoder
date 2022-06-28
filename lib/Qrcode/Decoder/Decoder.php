@@ -32,7 +32,7 @@ use Zxing\FormatException;
  */
 final class Decoder
 {
-	private $rsDecoder;
+	private readonly \Zxing\Common\Reedsolomon\ReedSolomonDecoder $rsDecoder;
 
 	public function __construct()
 	{
@@ -187,16 +187,16 @@ final class Decoder
 	 */
 	private function correctErrors(&$codewordBytes, $numDataCodewords)
 	{
-		$numCodewords = count($codewordBytes);
+		$numCodewords = is_countable($codewordBytes) ? count($codewordBytes) : 0;
 		// First read into an array of ints
 		$codewordsInts = fill_array(0, $numCodewords, 0);
 		for ($i = 0; $i < $numCodewords; $i++) {
 			$codewordsInts[$i] = $codewordBytes[$i] & 0xFF;
 		}
-		$numECCodewords = count($codewordBytes) - $numDataCodewords;
+		$numECCodewords = (is_countable($codewordBytes) ? count($codewordBytes) : 0) - $numDataCodewords;
 		try {
 			$this->rsDecoder->decode($codewordsInts, $numECCodewords);
-		} catch (ReedSolomonException $ignored) {
+		} catch (ReedSolomonException) {
 			throw ChecksumException::getChecksumInstance();
 		}
 		// Copy back into array of bytes -- only need to worry about the bytes that were data

@@ -25,7 +25,7 @@ namespace Zxing;
  */
 final class NotFoundException extends ReaderException
 {
-	private static $instance;
+	private static ?\Zxing\NotFoundException $instance = null;
 
 	public static function getNotFoundInstance()
 	{

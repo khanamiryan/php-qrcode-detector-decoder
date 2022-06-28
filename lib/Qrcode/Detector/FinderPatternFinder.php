@@ -31,32 +31,29 @@ use Zxing\ResultPoint;
  */
 class FinderPatternFinder
 {
-	protected static $MIN_SKIP = 3;
-	protected static $MAX_MODULES = 57; // 1 pixel/module times 3 modules/center
-	private static $CENTER_QUORUM = 2; // support up to version 10 for mobile clients
-	private $image;
-	private $average;
-	private $possibleCenters; //private final List<FinderPattern> possibleCenters;
-	private $hasSkipped = false;
-	private $crossCheckStateCount;
-	private $resultPointCallback;
+	protected static int $MIN_SKIP = 3;
+	protected static int $MAX_MODULES = 57; // 1 pixel/module times 3 modules/center
+	private static int $CENTER_QUORUM = 2;
+	private ?float $average = null;
+	private array $possibleCenters = []; //private final List<FinderPattern> possibleCenters;
+	private bool $hasSkipped = false;
+	/**
+  * @var mixed|int[]
+  */
+ private $crossCheckStateCount;
 
 	/**
 	 * <p>Creates a finder that will search the image for three finder patterns.</p>
 	 *
 	 * @param BitMatrix $image image to search
 	 */
-	public function __construct($image, $resultPointCallback = null)
+	public function __construct(private $image, private $resultPointCallback = null)
 	{
-		$this->image = $image;
-
-
-		$this->possibleCenters = [];//new ArrayList<>();
+		//new ArrayList<>();
 		$this->crossCheckStateCount = fill_array(0, 5, 0);
-		$this->resultPointCallback = $resultPointCallback;
 	}
 
-	final public function find($hints)
+	final public function find($hints): \Zxing\Qrcode\Detector\FinderPatternInfo
 	{/*final FinderPatternInfo find(Map<DecodeHintType,?> hints) throws NotFoundException {*/
 		$tryHarder = $hints != null && $hints['TRY_HARDER'];
 		$pureBarcode = $hints != null && $hints['PURE_BARCODE'];
@@ -221,7 +218,7 @@ class FinderPatternFinder
 	{
 		$stateCountTotal = $stateCount[0] + $stateCount[1] + $stateCount[2] + $stateCount[3] +
 			$stateCount[4];
-		$centerJ = $this->centerFromEnd($stateCount, $j);
+		$centerJ = self::centerFromEnd($stateCount, $j);
 		$centerI = $this->crossCheckVertical($i, (int)($centerJ), $stateCount[2], $stateCountTotal);
 		if (!is_nan($centerI)) {
 			// Re-cross check
@@ -345,7 +342,7 @@ class FinderPatternFinder
 			return NAN;
 		}
 
-		return self::foundPatternCross($stateCount) ? $this->centerFromEnd($stateCount, $i) : NAN;
+		return self::foundPatternCross($stateCount) ? self::centerFromEnd($stateCount, $i) : NAN;
 	}
 
 	private function getCrossCheckStateCount()
@@ -430,7 +427,7 @@ class FinderPatternFinder
 			return NAN;
 		}
 
-		return $this->foundPatternCross($stateCount) ? $this->centerFromEnd($stateCount, $j) : NAN;
+		return static::foundPatternCross($stateCount) ? self::centerFromEnd($stateCount, $j) : NAN;
 	}
 
 	/**
@@ -622,7 +619,7 @@ class FinderPatternFinder
 			$this->average = $totalModuleSize / (float)$startSize;
 			$stdDev = (float)sqrt($square / $startSize - $this->average * $this->average);
 
-			usort($this->possibleCenters, [$this, 'FurthestFromAverageComparator']);
+			usort($this->possibleCenters, $this->FurthestFromAverageComparator(...));
 
 			$limit = max(0.2 * $this->average, $stdDev);
 
@@ -646,7 +643,7 @@ class FinderPatternFinder
 
 			$this->average = $totalModuleSize / (float)count($this->possibleCenters);
 
-			usort($this->possibleCenters, [$this, 'CenterComparator']);
+			usort($this->possibleCenters, $this->CenterComparator(...));
 
 			array_slice($this->possibleCenters, 3, count($this->possibleCenters) - 3);
 		}

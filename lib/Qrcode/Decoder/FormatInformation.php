@@ -34,12 +34,13 @@ final class FormatInformation
 	 */
 	public static $FORMAT_INFO_DECODE_LOOKUP;
 	/**
-	 * Offset i holds the number of 1 bits in the binary representation of i
-	 */
-	private static $BITS_SET_IN_HALF_BYTE;
+  * Offset i holds the number of 1 bits in the binary representation of i
+  * @var int[]|null
+  */
+ private static ?array $BITS_SET_IN_HALF_BYTE = null;
 
-	private $errorCorrectionLevel;
-	private $dataMask;
+	private readonly \Zxing\Qrcode\Decoder\ErrorCorrectionLevel $errorCorrectionLevel;
+	private readonly int $dataMask;
 
 	private function __construct($formatInfo)
 	{
@@ -49,7 +50,7 @@ final class FormatInformation
 		$this->dataMask = ($formatInfo & 0x07);//(byte)
 	}
 
-	public static function Init()
+	public static function Init(): void
 	{
 		self::$FORMAT_INFO_MASK_QR = 0x5412;
 		self::$BITS_SET_IN_HALF_BYTE = [0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4];

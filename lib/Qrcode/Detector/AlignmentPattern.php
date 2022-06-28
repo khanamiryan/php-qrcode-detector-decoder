@@ -27,12 +27,9 @@ use Zxing\ResultPoint;
  */
 final class AlignmentPattern extends ResultPoint
 {
-	private $estimatedModuleSize;
-
-	public function __construct($posX, $posY, $estimatedModuleSize)
+	public function __construct($posX, $posY, private $estimatedModuleSize)
 	{
 		parent::__construct($posX, $posY);
-		$this->estimatedModuleSize = $estimatedModuleSize;
 	}
 
 	/**
@@ -54,7 +51,7 @@ final class AlignmentPattern extends ResultPoint
 	 * Combines this object's current estimate of a finder pattern position and module size
 	 * with a new estimate. It returns a new {@code FinderPattern} containing an average of the two.
 	 */
-	public function combineEstimate($i, $j, $newModuleSize)
+	public function combineEstimate($i, $j, $newModuleSize): \Zxing\Qrcode\Detector\AlignmentPattern
 	{
 		$combinedX = ($this->getX() + $j) / 2.0;
 		$combinedY = ($this->getY() + $i) / 2.0;

@@ -26,32 +26,23 @@ namespace Zxing\Common;
  */
 final class DecoderResult
 {
-	private $rawBytes;
-	private $text;
-	private $byteSegments;
-	private $ecLevel;
-	private $errorsCorrected;
-	private $erasures;
-	private $other;
-	private $structuredAppendParity;
-	private $structuredAppendSequenceNumber;
+	/**
+  * @var mixed|null
+  */
+ private $errorsCorrected;
+	/**
+  * @var mixed|null
+  */
+ private $erasures;
+	/**
+  * @var mixed|null
+  */
+ private $other;
 
 
-	public function __construct(
-		$rawBytes,
-		$text,
-		$byteSegments,
-		$ecLevel,
-		$saSequence = -1,
-		$saParity = -1
-	) {
-		$this->rawBytes = $rawBytes;
-		$this->text = $text;
-		$this->byteSegments = $byteSegments;
-		$this->ecLevel = $ecLevel;
-		$this->structuredAppendParity = $saParity;
-		$this->structuredAppendSequenceNumber = $saSequence;
-	}
+	public function __construct(private $rawBytes, private $text, private $byteSegments, private $ecLevel, private $structuredAppendSequenceNumber = -1, private $structuredAppendParity = -1)
+ {
+ }
 
 	public function getRawBytes()
 	{
@@ -78,7 +69,7 @@ final class DecoderResult
 		return $this->errorsCorrected;
 	}
 
-	public function setErrorsCorrected($errorsCorrected)
+	public function setErrorsCorrected($errorsCorrected): void
 	{
 		$this->errorsCorrected = $errorsCorrected;
 	}
@@ -88,7 +79,7 @@ final class DecoderResult
 		return $this->erasures;
 	}
 
-	public function setErasures($erasures)
+	public function setErasures($erasures): void
 	{
 		$this->erasures = $erasures;
 	}
@@ -98,7 +89,7 @@ final class DecoderResult
 		return $this->other;
 	}
 
-	public function setOther($other)
+	public function setOther($other): void
 	{
 		$this->other = $other;
 	}

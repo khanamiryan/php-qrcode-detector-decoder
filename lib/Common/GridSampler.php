@@ -34,7 +34,10 @@ use Zxing\NotFoundException;
  */
 abstract class GridSampler
 {
-	private static $gridSampler;
+	/**
+  * @var mixed|\Zxing\Common\DefaultGridSampler|null
+  */
+ private static $gridSampler;
 
 	/**
 	 * Sets the implementation of GridSampler used by the library. One global
@@ -45,7 +48,7 @@ abstract class GridSampler
 	 *
 	 * @param $newGridSampler The platform-specific object to install.
 	 */
-	public static function setGridSampler($newGridSampler)
+	public static function setGridSampler($newGridSampler): void
 	{
 		self::$gridSampler = $newGridSampler;
 	}
@@ -86,7 +89,7 @@ abstract class GridSampler
 		$height = $image->getHeight();
 		// Check and nudge points from start until we see some that are OK:
 		$nudged = true;
-		for ($offset = 0; $offset < count($points) && $nudged; $offset += 2) {
+		for ($offset = 0; $offset < (is_countable($points) ? count($points) : 0) && $nudged; $offset += 2) {
 			$x = (int)$points[$offset];
 			$y = (int)$points[$offset + 1];
 			if ($x < -1 || $x > $width || $y < -1 || $y > $height) {
@@ -110,7 +113,7 @@ abstract class GridSampler
 		}
 		// Check and nudge points from end:
 		$nudged = true;
-		for ($offset = count($points) - 2; $offset >= 0 && $nudged; $offset -= 2) {
+		for ($offset = (is_countable($points) ? count($points) : 0) - 2; $offset >= 0 && $nudged; $offset -= 2) {
 			$x = (int)$points[$offset];
 			$y = (int)$points[$offset + 1];
 			if ($x < -1 || $x > $width || $y < -1 || $y > $height) {

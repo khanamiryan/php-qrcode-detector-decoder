@@ -11,9 +11,15 @@ final class IMagickLuminanceSource extends LuminanceSource
 	public $luminances;
 	private $dataWidth;
 	private $dataHeight;
-	private $left;
-	private $top;
-	private $image;
+	/**
+  * @var mixed|int
+  */
+ private $left;
+	/**
+  * @var mixed|int
+  */
+ private $top;
+	private ?\Imagick $image = null;
 
 	public function __construct(
 		\Imagick $image,
@@ -40,7 +46,7 @@ final class IMagickLuminanceSource extends LuminanceSource
 		$this->top = $top;
 	}
 
-	public function _IMagickLuminanceSource(\Imagick $image, $width, $height)
+	public function _IMagickLuminanceSource(\Imagick $image, $width, $height): void
 	{
 		parent::__construct($width, $height);
 
@@ -85,7 +91,7 @@ final class IMagickLuminanceSource extends LuminanceSource
 			throw new \InvalidArgumentException('Requested row is outside the image: ' . $y);
 		}
 		$width = $this->getWidth();
-		if ($row == null || count($row) < $width) {
+		if ($row == null || (is_countable($row) ? count($row) : 0) < $width) {
 			$row = [];
 		}
 		$offset = ($y + $this->top) * $this->dataWidth + $this->left;
@@ -129,7 +135,7 @@ final class IMagickLuminanceSource extends LuminanceSource
 	}
 
 	//@Override
-	public function isCropSupported()
+	public function isCropSupported(): bool 
 	{
 		return true;
 	}

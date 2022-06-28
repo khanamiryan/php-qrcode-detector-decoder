@@ -26,7 +26,10 @@ use Zxing\FormatException;
 final class BitMatrixParser
 {
 	private $bitMatrix;
-	private $parsedVersion;
+	/**
+  * @var mixed|null
+  */
+ private $parsedVersion;
 	private $parsedFormatInfo;
 	private $mirror;
 
@@ -219,7 +222,7 @@ final class BitMatrixParser
 	/**
 	 * Revert the mask removal done while reading the code words. The bit matrix should revert to its original state.
 	 */
-	public function remask()
+	public function remask(): void
 	{
 		if ($this->parsedFormatInfo == null) {
 			return; // We have no format information, and have no data mask
@@ -237,7 +240,7 @@ final class BitMatrixParser
 	 *
 	 * @param Whether $mirror to read version and format information mirrored.
 	 */
-	public function setMirror($mirror)
+	public function setMirror($mirror): void
 	{
 		$parsedVersion = null;
 		$parsedFormatInfo = null;
@@ -245,7 +248,7 @@ final class BitMatrixParser
 	}
 
 	/** Mirror the bit matrix in order to attempt a second reading. */
-	public function mirror()
+	public function mirror(): void
 	{
 		for ($x = 0; $x < $this->bitMatrix->getWidth(); $x++) {
 			for ($y = $x + 1; $y < $this->bitMatrix->getHeight(); $y++) {

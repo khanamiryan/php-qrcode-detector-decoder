@@ -35,13 +35,13 @@ abstract class DataMask
 	/**
 	 * See ISO 18004:2006 6.8.1
 	 */
-	private static $DATA_MASKS = [];
+	private static array $DATA_MASKS = [];
 
 	public function __construct()
 	{
 	}
 
-	public static function Init()
+	public static function Init(): void
 	{
 		self::$DATA_MASKS = [
 			new DataMask000(),
@@ -77,7 +77,7 @@ abstract class DataMask
 	 * @param representation      $bits of QR Code bits
 	 * @param dimension $dimension of QR Code, represented by bits, being unmasked
 	 */
-	final public function unmaskBitMatrix($bits, $dimension)
+	final public function unmaskBitMatrix($bits, $dimension): void
 	{
 		for ($i = 0; $i < $dimension; $i++) {
 			for ($j = 0; $j < $dimension; $j++) {

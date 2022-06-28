@@ -34,8 +34,8 @@ use Zxing\Result;
  */
 class QRCodeReader implements Reader
 {
-	private static $NO_POINTS = [];
-	private $decoder;
+	private static array $NO_POINTS = [];
+	private readonly \Zxing\Qrcode\Decoder\Decoder $decoder;
 
 	public function __construct()
 	{
@@ -43,14 +43,13 @@ class QRCodeReader implements Reader
 	}
 
 	/**
-	 * @param BinaryBitmap $image
-	 * @param null         $hints
-	 *
-	 * @return Result
-	 * @throws \Zxing\FormatException
-	 * @throws \Zxing\NotFoundException
-	 */
-	public function decode(BinaryBitmap $image, $hints = null)
+  * @param null         $hints
+  *
+  * @return Result
+  * @throws \Zxing\FormatException
+  * @throws \Zxing\NotFoundException
+  */
+ public function decode(BinaryBitmap $image, $hints = null)
 	{
 		$decoderResult = null;
 		if ($hints !== null && $hints['PURE_BARCODE']) {
@@ -210,7 +209,7 @@ class QRCodeReader implements Reader
 		return ($x - $leftTopBlack[0]) / 7.0; //return ($x - $leftTopBlack[0]) / 7.0f;
 	}
 
-	public function reset()
+	public function reset(): void
 	{
 		// do nothing
 	}

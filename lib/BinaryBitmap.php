@@ -27,8 +27,8 @@ use Zxing\Common\BitMatrix;
  */
 final class BinaryBitmap
 {
-	private $binarizer;
-	private $matrix;
+	private readonly \Zxing\Binarizer $binarizer;
+	private ?\Zxing\Common\BitMatrix $matrix = null;
 
 	public function __construct(Binarizer $binarizer)
 	{
@@ -90,7 +90,7 @@ final class BinaryBitmap
 	 *
 	 * @return BinaryBitmap A cropped version of this object.
 	 */
-	public function crop($left, $top, $width, $height)
+	public function crop($left, $top, $width, $height): \Zxing\BinaryBitmap
 	{
 		$newSource = $this->binarizer->getLuminanceSource()->crop($left, $top, $width, $height);
 
@@ -111,7 +111,7 @@ final class BinaryBitmap
 	 *
 	 * @return BinaryBitmap A rotated version of this object.
 	 */
-	public function rotateCounterClockwise()
+	public function rotateCounterClockwise(): \Zxing\BinaryBitmap
 	{
 		$newSource = $this->binarizer->getLuminanceSource()->rotateCounterClockwise();
 
@@ -124,7 +124,7 @@ final class BinaryBitmap
 	 *
 	 * @return BinaryBitmap A rotated version of this object.
 	 */
-	public function rotateCounterClockwise45()
+	public function rotateCounterClockwise45(): \Zxing\BinaryBitmap
 	{
 		$newSource = $this->binarizer->getLuminanceSource()->rotateCounterClockwise45();
 
@@ -135,7 +135,7 @@ final class BinaryBitmap
 	{
 		try {
 			return $this->getBlackMatrix()->toString();
-		} catch (NotFoundException $e) {
+		} catch (NotFoundException) {
 		}
 
 		return '';

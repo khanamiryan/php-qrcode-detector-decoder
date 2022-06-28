@@ -14,7 +14,7 @@ if (!function_exists('hashCode')) {
 	function hashCode($s)
 	{
 		$h = 0;
-		$len = strlen($s);
+		$len = strlen((string) $s);
 		for ($i = 0; $i < $len; $i++) {
 			$h = (31 * $h + ord($s[$i]));
 		}

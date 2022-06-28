@@ -7,7 +7,10 @@ final class BitMatrix
 	private $width;
 	private $height;
 	private $rowSize;
-	private $bits;
+	/**
+  * @var mixed|int[]
+  */
+ private $bits;
 
 	public function __construct($width, $height = false, $rowSize = false, $bits = false)
 	{
@@ -38,7 +41,7 @@ final class BitMatrix
 		$rowLength = -1;
 		$nRows = 0;
 		$pos = 0;
-		while ($pos < strlen($stringRepresentation)) {
+		while ($pos < strlen((string) $stringRepresentation)) {
 			if ($stringRepresentation[$pos] == '\n' ||
 				$stringRepresentation->{$pos} == '\r') {
 				if ($bitsPos > $rowStartPos) {
@@ -51,17 +54,17 @@ final class BitMatrix
 					$nRows++;
 				}
 				$pos++;
-			} elseif (substr($stringRepresentation, $pos, strlen($setString)) == $setString) {
-				$pos += strlen($setString);
+			} elseif (substr((string) $stringRepresentation, $pos, strlen((string) $setString)) == $setString) {
+				$pos += strlen((string) $setString);
 				$bits[$bitsPos] = true;
 				$bitsPos++;
-			} elseif (substr($stringRepresentation, $pos + strlen($unsetString)) == $unsetString) {
-				$pos += strlen($unsetString);
+			} elseif (substr((string) $stringRepresentation, $pos + strlen((string) $unsetString)) == $unsetString) {
+				$pos += strlen((string) $unsetString);
 				$bits[$bitsPos] = false;
 				$bitsPos++;
 			} else {
 				throw new \InvalidArgumentException(
-					"illegal character encountered: " . substr($stringRepresentation, $pos)
+					"illegal character encountered: " . substr((string) $stringRepresentation, $pos)
 				);
 			}
 		}
@@ -92,7 +95,7 @@ final class BitMatrix
 	 * @param $x ;  The horizontal component (i.e. which column)
 	 * @param $y ;   The vertical component (i.e. which row)
 	 */
-	public function set($x, $y)
+	public function set($x, $y): void
 	{
 		$offset = (int)($y * $this->rowSize + ($x / 32));
 		if (!isset($this->bits[$offset])) {
@@ -111,7 +114,7 @@ final class BitMatrix
 //16777216
 	}
 
-	public function _unset($x, $y)
+	public function _unset($x, $y): void
 	{//было unset, php не позволяет использовать unset
 		$offset = (int)($y * $this->rowSize + ($x / 32));
 		$this->bits[$offset] &= ~(1 << ($x & 0x1f));
@@ -123,7 +126,7 @@ final class BitMatrix
 	 * @param $x ;  The horizontal component (i.e. which column)
 	 * @param $y ;  The vertical component (i.e. which row)
 	 */
-	public function flip($x, $y)
+	public function flip($x, $y): void
 	{
 		$offset = $y * $this->rowSize + (int)($x / 32);
 
@@ -155,9 +158,9 @@ final class BitMatrix
 	/**
 	 * Clears all bits (sets to false).
 	 */
-	public function clear()
+	public function clear(): void
 	{
-		$max = count($this->bits);
+		$max = is_countable($this->bits) ? count($this->bits) : 0;
 		for ($i = 0; $i < $max; $i++) {
 			$this->bits[$i] = 0;
 		}
@@ -195,7 +198,7 @@ final class BitMatrix
 	/**
 	 * Modifies this {@code BitMatrix} to represent the same but rotated 180 degrees
 	 */
-	public function rotate180()
+	public function rotate180(): void
 	{
 		$width = $this->getWidth();
 		$height = $this->getHeight();
@@ -247,7 +250,7 @@ final class BitMatrix
 	 * @param $y   ;  row to set
 	 * @param $row ;  {@link BitArray} to copy from
 	 */
-	public function setRow($y, $row)
+	public function setRow($y, $row): void
 	{
 		$this->bits = arraycopy($row->getBitArray(), 0, $this->bits, $y * $this->rowSize, $this->rowSize);
 	}
@@ -314,10 +317,10 @@ final class BitMatrix
 	public function getTopLeftOnBit()
 	{
 		$bitsOffset = 0;
-		while ($bitsOffset < count($this->bits) && $this->bits[$bitsOffset] == 0) {
+		while ($bitsOffset < (is_countable($this->bits) ? count($this->bits) : 0) && $this->bits[$bitsOffset] == 0) {
 			$bitsOffset++;
 		}
-		if ($bitsOffset == count($this->bits)) {
+		if ($bitsOffset == (is_countable($this->bits) ? count($this->bits) : 0)) {
 			return null;
 		}
 		$y = $bitsOffset / $this->rowSize;
@@ -335,7 +338,7 @@ final class BitMatrix
 
 	public function getBottomRightOnBit()
 	{
-		$bitsOffset = count($this->bits) - 1;
+		$bitsOffset = (is_countable($this->bits) ? count($this->bits) : 0) - 1;
 		while ($bitsOffset >= 0 && $this->bits[$bitsOffset] == 0) {
 			$bitsOffset--;
 		}
@@ -451,7 +454,7 @@ final class BitMatrix
 
 	//  @Override
 
-	public function _clone()
+	public function _clone(): \Zxing\Common\BitMatrix
 	{
 		return new BitMatrix($this->width, $this->height, $this->rowSize, $this->bits);
 	}

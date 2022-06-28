@@ -35,15 +35,8 @@ use Zxing\NotFoundException;
  */
 final class AlignmentPatternFinder
 {
-	private $image;
-	private $possibleCenters;
-	private $startX;
-	private $startY;
-	private $width;
-	private $height;
-	private $moduleSize;
-	private $crossCheckStateCount;
-	private $resultPointCallback;
+	private array $possibleCenters = [];
+	private array $crossCheckStateCount = [];
 
 	/**
 	 * <p>Creates a finder that will look in a portion of the whole image.</p>
@@ -55,26 +48,9 @@ final class AlignmentPatternFinder
 	 * @param float height     $height of region to search
 	 * @param float estimated $moduleSize module size so far
 	 */
-	public function __construct(
-		$image,
-		$startX,
-		$startY,
-		$width,
-		$height,
-		$moduleSize,
-		$resultPointCallback
-	)
-	{
-		$this->image = $image;
-		$this->possibleCenters = [];
-		$this->startX = $startX;
-		$this->startY = $startY;
-		$this->width = $width;
-		$this->height = $height;
-		$this->moduleSize = $moduleSize;
-		$this->crossCheckStateCount = [];
-		$this->resultPointCallback = $resultPointCallback;
-	}
+	public function __construct(private $image, private $startX, private $startY, private $width, private $height, private $moduleSize, private $resultPointCallback)
+ {
+ }
 
 	/**
 	 * <p>This method attempts to find the bottom-right alignment pattern in the image. It is a bit messy since
@@ -187,7 +163,7 @@ final class AlignmentPatternFinder
 	private function handlePossibleCenter($stateCount, $i, $j)
 	{
 		$stateCountTotal = $stateCount[0] + $stateCount[1] + $stateCount[2];
-		$centerJ = $this->centerFromEnd($stateCount, $j);
+		$centerJ = self::centerFromEnd($stateCount, $j);
 		$centerI = $this->crossCheckVertical($i, (int)$centerJ, 2 * $stateCount[1], $stateCountTotal);
 		if (!is_nan($centerI)) {
 			$estimatedModuleSize = (float)($stateCount[0] + $stateCount[1] + $stateCount[2]) / 3.0;
@@ -284,6 +260,6 @@ final class AlignmentPatternFinder
 			return NAN;
 		}
 
-		return $this->foundPatternCross($stateCount) ? $this->centerFromEnd($stateCount, $i) : NAN;
+		return $this->foundPatternCross($stateCount) ? self::centerFromEnd($stateCount, $i) : NAN;
 	}
 }

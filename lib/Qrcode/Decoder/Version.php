@@ -31,7 +31,7 @@ class Version
 	 * See ISO 18004:2006 Annex D.
 	 * Element i represents the raw version bits that specify version i + 7
 	 */
-	private static $VERSION_DECODE_INFO = [
+	private static array $VERSION_DECODE_INFO = [
 		0x07C94, 0x085BC, 0x09A99, 0x0A4D3, 0x0BBF6,
 		0x0C762, 0x0D847, 0x0E60D, 0x0F928, 0x10B78,
 		0x1145D, 0x12A17, 0x13532, 0x149A6, 0x15683,
@@ -41,25 +41,18 @@ class Version
 		0x2542E, 0x26A64, 0x27541, 0x28C69
 	];
 
-	private static $VERSIONS;
-	private $versionNumber;
-	private $alignmentPatternCenters;
-	private $ecBlocks;
-	private $totalCodewords;
+	/**
+  * @var mixed|null
+  */
+ private static $VERSIONS;
+	private readonly float|int $totalCodewords;
 
 	public function __construct(
-		$versionNumber,
-		$alignmentPatternCenters,
-		$ecBlocks
+		private $versionNumber,
+		private $alignmentPatternCenters,
+		private $ecBlocks
 	)
-	{//ECBlocks... ecBlocks
-
-
-
-		$this->versionNumber = $versionNumber;
-		$this->alignmentPatternCenters = $alignmentPatternCenters;
-		$this->ecBlocks = $ecBlocks;
-		$total = 0;
+	{$total = 0;
 		if (is_array($ecBlocks)) {
 			$ecCodewords = $ecBlocks[0]->getECCodewordsPerBlock();
 			$ecbArray = $ecBlocks[0]->getECBlocks();
@@ -111,7 +104,7 @@ class Version
 		}
 		try {
 			return self::getVersionForNumber(($dimension - 17) / 4);
-		} catch (\InvalidArgumentException $ignored) {
+		} catch (\InvalidArgumentException) {
 			throw FormatException::getFormatInstance();
 		}
 	}
@@ -170,7 +163,7 @@ class Version
 		$bitMatrix->setRegion(0, $dimension - 8, 9, 8);
 
 		// Alignment patterns
-		$max = count($this->alignmentPatternCenters);
+		$max = is_countable($this->alignmentPatternCenters) ? count($this->alignmentPatternCenters) : 0;
 		for ($x = 0; $x < $max; $x++) {
 			$i = $this->alignmentPatternCenters[$x] - 2;
 			for ($y = 0; $y < $max; $y++) {
@@ -662,14 +655,9 @@ class Version
  */
 final class ECBlocks
 {
-	private $ecCodewordsPerBlock;
-	private $ecBlocks;
-
-	public function __construct($ecCodewordsPerBlock, $ecBlocks)
-	{
-		$this->ecCodewordsPerBlock = $ecCodewordsPerBlock;
-		$this->ecBlocks = $ecBlocks;
-	}
+	public function __construct(private $ecCodewordsPerBlock, private $ecBlocks)
+ {
+ }
 
 	public function getECCodewordsPerBlock()
 	{
@@ -703,14 +691,9 @@ final class ECBlocks
  */
 final class ECB
 {
-	private $count;
-	private $dataCodewords;
-
-	public function __construct($count, $dataCodewords)
-	{
-		$this->count = $count;
-		$this->dataCodewords = $dataCodewords;
-	}
+	public function __construct(private $count, private $dataCodewords)
+ {
+ }
 
 	public function getCount()
 	{
@@ -724,7 +707,7 @@ final class ECB
 
 
 	//@Override
-	public function toString()
+	public function toString(): never
 	{
 		die('Version ECB toString()');
 		//  return parent::$versionNumber;

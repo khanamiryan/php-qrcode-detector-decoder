@@ -29,16 +29,14 @@ namespace Zxing;
  */
 final class PlanarYUVLuminanceSource extends LuminanceSource
 {
-	private static $THUMBNAIL_SCALE_FACTOR = 2;
-
-	private $yuvData;
+	private static int $THUMBNAIL_SCALE_FACTOR = 2;
 	private $dataWidth;
 	private $dataHeight;
 	private $left;
 	private $top;
 
 	public function __construct(
-		$yuvData,
+		private $yuvData,
 		$dataWidth,
 		$dataHeight,
 		$left,
@@ -53,8 +51,6 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
 		if ($left + $width > $dataWidth || $top + $height > $dataHeight) {
 			throw new \InvalidArgumentException("Crop rectangle does not fit within image data.");
 		}
-
-		$this->yuvData = $yuvData;
 		$this->dataWidth = $dataWidth;
 		$this->dataHeight = $dataHeight;
 		$this->left = $left;
@@ -68,10 +64,10 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
 	public function getRow($y, $row = null)
 	{
 		if ($y < 0 || $y >= $this->getHeight()) {
-			throw new \InvalidArgumentException("Requested row is outside the image: " + y);
+			throw new \InvalidArgumentException("Requested row is outside the image: " + \Y);
 		}
 		$width = $this->getWidth();
-		if ($row == null || count($row) < $width) {
+		if ($row == null || (is_countable($row) ? count($row) : 0) < $width) {
 			$row = [];//new byte[width];
 		}
 		$offset = ($y + $this->top) * $this->dataWidth + $this->left;
@@ -121,7 +117,7 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
 	}
 
 	// @Override
-	public function crop($left, $top, $width, $height)
+	public function crop($left, $top, $width, $height): \Zxing\PlanarYUVLuminanceSource
 	{
 		return new PlanarYUVLuminanceSource(
 			$this->yuvData,

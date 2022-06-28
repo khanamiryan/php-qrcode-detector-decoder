@@ -35,13 +35,11 @@ import com.google.zxing.common.BitMatrix;
  */
 class MonochromeRectangleDetector
 {
-	private static $MAX_MODULES = 32;
-	private $image;
+	private static int $MAX_MODULES = 32;
 
-	public function __construct(BinaryBitmap $image)
-	{
-		$this->image = $image;
-	}
+	public function __construct(private readonly BinaryBitmap $image)
+ {
+ }
 
 	/**
 	 * <p>Detects a rectangular region of black and white -- mostly black -- with a region of mostly
@@ -53,7 +51,7 @@ class MonochromeRectangleDetector
 	 *  third, the rightmost
 	 * @throws NotFoundException if no Data Matrix Code can be found
 	 */
-	public function detect()
+	public function detect(): \Zxing\ResultPoint
 	{
 		$height = $this->image->getHeight();
 		$width = $this->image->getWidth();
@@ -163,7 +161,7 @@ class MonochromeRectangleDetector
 		$top,
 		$bottom,
 		$maxWhiteRun
-	)
+	): \Zxing\ResultPoint
 	{
 		$lastRange = null;
 		for ($y = $centerY, $x = $centerX;

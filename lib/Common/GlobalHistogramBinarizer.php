@@ -33,15 +33,18 @@ use Zxing\NotFoundException;
  */
 class GlobalHistogramBinarizer extends Binarizer
 {
-	private static $LUMINANCE_BITS = 5;
-	private static $LUMINANCE_SHIFT = 3;
-	private static $LUMINANCE_BUCKETS = 32;
+	private static int $LUMINANCE_BITS = 5;
+	private static int $LUMINANCE_SHIFT = 3;
+	private static int $LUMINANCE_BUCKETS = 32;
 
-	private static $EMPTY = [];
+	private static array $EMPTY = [];
 
-	private $luminances = [];
-	private $buckets = [];
-	private $source = [];
+	private array $luminances = [];
+	private array $buckets = [];
+	/**
+  * @var mixed|\Zxing\LuminanceSource
+  */
+ private $source = [];
 
 	public function __construct($source)
 	{
@@ -92,7 +95,7 @@ class GlobalHistogramBinarizer extends Binarizer
 	}
 
 	// Does not sharpen the data, as this call is intended to only be used by 2D Readers.
-	private function initArrays($luminanceSize)
+	private function initArrays($luminanceSize): void
 	{
 		if (count($this->luminances) < $luminanceSize) {
 			$this->luminances = [];
@@ -105,7 +108,7 @@ class GlobalHistogramBinarizer extends Binarizer
 	private static function estimateBlackPoint($buckets)
 	{
 		// Find the tallest peak in the histogram.
-		$numBuckets = count($buckets);
+		$numBuckets = is_countable($buckets) ? count($buckets) : 0;
 		$maxBucketCount = 0;
 		$firstPeak = 0;
 		$firstPeakSize = 0;
@@ -199,7 +202,7 @@ class GlobalHistogramBinarizer extends Binarizer
 		return $matrix;
 	}
 
-	public function createBinarizer($source)
+	public function createBinarizer($source): \Zxing\Common\GlobalHistogramBinarizer
 	{
 		return new GlobalHistogramBinarizer($source);
 	}

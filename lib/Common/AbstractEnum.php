@@ -7,7 +7,7 @@ use ReflectionClass;
 /**
  * A general enum implementation until we got SplEnum.
  */
-final class AbstractEnum
+final class AbstractEnum implements \Stringable
 {
 	/**
 	 * Default value.
@@ -20,17 +20,11 @@ final class AbstractEnum
 	 */
 	private $value;
 	/**
-	 * Cache of constants.
-	 *
-	 * @var array
-	 */
-	private $constants;
-	/**
-	 * Whether to handle values strict or not.
-	 *
-	 * @var boolean
-	 */
-	private $strict;
+  * Cache of constants.
+  *
+  * @var array<string, mixed>|null
+  */
+ private ?array $constants = null;
 
 	/**
 	 * Creates a new enum.
@@ -38,9 +32,8 @@ final class AbstractEnum
 	 * @param mixed   $initialValue
 	 * @param boolean $strict
 	 */
-	public function __construct($initialValue = null, $strict = false)
+	public function __construct($initialValue = null, private $strict = false)
 	{
-		$this->strict = $strict;
 		$this->change($initialValue);
 	}
 
@@ -54,7 +47,7 @@ final class AbstractEnum
 	public function change($value)
 	{
 		if (!in_array($value, $this->getConstList(), $this->strict)) {
-			throw new \UnexpectedValueException('Value not a const in enum ' . get_class($this));
+			throw new \UnexpectedValueException('Value not a const in enum ' . $this::class);
 		}
 		$this->value = $value;
 	}
@@ -96,7 +89,7 @@ final class AbstractEnum
 	 *
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString(): string
 	{
 		return (string)array_search($this->value, $this->getConstList());
 	}

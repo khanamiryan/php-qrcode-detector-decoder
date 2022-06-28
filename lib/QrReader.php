@@ -11,9 +11,9 @@ final class QrReader
 	public const SOURCE_TYPE_BLOB = 'blob';
 	public const SOURCE_TYPE_RESOURCE = 'resource';
 
-	private $bitmap;
-	private $reader;
-	private $result;
+	private readonly \Zxing\BinaryBitmap $bitmap;
+	private readonly \Zxing\Qrcode\QRCodeReader $reader;
+	private \Zxing\Result|bool|null $result = null;
 
 	public function __construct($imgSource, $sourceType = QrReader::SOURCE_TYPE_FILE, $useImagickIfAvailable = true)
 	{
@@ -62,7 +62,7 @@ final class QrReader
 			$height = $im->getImageHeight();
 			$source = new IMagickLuminanceSource($im, $width, $height);
 		} else {
-			if (!is_resource($im) && !is_object($im)) {
+			if (!$im instanceof \GdImage && !is_object($im)) {
 				throw new \InvalidArgumentException('Invalid image source.');
 			}
 			$width = imagesx($im);
@@ -74,15 +74,11 @@ final class QrReader
 		$this->reader = new QRCodeReader();
 	}
 
-	public function decode($hints = null)
+	public function decode($hints = null): void
 	{
 		try {
 			$this->result = $this->reader->decode($this->bitmap, $hints);
-		} catch (NotFoundException $er) {
-			$this->result = false;
-		} catch (FormatException $er) {
-			$this->result = false;
-		} catch (ChecksumException $er) {
+		} catch (NotFoundException|FormatException|ChecksumException) {
 			$this->result = false;
 		}
 	}

@@ -28,14 +28,9 @@ use  Zxing\ResultPoint;
  */
 final class FinderPattern extends ResultPoint
 {
-	private $estimatedModuleSize;
-	private $count;
-
-	public function __construct($posX, $posY, $estimatedModuleSize, $count = 1)
+	public function __construct($posX, $posY, private $estimatedModuleSize, private $count = 1)
 	{
 		parent::__construct($posX, $posY);
-		$this->estimatedModuleSize = $estimatedModuleSize;
-		$this->count = $count;
 	}
 
 	public function getEstimatedModuleSize()
@@ -74,7 +69,7 @@ final class FinderPattern extends ResultPoint
 	 * with a new estimate. It returns a new {@code FinderPattern} containing a weighted average
 	 * based on count.
 	 */
-	public function combineEstimate($i, $j, $newModuleSize)
+	public function combineEstimate($i, $j, $newModuleSize): \Zxing\Qrcode\Detector\FinderPattern
 	{
 		$combinedCount = $this->count + 1;
 		$combinedX = ($this->count * $this->getX() + $j) / $combinedCount;

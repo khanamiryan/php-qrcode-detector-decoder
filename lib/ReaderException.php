@@ -28,9 +28,9 @@ abstract class ReaderException extends \Exception
 {
 // disable stack traces when not running inside test units
 	//protected static  $isStackTrace = System.getProperty("surefire.test.class.path") != null;
-	protected static $isStackTrace = false;
+	protected static bool $isStackTrace = false;
 
-	public function ReaderException($cause = null)
+	public function ReaderException($cause = null): void
 	{
 		if ($cause) {
 			parent::__construct($cause);

@@ -15,9 +15,18 @@ final class GDLuminanceSource extends LuminanceSource
 	public $luminances;
 	private $dataWidth;
 	private $dataHeight;
-	private $left;
-	private $top;
-	private $gdImage;
+	/**
+  * @var mixed|int
+  */
+ private $left;
+	/**
+  * @var mixed|int
+  */
+ private $top;
+	/**
+  * @var mixed|null
+  */
+ private $gdImage;
 
 	public function __construct(
 		$gdImage,
@@ -44,7 +53,7 @@ final class GDLuminanceSource extends LuminanceSource
 		$this->top = $top;
 	}
 
-	public function GDLuminanceSource($gdImage, $width, $height)
+	public function GDLuminanceSource($gdImage, $width, $height): void
 	{
 		parent::__construct($width, $height);
 
@@ -113,7 +122,7 @@ final class GDLuminanceSource extends LuminanceSource
 			throw new \InvalidArgumentException('Requested row is outside the image: ' . $y);
 		}
 		$width = $this->getWidth();
-		if ($row == null || count($row) < $width) {
+		if ($row == null || (is_countable($row) ? count($row) : 0) < $width) {
 			$row = [];
 		}
 		$offset = ($y + $this->top) * $this->dataWidth + $this->left;
@@ -163,7 +172,7 @@ final class GDLuminanceSource extends LuminanceSource
 	}
 
 	//@Override
-	public function crop($left, $top, $width, $height)
+	public function crop($left, $top, $width, $height): \Zxing\GDLuminanceSource
 	{
 		return new GDLuminanceSource(
 			$this->luminances,

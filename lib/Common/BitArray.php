@@ -32,8 +32,14 @@ namespace Zxing\Common;
 
 final class BitArray
 {
-	private $bits;
-	private $size;
+	/**
+  * @var mixed[]|mixed|int[]|null
+  */
+ private $bits;
+	/**
+  * @var mixed|null
+  */
+ private $size;
 
 
 	public function __construct($bits = [], $size = 0)
@@ -43,7 +49,7 @@ final class BitArray
 			$this->bits = [];
 		} elseif ($bits && !$size) {
 			$this->size = $bits;
-			$this->bits = $this->makeArray($bits);
+			$this->bits = self::makeArray($bits);
 		} else {
 			$this->bits = $bits;
 			$this->size = $size;
@@ -70,7 +76,7 @@ final class BitArray
 	 *
 	 * @param bit $i to set
 	 */
-	public function set($i)
+	public function set($i): void
 	{
 		$this->bits[(int)($i / 32)] |= 1 << ($i & 0x1F);
 		$this->bits[(int)($i / 32)] = ($this->bits[(int)($i / 32)]);
@@ -81,7 +87,7 @@ final class BitArray
 	 *
 	 * @param bit $i to set
 	 */
-	public function flip($i)
+	public function flip($i): void
 	{
 		$this->bits[(int)($i / 32)] ^= 1 << ($i & 0x1F);
 		$this->bits[(int)($i / 32)] = ($this->bits[(int)($i / 32)]);
@@ -104,7 +110,7 @@ final class BitArray
 		// mask off lesser bits first
 		$currentBits &= ~((1 << ($from & 0x1F)) - 1);
 		while ($currentBits == 0) {
-			if (++$bitsOffset == count($this->bits)) {
+			if (++$bitsOffset == (is_countable($this->bits) ? count($this->bits) : 0)) {
 				return $this->size;
 			}
 			$currentBits = $this->bits[$bitsOffset];
@@ -130,7 +136,7 @@ final class BitArray
 		// mask off lesser bits first
 		$currentBits &= ~((1 << ($from & 0x1F)) - 1);
 		while ($currentBits == 0) {
-			if (++$bitsOffset == count($this->bits)) {
+			if (++$bitsOffset == (is_countable($this->bits) ? count($this->bits) : 0)) {
 				return $this->size;
 			}
 			$currentBits = (~$this->bits[$bitsOffset]);
@@ -147,7 +153,7 @@ final class BitArray
 	 * @param the $newBits new value of the next 32 bits. Note again that the least-significant bit
 	 *                corresponds to bit i, the next-least-significant to i+1, and so on.
 	 */
-	public function setBulk($i, $newBits)
+	public function setBulk($i, $newBits): void
 	{
 		$this->bits[(int)($i / 32)] = $newBits;
 	}
@@ -188,9 +194,9 @@ final class BitArray
 	/**
 	 * Clears all bits (sets to false).
 	 */
-	public function clear()
+	public function clear(): void
 	{
-		$max = count($this->bits);
+		$max = is_countable($this->bits) ? count($this->bits) : 0;
 		for ($i = 0; $i < $max; $i++) {
 			$this->bits[$i] = 0;
 		}
@@ -259,16 +265,16 @@ final class BitArray
 		}
 	}
 
-	private function ensureCapacity($size)
+	private function ensureCapacity($size): void
 	{
-		if ($size > count($this->bits) * 32) {
-			$newBits = $this->makeArray($size);
-			$newBits = arraycopy($this->bits, 0, $newBits, 0, count($this->bits));
+		if ($size > (is_countable($this->bits) ? count($this->bits) : 0) * 32) {
+			$newBits = self::makeArray($size);
+			$newBits = arraycopy($this->bits, 0, $newBits, 0, is_countable($this->bits) ? count($this->bits) : 0);
 			$this->bits = $newBits;
 		}
 	}
 
-	public function appendBit($bit)
+	public function appendBit($bit): void
 	{
 		$this->ensureCapacity($this->size + 1);
 		if ($bit) {
@@ -277,7 +283,7 @@ final class BitArray
 		$this->size++;
 	}
 
-	public function appendBitArray($other)
+	public function appendBitArray($other): void
 	{
 		$otherSize = $other->size;
 		$this->ensureCapacity($this->size + $otherSize);
@@ -288,10 +294,10 @@ final class BitArray
 
 	public function _xor($other)
 	{
-		if (count($this->bits) !== count($other->bits)) {
+		if ((is_countable($this->bits) ? count($this->bits) : 0) !== (is_countable($other->bits) ? count($other->bits) : 0)) {
 			throw new \InvalidArgumentException("Sizes don't match");
 		}
-		$count = count($this->bits);
+		$count = is_countable($this->bits) ? count($this->bits) : 0;
 		for ($i = 0; $i < $count; $i++) {
 			// The last byte could be incomplete (i.e. not have 8 bits in
 			// it) but there is no problem since 0 XOR 0 == 0.
@@ -307,7 +313,7 @@ final class BitArray
 	 * @param position    $offset in array to start writing
 	 * @param how  $numBytes many bytes to write
 	 */
-	public function toBytes($bitOffset, &$array, $offset, $numBytes)
+	public function toBytes($bitOffset, &$array, $offset, $numBytes): void
 	{
 		for ($i = 0; $i < $numBytes; $i++) {
 			$theByte = 0;
@@ -345,7 +351,7 @@ final class BitArray
 	/**
 	 * Reverses all bits in the array.
 	 */
-	public function reverse()
+	public function reverse(): void
 	{
 		$newBits = [];
 		// reverse all int's first
@@ -412,7 +418,7 @@ final class BitArray
 		return (string)$result;
 	}
 
-	public function _clone()
+	public function _clone(): \Zxing\Common\BitArray
 	{
 		return new BitArray($this->bits, $this->size);
 	}

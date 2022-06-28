@@ -28,8 +28,10 @@ namespace Zxing\Common\Reedsolomon;
  */
 final class GenericGFPoly
 {
-	private $field;
-	private $coefficients;
+	/**
+  * @var int[]|mixed|null
+  */
+ private $coefficients;
 
 	/**
 	 * @param the        $field {@link GenericGF} instance representing the field to use
@@ -41,12 +43,11 @@ final class GenericGFPoly
 	 * or if leading coefficient is 0 and this is not a
 	 * constant polynomial (that is, it is not the monomial "0")
 	 */
-	public function __construct($field, $coefficients)
+	public function __construct(private $field, $coefficients)
 	{
 		if (count($coefficients) == 0) {
 			throw new \InvalidArgumentException();
 		}
-		$this->field = $field;
 		$coefficientsLength = count($coefficients);
 		if ($coefficientsLength > 1 && $coefficients[0] == 0) {
 			// Leading term must be non-zero for anything except the constant polynomial "0"
@@ -63,7 +64,7 @@ final class GenericGFPoly
 					$firstNonZero,
 					$this->coefficients,
 					0,
-					count($this->coefficients)
+					is_countable($this->coefficients) ? count($this->coefficients) : 0
 				);
 			}
 		} else {
@@ -85,7 +86,7 @@ final class GenericGFPoly
 			// Just return the x^0 coefficient
 			return $this->getCoefficient(0);
 		}
-		$size = count($this->coefficients);
+		$size = is_countable($this->coefficients) ? count($this->coefficients) : 0;
 		if ($a == 1) {
 			// Just the sum of the coefficients
 			$result = 0;
@@ -108,12 +109,17 @@ final class GenericGFPoly
 	 */
 	public function getCoefficient($degree)
 	{
-		return $this->coefficients[count($this->coefficients) - 1 - $degree];
+		return $this->coefficients[(is_countable($this->coefficients) ? count($this->coefficients) : 0) - 1 - $degree];
 	}
 
 	public function multiply($other)
 	{
-		if (is_int($other)) {
+		$aCoefficients = [];
+  $bCoefficients = [];
+  $aLength = null;
+  $bLength = null;
+  $product = [];
+  if (is_int($other)) {
 			return $this->multiply_($other);
 		}
 		if ($this->field !== $other->field) {
@@ -148,7 +154,7 @@ final class GenericGFPoly
 		if ($scalar == 1) {
 			return $this;
 		}
-		$size = count($this->coefficients);
+		$size = is_countable($this->coefficients) ? count($this->coefficients) : 0;
 		$product = fill_array(0, $size, 0);
 		for ($i = 0; $i < $size; $i++) {
 			$product[$i] = $this->field->multiply($this->coefficients[$i], $scalar);
@@ -173,7 +179,7 @@ final class GenericGFPoly
 		if ($coefficient == 0) {
 			return $this->field->getZero();
 		}
-		$size = count($this->coefficients);
+		$size = is_countable($this->coefficients) ? count($this->coefficients) : 0;
 		$product = fill_array(0, $size + $degree, 0);
 		for ($i = 0; $i < $size; $i++) {
 			$product[$i] = $this->field->multiply($this->coefficients[$i], $coefficient);
@@ -214,12 +220,17 @@ final class GenericGFPoly
 	 */
 	public function getDegree()
 	{
-		return count($this->coefficients) - 1;
+		return (is_countable($this->coefficients) ? count($this->coefficients) : 0) - 1;
 	}
 
 	public function addOrSubtract($other)
 	{
-		if ($this->field !== $other->field) {
+		$smallerCoefficients = [];
+  $largerCoefficients = [];
+  $sumDiff = [];
+  $lengthDiff = null;
+  $countLargerCoefficients = null;
+  if ($this->field !== $other->field) {
 			throw new \InvalidArgumentException("GenericGFPolys do not have same GenericGF field");
 		}
 		if ($this->isZero()) {
@@ -261,7 +272,7 @@ final class GenericGFPoly
 					$result .= " - ";
 					$coefficient = -$coefficient;
 				} else {
-					if (strlen($result) > 0) {
+					if (strlen((string) $result) > 0) {
 						$result .= " + ";
 					}
 				}

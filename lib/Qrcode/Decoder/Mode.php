@@ -36,16 +36,11 @@ class Mode
 	public static $FNC1_SECOND_POSITION;
 	public static $HANZI;
 
-	private $characterCountBitsForVersions;
-	private $bits;
+	public function __construct(private $characterCountBitsForVersions, private $bits)
+ {
+ }
 
-	public function __construct($characterCountBitsForVersions, $bits)
-	{
-		$this->characterCountBitsForVersions = $characterCountBitsForVersions;
-		$this->bits = $bits;
-	}
-
-	public static function Init()
+	public static function Init(): void
 	{
 		self::$TERMINATOR = new Mode([0, 0, 0], 0x00); // Not really a mode...
 		self::$NUMERIC = new Mode([10, 12, 14], 0x01);
@@ -68,31 +63,19 @@ class Mode
 	 */
 	public static function forBits($bits)
 	{
-		switch ($bits) {
-			case 0x0:
-				return self::$TERMINATOR;
-			case 0x1:
-				return self::$NUMERIC;
-			case 0x2:
-				return self::$ALPHANUMERIC;
-			case 0x3:
-				return self::$STRUCTURED_APPEND;
-			case 0x4:
-				return self::$BYTE;
-			case 0x5:
-				return self::$FNC1_FIRST_POSITION;
-			case 0x7:
-				return self::$ECI;
-			case 0x8:
-				return self::$KANJI;
-			case 0x9:
-				return self::$FNC1_SECOND_POSITION;
-			case 0xD:
-				// 0xD is defined in GBT 18284-2000, may not be supported in foreign country
-				return self::$HANZI;
-			default:
-				throw new \InvalidArgumentException();
-		}
+		return match ($bits) {
+      0x0 => self::$TERMINATOR,
+      0x1 => self::$NUMERIC,
+      0x2 => self::$ALPHANUMERIC,
+      0x3 => self::$STRUCTURED_APPEND,
+      0x4 => self::$BYTE,
+      0x5 => self::$FNC1_FIRST_POSITION,
+      0x7 => self::$ECI,
+      0x8 => self::$KANJI,
+      0x9 => self::$FNC1_SECOND_POSITION,
+      0xD => self::$HANZI,
+      default => throw new \InvalidArgumentException(),
+  };
 	}
 
 	/**

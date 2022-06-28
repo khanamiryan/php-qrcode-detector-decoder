@@ -41,12 +41,9 @@ namespace Zxing\Common\Reedsolomon;
  */
 final class ReedSolomonDecoder
 {
-	private $field;
-
-	public function __construct($field)
-	{
-		$this->field = $field;
-	}
+	public function __construct(private $field)
+ {
+ }
 
 	/**
 	 * <p>Decodes given set of received codewords, which include both data and error-correction
@@ -65,7 +62,7 @@ final class ReedSolomonDecoder
 		$noError = true;
 		for ($i = 0; $i < $twoS; $i++) {
 			$eval = $poly->evaluateAt($this->field->exp($i + $this->field->getGeneratorBase()));
-			$syndromeCoefficients[count($syndromeCoefficients) - 1 - $i] = $eval;
+			$syndromeCoefficients[(is_countable($syndromeCoefficients) ? count($syndromeCoefficients) : 0) - 1 - $i] = $eval;
 			if ($eval != 0) {
 				$noError = false;
 			}
@@ -80,9 +77,9 @@ final class ReedSolomonDecoder
 		$omega = $sigmaOmega[1];
 		$errorLocations = $this->findErrorLocations($sigma);
 		$errorMagnitudes = $this->findErrorMagnitudes($omega, $errorLocations);
-		$errorLocationsCount = count($errorLocations);
+		$errorLocationsCount = is_countable($errorLocations) ? count($errorLocations) : 0;
 		for ($i = 0; $i < $errorLocationsCount; $i++) {
-			$position = count($received) - 1 - $this->field->log($errorLocations[$i]);
+			$position = (is_countable($received) ? count($received) : 0) - 1 - $this->field->log($errorLocations[$i]);
 			if ($position < 0) {
 				throw new ReedSolomonException("Bad error location");
 			}
@@ -171,7 +168,7 @@ final class ReedSolomonDecoder
 	private function findErrorMagnitudes($errorEvaluator, $errorLocations)
 	{
 		// This is directly applying Forney's Formula
-		$s = count($errorLocations);
+		$s = is_countable($errorLocations) ? count($errorLocations) : 0;
 		$result = fill_array(0, $s, 0);
 		for ($i = 0; $i < $s; $i++) {
 			$xiInverse = $this->field->inverse($errorLocations[$i]);

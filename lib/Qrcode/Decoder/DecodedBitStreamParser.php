@@ -35,20 +35,20 @@ final class DecodedBitStreamParser
 	/**
 	 * See ISO 18004:2006, 6.4.4 Table 5
 	 */
-	private static $ALPHANUMERIC_CHARS = [
+	private static array $ALPHANUMERIC_CHARS = [
 		'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B',
 		'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
 		'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
 		' ', '$', '%', '*', '+', '-', '.', '/', ':',
 	];
-	private static $GB2312_SUBSET = 1;
+	private static int $GB2312_SUBSET = 1;
 
 	public static function decode(
 		$bytes,
 		$version,
 		$ecLevel,
 		$hints
-	)
+	): \Zxing\Common\DecoderResult
 	{
 		$bits = new BitSource($bytes);
 		$result = '';//new StringBuilder(50);
@@ -115,7 +115,7 @@ final class DecodedBitStreamParser
 					}
 				}
 			} while ($mode != Mode::$TERMINATOR);
-		} catch (\InvalidArgumentException $iae) {
+		} catch (\InvalidArgumentException) {
 			// from readBits() calls
 			throw FormatException::getFormatInstance();
 		}
@@ -251,7 +251,7 @@ final class DecodedBitStreamParser
 	)
 	{
 		// Read two characters at a time
-		$start = strlen($result);
+		$start = strlen((string) $result);
 		while ($count > 1) {
 			if ($bits->available() < 11) {
 				throw FormatException::getFormatInstance();
@@ -271,9 +271,9 @@ final class DecodedBitStreamParser
 		// See section 6.4.8.1, 6.4.8.2
 		if ($fc1InEffect) {
 			// We need to massage the result a bit if in an FNC1 mode:
-			for ($i = $start; $i < strlen($result); $i++) {
+			for ($i = $start; $i < strlen((string) $result); $i++) {
 				if ($result[$i] == '%') {
-					if ($i < strlen($result) - 1 && $result[$i + 1] == '%') {
+					if ($i < strlen((string) $result) - 1 && $result[$i + 1] == '%') {
 						// %% is rendered as %
 						$result = substr_replace($result, '', $i + 1, 1);//deleteCharAt(i + 1);
 					} else {
@@ -358,7 +358,7 @@ final class DecodedBitStreamParser
 		$result .= iconv('shift-jis', 'utf-8', implode($buffer));
 	}
 
-	private function DecodedBitStreamParser()
+	private function DecodedBitStreamParser(): void
 	{
 	}
 }

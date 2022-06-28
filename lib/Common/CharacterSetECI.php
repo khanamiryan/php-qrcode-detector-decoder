@@ -40,11 +40,9 @@ final class CharacterSetECI
 	public const GB18030 = 29;
 	public const EUC_KR = 30;
 	/**
-	 * Map between character names and their ECI values.
-	 *
-	 * @var array
-	 */
-	private static $nameToEci = [
+  * Map between character names and their ECI values.
+  */
+ private static array $nameToEci = [
 		'ISO-8859-1' => self::ISO8859_1,
 		'ISO-8859-2' => self::ISO8859_2,
 		'ISO-8859-3' => self::ISO8859_3,
@@ -73,16 +71,14 @@ final class CharacterSetECI
 		'EUC-KR' => self::EUC_KR,
 	];
 	/**#@-*/
-	/**
-	 * Additional possible values for character sets.
-	 *
-	 * @var array
-	 */
-	private static $additionalValues = [
+ /**
+  * Additional possible values for character sets.
+  */
+ private static array $additionalValues = [
 		self::CP437 => 2,
 		self::ASCII => 170,
 	];
-	private static $name = null;
+	private static int|string|null $name = null;
 
 	/**
 	 * Gets character set ECI by value.
@@ -104,7 +100,7 @@ final class CharacterSetECI
 			self::setName($value);
 
 			return new self($value);
-		} catch (\UnexpectedValueException $e) {
+		} catch (\UnexpectedValueException) {
 			return null;
 		}
 	}
