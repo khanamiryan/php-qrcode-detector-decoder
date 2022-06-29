@@ -26,22 +26,17 @@ namespace Zxing\Common;
  */
 class DetectorResult
 {
-    private $bits;
-    private $points;
+	public function __construct(private $bits, private $points)
+ {
+ }
 
-    public function __construct($bits, $points)
-    {
-        $this->bits   = $bits;
-        $this->points = $points;
-    }
+	final public function getBits()
+	{
+		return $this->bits;
+	}
 
-    public final function getBits()
-    {
-        return $this->bits;
-    }
-
-    public final function getPoints()
-    {
-        return $this->points;
-    }
+	final public function getPoints()
+	{
+		return $this->points;
+	}
 }

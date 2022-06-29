@@ -30,67 +30,64 @@ use Zxing\Common\BitMatrix;
  */
 abstract class Binarizer
 {
-    private $source;
+	protected function __construct(private $source)
+ {
+ }
 
-    protected function __construct($source)
-    {
-        $this->source = $source;
-    }
+	/**
+	 * @return LuminanceSource
+	 */
+	final public function getLuminanceSource()
+	{
+		return $this->source;
+	}
 
-    /**
-     * @return LuminanceSource
-     */
-    public final function getLuminanceSource()
-    {
-        return $this->source;
-    }
+	/**
+	 * Converts one row of luminance data to 1 bit data. May actually do the conversion, or return
+	 * cached data. Callers should assume this method is expensive and call it as seldom as possible.
+	 * This method is intended for decoding 1D barcodes and may choose to apply sharpening.
+	 * For callers which only examine one row of pixels at a time, the same BitArray should be reused
+	 * and passed in with each call for performance. However it is legal to keep more than one row
+	 * at a time if needed.
+	 *
+	 * @param $y   The row to fetch, which must be in [0, bitmap height)
+	 * @param An $row optional preallocated array. If null or too small, it will be ignored.
+	 *            If used, the Binarizer will call BitArray.clear(). Always use the returned object.
+	 *
+	 * @return array The array of bits for this row (true means black).
+	 * @throws NotFoundException if row can't be binarized
+	 */
+	abstract public function getBlackRow($y, $row);
 
-    /**
-     * Converts one row of luminance data to 1 bit data. May actually do the conversion, or return
-     * cached data. Callers should assume this method is expensive and call it as seldom as possible.
-     * This method is intended for decoding 1D barcodes and may choose to apply sharpening.
-     * For callers which only examine one row of pixels at a time, the same BitArray should be reused
-     * and passed in with each call for performance. However it is legal to keep more than one row
-     * at a time if needed.
-     *
-     * @param y   The row to fetch, which must be in [0, bitmap height)
-     * @param row An optional preallocated array. If null or too small, it will be ignored.
-     *            If used, the Binarizer will call BitArray.clear(). Always use the returned object.
-     *
-     * @return array The array of bits for this row (true means black).
-     * @throws NotFoundException if row can't be binarized
-     */
-    public abstract function getBlackRow($y, $row);
+	/**
+	 * Converts a 2D array of luminance data to 1 bit data. As above, assume this method is expensive
+	 * and do not call it repeatedly. This method is intended for decoding 2D barcodes and may or
+	 * may not apply sharpening. Therefore, a row from this matrix may not be identical to one
+	 * fetched using getBlackRow(), so don't mix and match between them.
+	 *
+	 * @return BitMatrix The 2D array of bits for the image (true means black).
+	 * @throws NotFoundException if image can't be binarized to make a matrix
+	 */
+	abstract public function getBlackMatrix();
 
-    /**
-     * Converts a 2D array of luminance data to 1 bit data. As above, assume this method is expensive
-     * and do not call it repeatedly. This method is intended for decoding 2D barcodes and may or
-     * may not apply sharpening. Therefore, a row from this matrix may not be identical to one
-     * fetched using getBlackRow(), so don't mix and match between them.
-     *
-     * @return BitMatrix The 2D array of bits for the image (true means black).
-     * @throws NotFoundException if image can't be binarized to make a matrix
-     */
-    public abstract function getBlackMatrix();
+	/**
+	 * Creates a new object with the same type as this Binarizer implementation, but with pristine
+	 * state. This is needed because Binarizer implementations may be stateful, e.g. keeping a cache
+	 * of 1 bit data. See Effective Java for why we can't use Java's clone() method.
+	 *
+	 * @param $source The LuminanceSource this Binarizer will operate on.
+	 *
+	 * @return Binarizer A new concrete Binarizer implementation object.
+	 */
+	abstract public function createBinarizer($source);
 
-    /**
-     * Creates a new object with the same type as this Binarizer implementation, but with pristine
-     * state. This is needed because Binarizer implementations may be stateful, e.g. keeping a cache
-     * of 1 bit data. See Effective Java for why we can't use Java's clone() method.
-     *
-     * @param source The LuminanceSource this Binarizer will operate on.
-     *
-     * @return Binarizer A new concrete Binarizer implementation object.
-     */
-    public abstract function createBinarizer($source);
+	final public function getWidth()
+	{
+		return $this->source->getWidth();
+	}
 
-    public final function getWidth()
-    {
-        return $this->source->getWidth();
-    }
-
-    public final function getHeight()
-    {
-        return $this->source->getHeight();
-    }
+	final public function getHeight()
+	{
+		return $this->source->getHeight();
+	}
 }

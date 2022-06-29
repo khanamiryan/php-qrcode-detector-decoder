@@ -28,14 +28,8 @@ namespace Zxing;
  */
 abstract class LuminanceSource
 {
-
-    private $width;
-    private $height;
-
-    public function __construct($width, $height)
+    public function __construct(private $width, private $height)
     {
-        $this->width  = $width;
-        $this->height = $height;
     }
 
     /**
@@ -46,20 +40,20 @@ abstract class LuminanceSource
      *         larger than width * height bytes on some platforms. Do not modify the contents
      *         of the result.
      */
-    public abstract function getMatrix();
+    abstract public function getMatrix();
 
     /**
-     * @return The width of the bitmap.
+     * @return float The width of the bitmap.
      */
-    public final function getWidth()
+    final public function getWidth(): float
     {
         return $this->width;
     }
 
     /**
-     * @return The height of the bitmap.
+     * @return float The height of the bitmap.
      */
-    public final function getHeight()
+    final public function getHeight(): float
     {
         return $this->height;
     }
@@ -67,7 +61,7 @@ abstract class LuminanceSource
     /**
      * @return bool Whether this subclass supports cropping.
      */
-    public function isCropSupported()
+    public function isCropSupported(): bool
     {
         return false;
     }
@@ -76,12 +70,12 @@ abstract class LuminanceSource
      * Returns a new object with cropped image data. Implementations may keep a reference to the
      * original data rather than a copy. Only callable if isCropSupported() is true.
      *
-     * @param left   The left coordinate, which must be in [0,getWidth())
-     * @param top    The top coordinate, which must be in [0,getHeight())
-     * @param width  The width of the rectangle to crop.
-     * @param height The height of the rectangle to crop.
+     * @param $left   The left coordinate, which must be in [0,getWidth())
+     * @param $top    The top coordinate, which must be in [0,getHeight())
+     * @param $width  The width of the rectangle to crop.
+     * @param $height The height of the rectangle to crop.
      *
-     * @return A cropped version of this object.
+     * @return mixed A cropped version of this object.
      */
     public function crop($left, $top, $width, $height)
     {
@@ -89,9 +83,9 @@ abstract class LuminanceSource
     }
 
     /**
-     * @return Whether this subclass supports counter-clockwise rotation.
+     * @return bool Whether this subclass supports counter-clockwise rotation.
      */
-    public function isRotateSupported()
+    public function isRotateSupported(): bool
     {
         return false;
     }
@@ -100,16 +94,16 @@ abstract class LuminanceSource
      * @return a wrapper of this {@code LuminanceSource} which inverts the luminances it returns -- black becomes
      *  white and vice versa, and each value becomes (255-value).
      */
-    public function invert()
-    {
-        return new InvertedLuminanceSource($this);
-    }
+    // public function invert()
+    // {
+    // 	return new InvertedLuminanceSource($this);
+    // }
 
     /**
      * Returns a new object with rotated image data by 90 degrees counterclockwise.
      * Only callable if {@link #isRotateSupported()} is true.
      *
-     * @return A rotated version of this object.
+     * @return mixed A rotated version of this object.
      */
     public function rotateCounterClockwise()
     {
@@ -120,27 +114,27 @@ abstract class LuminanceSource
      * Returns a new object with rotated image data by 45 degrees counterclockwise.
      * Only callable if {@link #isRotateSupported()} is true.
      *
-     * @return A rotated version of this object.
+     * @return mixed A rotated version of this object.
      */
     public function rotateCounterClockwise45()
     {
         throw new \Exception("This luminance source does not support rotation by 45 degrees.");
     }
 
-    public final function toString()
+    final public function toString()
     {
-        $row    = [];
+        $row = [];
         $result = '';
         for ($y = 0; $y < $this->height; $y++) {
             $row = $this->getRow($y, $row);
             for ($x = 0; $x < $this->width; $x++) {
                 $luminance = $row[$x] & 0xFF;
-                $c         = '';
+                $c = '';
                 if ($luminance < 0x40) {
                     $c = '#';
-                } else if ($luminance < 0x80) {
+                } elseif ($luminance < 0x80) {
                     $c = '+';
-                } else if ($luminance < 0xC0) {
+                } elseif ($luminance < 0xC0) {
                     $c = '.';
                 } else {
                     $c = ' ';
@@ -167,5 +161,5 @@ abstract class LuminanceSource
      * @return array
      * An array containing the luminance data.
      */
-    public abstract function getRow($y, $row);
+    abstract public function getRow($y, $row);
 }

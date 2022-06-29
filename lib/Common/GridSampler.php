@@ -34,155 +34,165 @@ use Zxing\NotFoundException;
  */
 abstract class GridSampler
 {
-    private static $gridSampler;
+	/**
+  * @var mixed|\Zxing\Common\DefaultGridSampler|null
+  */
+ private static $gridSampler;
 
-    /**
-     * Sets the implementation of GridSampler used by the library. One global
-     * instance is stored, which may sound problematic. But, the implementation provided
-     * ought to be appropriate for the entire platform, and all uses of this library
-     * in the whole lifetime of the JVM. For instance, an Android activity can swap in
-     * an implementation that takes advantage of native platform libraries.
-     *
-     * @param newGridSampler The platform-specific object to install.
-     */
-    public static function setGridSampler($newGridSampler)
-    {
-        self::$gridSampler = $newGridSampler;
-    }
+	/**
+	 * Sets the implementation of GridSampler used by the library. One global
+	 * instance is stored, which may sound problematic. But, the implementation provided
+	 * ought to be appropriate for the entire platform, and all uses of this library
+	 * in the whole lifetime of the JVM. For instance, an Android activity can swap in
+	 * an implementation that takes advantage of native platform libraries.
+	 *
+	 * @param $newGridSampler The platform-specific object to install.
+	 */
+	public static function setGridSampler($newGridSampler): void
+	{
+		self::$gridSampler = $newGridSampler;
+	}
 
-    /**
-     * @return the current implementation of GridSampler
-     */
-    public static function getInstance()
-    {
-        if (!self::$gridSampler) {
-            self::$gridSampler = new DefaultGridSampler();
-        }
+	/**
+	 * @return GridSampler the current implementation of GridSampler
+	 */
+	public static function getInstance()
+	{
+		if (!self::$gridSampler) {
+			self::$gridSampler = new DefaultGridSampler();
+		}
 
-        return self::$gridSampler;
-    }
+		return self::$gridSampler;
+	}
 
-    /**
-     * <p>Checks a set of points that have been transformed to sample points on an image against
-     * the image's dimensions to see if the point are even within the image.</p>
-     *
-     * <p>This method will actually "nudge" the endpoints back onto the image if they are found to be
-     * barely (less than 1 pixel) off the image. This accounts for imperfect detection of finder
-     * patterns in an image where the QR Code runs all the way to the image border.</p>
-     *
-     * <p>For efficiency, the method will check points from either end of the line until one is found
-     * to be within the image. Because the set of points are assumed to be linear, this is valid.</p>
-     *
-     * @param image  image into which the points should map
-     * @param points actual points in x1,y1,...,xn,yn form
-     *
-     * @throws NotFoundException if an endpoint is lies outside the image boundaries
-     */
-    protected static function checkAndNudgePoints(
-        $image,
-        $points
-    ) {
-        $width  = $image->getWidth();
-        $height = $image->getHeight();
-// Check and nudge points from start until we see some that are OK:
-        $nudged = true;
-        for ($offset = 0; $offset < count($points) && $nudged; $offset += 2) {
-            $x = (int)$points[$offset];
-            $y = (int)$points[$offset + 1];
-            if ($x < -1 || $x > $width || $y < -1 || $y > $height) {
-                throw NotFoundException::getNotFoundInstance();
-            }
-            $nudged = false;
-            if ($x == -1) {
-                $points[$offset] = 0.0;
-                $nudged          = true;
-            } else if ($x == $width) {
-                $points[$offset] = $width - 1;
-                $nudged          = true;
-            }
-            if ($y == -1) {
-                $points[$offset + 1] = 0.0;
-                $nudged              = true;
-            } else if ($y == $height) {
-                $points[$offset + 1] = $height - 1;
-                $nudged              = true;
-            }
-        }
-// Check and nudge points from end:
-        $nudged = true;
-        for ($offset = count($points) - 2; $offset >= 0 && $nudged; $offset -= 2) {
-            $x = (int)$points[$offset];
-            $y = (int)$points[$offset + 1];
-            if ($x < -1 || $x > $width || $y < -1 || $y > $height) {
-                throw NotFoundException::getNotFoundInstance();
-            }
-            $nudged = false;
-            if ($x == -1) {
-                $points[$offset] = 0.0;
-                $nudged          = true;
-            } else if ($x == $width) {
-                $points[$offset] = $width - 1;
-                $nudged          = true;
-            }
-            if ($y == -1) {
-                $points[$offset + 1] = 0.0;
-                $nudged              = true;
-            } else if ($y == $height) {
-                $points[$offset + 1] = $height - 1;
-                $nudged              = true;
-            }
-        }
-    }
+	/**
+	 * <p>Checks a set of points that have been transformed to sample points on an image against
+	 * the image's dimensions to see if the point are even within the image.</p>
+	 *
+	 * <p>This method will actually "nudge" the endpoints back onto the image if they are found to be
+	 * barely (less than 1 pixel) off the image. This accounts for imperfect detection of finder
+	 * patterns in an image where the QR Code runs all the way to the image border.</p>
+	 *
+	 * <p>For efficiency, the method will check points from either end of the line until one is found
+	 * to be within the image. Because the set of points are assumed to be linear, this is valid.</p>
+	 *
+	 * @param image  $image into which the points should map
+	 * @param actual $points points in x1,y1,...,xn,yn form
+	 *
+	 * @throws NotFoundException if an endpoint is lies outside the image boundaries
+	 */
+	protected static function checkAndNudgePoints(
+		$image,
+		$points
+	) {
+		$width = $image->getWidth();
+		$height = $image->getHeight();
+		// Check and nudge points from start until we see some that are OK:
+		$nudged = true;
+		for ($offset = 0; $offset < (is_countable($points) ? count($points) : 0) && $nudged; $offset += 2) {
+			$x = (int)$points[$offset];
+			$y = (int)$points[$offset + 1];
+			if ($x < -1 || $x > $width || $y < -1 || $y > $height) {
+				throw NotFoundException::getNotFoundInstance();
+			}
+			$nudged = false;
+			if ($x == -1) {
+				$points[$offset] = 0.0;
+				$nudged = true;
+			} elseif ($x == $width) {
+				$points[$offset] = $width - 1;
+				$nudged = true;
+			}
+			if ($y == -1) {
+				$points[$offset + 1] = 0.0;
+				$nudged = true;
+			} elseif ($y == $height) {
+				$points[$offset + 1] = $height - 1;
+				$nudged = true;
+			}
+		}
+		// Check and nudge points from end:
+		$nudged = true;
+		for ($offset = (is_countable($points) ? count($points) : 0) - 2; $offset >= 0 && $nudged; $offset -= 2) {
+			$x = (int)$points[$offset];
+			$y = (int)$points[$offset + 1];
+			if ($x < -1 || $x > $width || $y < -1 || $y > $height) {
+				throw NotFoundException::getNotFoundInstance();
+			}
+			$nudged = false;
+			if ($x == -1) {
+				$points[$offset] = 0.0;
+				$nudged = true;
+			} elseif ($x == $width) {
+				$points[$offset] = $width - 1;
+				$nudged = true;
+			}
+			if ($y == -1) {
+				$points[$offset + 1] = 0.0;
+				$nudged = true;
+			} elseif ($y == $height) {
+				$points[$offset + 1] = $height - 1;
+				$nudged = true;
+			}
+		}
+	}
 
-    /**
-     * Samples an image for a rectangular matrix of bits of the given dimension. The sampling
-     * transformation is determined by the coordinates of 4 points, in the original and transformed
-     * image space.
-     *
-     * @param image      image to sample
-     * @param dimensionX width of {@link BitMatrix} to sample from image
-     * @param dimensionY height of {@link BitMatrix} to sample from image
-     * @param p1ToX      point 1 preimage X
-     * @param p1ToY      point 1 preimage Y
-     * @param p2ToX      point 2 preimage X
-     * @param p2ToY      point 2 preimage Y
-     * @param p3ToX      point 3 preimage X
-     * @param p3ToY      point 3 preimage Y
-     * @param p4ToX      point 4 preimage X
-     * @param p4ToY      point 4 preimage Y
-     * @param p1FromX    point 1 image X
-     * @param p1FromY    point 1 image Y
-     * @param p2FromX    point 2 image X
-     * @param p2FromY    point 2 image Y
-     * @param p3FromX    point 3 image X
-     * @param p3FromY    point 3 image Y
-     * @param p4FromX    point 4 image X
-     * @param p4FromY    point 4 image Y
-     *
-     * @return {@link BitMatrix} representing a grid of points sampled from the image within a region
-     *   defined by the "from" parameters
-     * @throws NotFoundException if image can't be sampled, for example, if the transformation defined
-     *   by the given points is invalid or results in sampling outside the image boundaries
-     */
-    public abstract function sampleGrid(
-        $image,
-        $dimensionX,
-        $dimensionY,
-        $p1ToX, $p1ToY,
-        $p2ToX, $p2ToY,
-        $p3ToX, $p3ToY,
-        $p4ToX, $p4ToY,
-        $p1FromX, $p1FromY,
-        $p2FromX, $p2FromY,
-        $p3FromX, $p3FromY,
-        $p4FromX, $p4FromY
-    );
+	/**
+	 * Samples an image for a rectangular matrix of bits of the given dimension. The sampling
+	 * transformation is determined by the coordinates of 4 points, in the original and transformed
+	 * image space.
+	 *
+	 * @param image      $image to sample
+	 * @param width $dimensionX of {@link BitMatrix} to sample from image
+	 * @param height $dimensionY of {@link BitMatrix} to sample from image
+	 * @param point      $p1ToX 1 preimage X
+	 * @param point      $p1ToY 1 preimage Y
+	 * @param point      $p2ToX 2 preimage X
+	 * @param point      $p2ToY 2 preimage Y
+	 * @param point      $p3ToX 3 preimage X
+	 * @param point      $p3ToY 3 preimage Y
+	 * @param point      $p4ToX 4 preimage X
+	 * @param point      $p4ToY 4 preimage Y
+	 * @param point    $p1FromX 1 image X
+	 * @param point    $p1FromY 1 image Y
+	 * @param point    $p2FromX 2 image X
+	 * @param point    $p2FromY 2 image Y
+	 * @param point    $p3FromX 3 image X
+	 * @param point    $p3FromY 3 image Y
+	 * @param point    $p4FromX 4 image X
+	 * @param point    $p4FromY 4 image Y
+	 *
+	 * @return {@link BitMatrix} representing a grid of points sampled from the image within a region
+	 *   defined by the "from" parameters
+	 * @throws NotFoundException if image can't be sampled, for example, if the transformation defined
+	 *   by the given points is invalid or results in sampling outside the image boundaries
+	 */
+	abstract public function sampleGrid(
+		$image,
+		$dimensionX,
+		$dimensionY,
+		$p1ToX,
+		$p1ToY,
+		$p2ToX,
+		$p2ToY,
+		$p3ToX,
+		$p3ToY,
+		$p4ToX,
+		$p4ToY,
+		$p1FromX,
+		$p1FromY,
+		$p2FromX,
+		$p2FromY,
+		$p3FromX,
+		$p3FromY,
+		$p4FromX,
+		$p4FromY
+	);
 
-    public abstract function sampleGrid_(
-        $image,
-        $dimensionX,
-        $dimensionY,
-        $transform
-    );
-
+	abstract public function sampleGrid_(
+		$image,
+		$dimensionX,
+		$dimensionY,
+		$transform
+	);
 }

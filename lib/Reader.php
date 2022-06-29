@@ -4,7 +4,7 @@ namespace Zxing;
 
 interface Reader
 {
-    public function decode(BinaryBitmap $image);
+	public function decode(BinaryBitmap $image);
 
-    public function reset();
+	public function reset();
 }

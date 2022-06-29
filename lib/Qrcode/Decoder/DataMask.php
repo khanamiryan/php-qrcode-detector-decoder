@@ -32,65 +32,63 @@ use Zxing\Common\BitMatrix;
  */
 abstract class DataMask
 {
+	/**
+	 * See ISO 18004:2006 6.8.1
+	 */
+	private static array $DATA_MASKS = [];
 
-    /**
-     * See ISO 18004:2006 6.8.1
-     */
-    private static $DATA_MASKS = [];
+	public function __construct()
+	{
+	}
 
-    public function __construct()
-    {
+	public static function Init(): void
+	{
+		self::$DATA_MASKS = [
+			new DataMask000(),
+			new DataMask001(),
+			new DataMask010(),
+			new DataMask011(),
+			new DataMask100(),
+			new DataMask101(),
+			new DataMask110(),
+			new DataMask111(),
+		];
+	}
 
-    }
+	/**
+	 * @param a $reference value between 0 and 7 indicating one of the eight possible
+	 *                  data mask patterns a QR Code may use
+	 *
+	 * @return DataMask encapsulating the data mask pattern
+	 */
+	public static function forReference($reference)
+	{
+		if ($reference < 0 || $reference > 7) {
+			throw new \InvalidArgumentException();
+		}
 
-    public static function Init()
-    {
-        self::$DATA_MASKS = [
-            new DataMask000(),
-            new DataMask001(),
-            new DataMask010(),
-            new DataMask011(),
-            new DataMask100(),
-            new DataMask101(),
-            new DataMask110(),
-            new DataMask111(),
-        ];
-    }
+		return self::$DATA_MASKS[$reference];
+	}
 
-    /**
-     * @param reference a value between 0 and 7 indicating one of the eight possible
-     *                  data mask patterns a QR Code may use
-     *
-     * @return DataMask encapsulating the data mask pattern
-     */
-    public static function forReference($reference)
-    {
-        if ($reference < 0 || $reference > 7) {
-            throw new \InvalidArgumentException();
-        }
+	/**
+	 * <p>Implementations of this method reverse the data masking process applied to a QR Code and
+	 * make its bits ready to read.</p>
+	 *
+	 * @param representation      $bits of QR Code bits
+	 * @param dimension $dimension of QR Code, represented by bits, being unmasked
+	 */
+	final public function unmaskBitMatrix($bits, $dimension): void
+	{
+		for ($i = 0; $i < $dimension; $i++) {
+			for ($j = 0; $j < $dimension; $j++) {
+				if ($this->isMasked($i, $j)) {
+					$bits->flip($j, $i);
+				}
+			}
+		}
+	}
 
-        return self::$DATA_MASKS[$reference];
-    }
-
-    /**
-     * <p>Implementations of this method reverse the data masking process applied to a QR Code and
-     * make its bits ready to read.</p>
-     *
-     * @param bits      representation of QR Code bits
-     * @param dimension dimension of QR Code, represented by bits, being unmasked
-     */
-    final public function unmaskBitMatrix($bits, $dimension)
-    {
-        for ($i = 0; $i < $dimension; $i++) {
-            for ($j = 0; $j < $dimension; $j++) {
-                if ($this->isMasked($i, $j)) {
-                    $bits->flip($j, $i);
-                }
-            }
-        }
-    }
-
-    abstract public function isMasked($i, $j);
+	abstract public function isMasked($i, $j);
 }
 
 DataMask::Init();
@@ -100,11 +98,11 @@ DataMask::Init();
  */
 final class DataMask000 extends DataMask
 {
-    // @Override
-    public function isMasked($i, $j)
-    {
-        return (($i + $j) & 0x01) == 0;
-    }
+	// @Override
+	public function isMasked($i, $j)
+	{
+		return (($i + $j) & 0x01) == 0;
+	}
 }
 
 /**
@@ -112,11 +110,11 @@ final class DataMask000 extends DataMask
  */
 final class DataMask001 extends DataMask
 {
-    //@Override
-    public function isMasked($i, $j)
-    {
-        return ($i & 0x01) == 0;
-    }
+	//@Override
+	public function isMasked($i, $j)
+	{
+		return ($i & 0x01) == 0;
+	}
 }
 
 /**
@@ -124,11 +122,11 @@ final class DataMask001 extends DataMask
  */
 final class DataMask010 extends DataMask
 {
-    //@Override
-    public function isMasked($i, $j)
-    {
-        return $j % 3 == 0;
-    }
+	//@Override
+	public function isMasked($i, $j)
+	{
+		return $j % 3 == 0;
+	}
 }
 
 /**
@@ -136,11 +134,11 @@ final class DataMask010 extends DataMask
  */
 final class DataMask011 extends DataMask
 {
-    //@Override
-    public function isMasked($i, $j)
-    {
-        return ($i + $j) % 3 == 0;
-    }
+	//@Override
+	public function isMasked($i, $j)
+	{
+		return ($i + $j) % 3 == 0;
+	}
 }
 
 /**
@@ -148,11 +146,11 @@ final class DataMask011 extends DataMask
  */
 final class DataMask100 extends DataMask
 {
-    //@Override
-    public function isMasked($i, $j)
-    {
-        return (int)(((int)($i / 2) + (int)($j / 3)) & 0x01) == 0;
-    }
+	//@Override
+	public function isMasked($i, $j)
+	{
+		return (int)(((int)($i / 2) + (int)($j / 3)) & 0x01) == 0;
+	}
 }
 
 /**
@@ -160,13 +158,13 @@ final class DataMask100 extends DataMask
  */
 final class DataMask101 extends DataMask
 {
-    //@Override
-    public function isMasked($i, $j)
-    {
-        $temp = $i * $j;
+	//@Override
+	public function isMasked($i, $j)
+	{
+		$temp = $i * $j;
 
-        return ($temp & 0x01) + ($temp % 3) == 0;
-    }
+		return ($temp & 0x01) + ($temp % 3) == 0;
+	}
 }
 
 /**
@@ -174,13 +172,13 @@ final class DataMask101 extends DataMask
  */
 final class DataMask110 extends DataMask
 {
-    //@Override
-    public function isMasked($i, $j)
-    {
-        $temp = $i * $j;
+	//@Override
+	public function isMasked($i, $j)
+	{
+		$temp = $i * $j;
 
-        return ((($temp & 0x01) + ($temp % 3)) & 0x01) == 0;
-    }
+		return ((($temp & 0x01) + ($temp % 3)) & 0x01) == 0;
+	}
 }
 
 /**
@@ -188,9 +186,9 @@ final class DataMask110 extends DataMask
  */
 final class DataMask111 extends DataMask
 {
-    //@Override
-    public function isMasked($i, $j)
-    {
-        return (((($i + $j) & 0x01) + (($i * $j) % 3)) & 0x01) == 0;
-    }
+	//@Override
+	public function isMasked($i, $j)
+	{
+		return (((($i + $j) & 0x01) + (($i * $j) % 3)) & 0x01) == 0;
+	}
 }
