@@ -49,8 +49,8 @@ final class AlignmentPatternFinder
 	 * @param float estimated $moduleSize module size so far
 	 */
 	public function __construct(private $image, private $startX, private $startY, private $width, private $height, private $moduleSize, private $resultPointCallback)
- {
- }
+	{
+	}
 
 	/**
 	 * <p>This method attempts to find the bottom-right alignment pattern in the image. It is a bit messy since
@@ -126,7 +126,7 @@ final class AlignmentPatternFinder
 			return $this->possibleCenters[0];
 		}
 
-		throw  NotFoundException::getNotFoundInstance();
+		throw  NotFoundException::getNotFoundInstance("Bottom right alignment pattern not found");
 	}
 
 	/**
@@ -135,7 +135,7 @@ final class AlignmentPatternFinder
 	 * @return true iff the proportions of the counts is close enough to the 1/1/1 ratios
 	 *         used by alignment patterns to be considered a match
 	 */
-	private function foundPatternCross($stateCount)
+	private function foundPatternCross($stateCount): bool
 	{
 		$moduleSize = $this->moduleSize;
 		$maxVariance = $moduleSize / 2.0;
@@ -154,9 +154,9 @@ final class AlignmentPatternFinder
 	 * found on a previous horizontal scan. If so, we consider it confirmed and conclude we have
 	 * found the alignment pattern.</p>
 	 *
-	 * @param reading $stateCount state module counts from horizontal scan
-	 * @param row          $i where alignment pattern may be found
-	 * @param end          $j of possible alignment pattern in row
+	 * @param state $stateCount module counts from horizontal scan
+	 * @param where $i alignment pattern may be found
+	 * @param of $j possible alignment pattern in row
 	 *
 	 * @return {@link AlignmentPattern} if we have found the same pattern twice, or null if not
 	 */
@@ -210,8 +210,7 @@ final class AlignmentPatternFinder
 		$centerJ,
 		$maxCount,
 		$originalStateCountTotal
-	)
-	{
+	) {
 		$image = $this->image;
 
 		$maxI = $image->getHeight();

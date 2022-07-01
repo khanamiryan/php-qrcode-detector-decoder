@@ -29,7 +29,7 @@ final class BitMatrixParser
 	/**
   * @var mixed|null
   */
- private $parsedVersion;
+	private $parsedVersion;
 	private $parsedFormatInfo;
 	private $mirror;
 
@@ -159,7 +159,7 @@ final class BitMatrixParser
 		throw FormatException::getFormatInstance();
 	}
 
-	private function copyBit($i, $j, $versionBits)
+	private function copyBit(int|float $i, int|float $j, $versionBits)
 	{
 		$bit = $this->mirror ? $this->bitMatrix->get($j, $i) : $this->bitMatrix->get($i, $j);
 

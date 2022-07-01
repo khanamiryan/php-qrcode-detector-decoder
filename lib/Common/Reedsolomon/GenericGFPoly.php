@@ -31,7 +31,7 @@ final class GenericGFPoly
 	/**
   * @var int[]|mixed|null
   */
- private $coefficients;
+	private $coefficients;
 
 	/**
 	 * @param the        $field {@link GenericGF} instance representing the field to use
@@ -115,11 +115,11 @@ final class GenericGFPoly
 	public function multiply($other)
 	{
 		$aCoefficients = [];
-  $bCoefficients = [];
-  $aLength = null;
-  $bLength = null;
-  $product = [];
-  if (is_int($other)) {
+		$bCoefficients = [];
+		$aLength = null;
+		$bLength = null;
+		$product = [];
+		if (is_int($other)) {
 			return $this->multiply_($other);
 		}
 		if ($this->field !== $other->field) {
@@ -166,7 +166,7 @@ final class GenericGFPoly
 	/**
 	 * @return true iff this polynomial is the monomial "0"
 	 */
-	public function isZero()
+	public function isZero(): bool
 	{
 		return $this->coefficients[0] == 0;
 	}
@@ -226,11 +226,11 @@ final class GenericGFPoly
 	public function addOrSubtract($other)
 	{
 		$smallerCoefficients = [];
-  $largerCoefficients = [];
-  $sumDiff = [];
-  $lengthDiff = null;
-  $countLargerCoefficients = null;
-  if ($this->field !== $other->field) {
+		$largerCoefficients = [];
+		$sumDiff = [];
+		$lengthDiff = null;
+		$countLargerCoefficients = null;
+		if ($this->field !== $other->field) {
 			throw new \InvalidArgumentException("GenericGFPolys do not have same GenericGF field");
 		}
 		if ($this->isZero()) {
@@ -260,7 +260,7 @@ final class GenericGFPoly
 		return new GenericGFPoly($this->field, $sumDiff);
 	}
 
-	//@Override
+	
 
 	public function toString()
 	{

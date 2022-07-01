@@ -21,4 +21,14 @@ class QrReaderTest extends TestCase
 		$qrcode = new QrReader($image);
 		$this->assertSame(false, $qrcode->text());
 	}
+
+	public function testText2()
+	{
+		$image = __DIR__ . "/qrcodes/139225861-398ccbbd-2bfd-4736-889b-878c10573888.png";
+		$qrcode = new QrReader($image);
+		$qrcode->decode([
+			'TRY_HARDER' => true
+		]);
+		$this->assertSame(null, $qrcode->getError());
+	}
 }

@@ -36,8 +36,8 @@ final class BitSource
 	 *              Bits are read within a byte from most-significant to least-significant bit.
 	 */
 	public function __construct(private $bytes)
- {
- }
+	{
+	}
 
 	/**
 	 * @return index of next bit in current byte which would be read by the next call to {@link #readBits(int)}.

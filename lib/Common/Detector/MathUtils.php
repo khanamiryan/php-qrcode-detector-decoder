@@ -33,12 +33,12 @@ final class MathUtils
 	 *
 	 * @return int {@code int}
 	 */
-	public static function round($d)
+	public static function round(float $d)
 	{
 		return (int)($d + ($d < 0.0 ? -0.5 : 0.5));
 	}
 
-	public static function distance($aX, $aY, $bX, $bY)
+	public static function distance($aX, $aY, $bX, $bY): float
 	{
 		$xDiff = $aX - $bX;
 		$yDiff = $aY - $bY;

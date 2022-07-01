@@ -99,7 +99,7 @@ DataMask::Init();
 final class DataMask000 extends DataMask
 {
 	// @Override
-	public function isMasked($i, $j)
+	public function isMasked($i, $j): bool
 	{
 		return (($i + $j) & 0x01) == 0;
 	}
@@ -110,8 +110,8 @@ final class DataMask000 extends DataMask
  */
 final class DataMask001 extends DataMask
 {
-	//@Override
-	public function isMasked($i, $j)
+	
+	public function isMasked($i, $j): bool
 	{
 		return ($i & 0x01) == 0;
 	}
@@ -122,8 +122,8 @@ final class DataMask001 extends DataMask
  */
 final class DataMask010 extends DataMask
 {
-	//@Override
-	public function isMasked($i, $j)
+	
+	public function isMasked($i, $j): bool
 	{
 		return $j % 3 == 0;
 	}
@@ -134,8 +134,8 @@ final class DataMask010 extends DataMask
  */
 final class DataMask011 extends DataMask
 {
-	//@Override
-	public function isMasked($i, $j)
+	
+	public function isMasked($i, $j): bool
 	{
 		return ($i + $j) % 3 == 0;
 	}
@@ -146,8 +146,8 @@ final class DataMask011 extends DataMask
  */
 final class DataMask100 extends DataMask
 {
-	//@Override
-	public function isMasked($i, $j)
+	
+	public function isMasked($i, $j): bool
 	{
 		return (int)(((int)($i / 2) + (int)($j / 3)) & 0x01) == 0;
 	}
@@ -158,8 +158,8 @@ final class DataMask100 extends DataMask
  */
 final class DataMask101 extends DataMask
 {
-	//@Override
-	public function isMasked($i, $j)
+	
+	public function isMasked($i, $j): bool
 	{
 		$temp = $i * $j;
 
@@ -172,8 +172,8 @@ final class DataMask101 extends DataMask
  */
 final class DataMask110 extends DataMask
 {
-	//@Override
-	public function isMasked($i, $j)
+	
+	public function isMasked($i, $j): bool
 	{
 		$temp = $i * $j;
 
@@ -186,8 +186,8 @@ final class DataMask110 extends DataMask
  */
 final class DataMask111 extends DataMask
 {
-	//@Override
-	public function isMasked($i, $j)
+	
+	public function isMasked($i, $j): bool
 	{
 		return (((($i + $j) & 0x01) + (($i * $j) % 3)) & 0x01) == 0;
 	}

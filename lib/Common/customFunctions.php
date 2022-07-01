@@ -67,7 +67,7 @@ function sdvig3($num,$count=1){//>>> 32 bit
 */
 
 if (!function_exists('sdvig3')) {
-	function sdvig3($a, $b)
+	function sdvig3($a, $b): float|int
 	{
 		if ($a >= 0) {
 			return bindec(decbin($a >> $b)); //simply right shift for positive number

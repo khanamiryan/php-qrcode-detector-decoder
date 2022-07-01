@@ -27,8 +27,8 @@ namespace Zxing\Common;
 final class PerspectiveTransform
 {
 	private function __construct(private $a11, private $a21, private $a31, private $a12, private $a22, private $a32, private $a13, private $a23, private $a33)
- {
- }
+	{
+	}
 
 	public static function quadrilateralToQuadrilateral(
 		$x0,

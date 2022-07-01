@@ -42,7 +42,7 @@ class ResultPoint
 	 *
 	 * @param array $patterns of three {@code ResultPoint} to order
 	 */
-	public static function orderBestPatterns($patterns)
+	public static function orderBestPatterns(array $patterns)
 	{
 
 // Find distances between pattern centers
@@ -89,14 +89,14 @@ class ResultPoint
 	 * @param first $pattern1 pattern
 	 * @param second $pattern2 pattern
 	 *
-	 * @return distance between two points
+	 * @return float distance between two points
 	 */
 	public static function distance($pattern1, $pattern2)
 	{
 		return MathUtils::distance($pattern1->x, $pattern1->y, $pattern2->x, $pattern2->y);
 	}
 
-	//@Override
+	
 
 	/**
 	 * Returns the z component of the cross product between vectors BC and BA.
@@ -105,29 +105,28 @@ class ResultPoint
 		$pointA,
 		$pointB,
 		$pointC
-	)
-	{
+	) {
 		$bX = $pointB->x;
 		$bY = $pointB->y;
 
 		return (($pointC->x - $bX) * ($pointA->y - $bY)) - (($pointC->y - $bY) * ($pointA->x - $bX));
 	}
 
-	//@Override
+	
 
 	final public function getX()
 	{
 		return (float)($this->x);
 	}
 
-	//@Override
+	
 
 	final public function getY()
 	{
 		return (float)($this->y);
 	}
 
-	final public function equals($other)
+	final public function equals($other): bool
 	{
 		if ($other instanceof ResultPoint) {
 			$otherPoint = $other;

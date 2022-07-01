@@ -14,11 +14,11 @@ final class IMagickLuminanceSource extends LuminanceSource
 	/**
   * @var mixed|int
   */
- private $left;
+	private $left;
 	/**
   * @var mixed|int
   */
- private $top;
+	private $top;
 	private ?\Imagick $image = null;
 
 	public function __construct(
@@ -44,6 +44,16 @@ final class IMagickLuminanceSource extends LuminanceSource
 		$this->dataHeight = $dataHeight;
 		$this->left = $left;
 		$this->top = $top;
+	}
+
+	public function rotateCounterClockwise(): void
+	{
+		throw new \RuntimeException("This LuminanceSource does not support rotateCounterClockwise");
+	}
+
+	public function rotateCounterClockwise45(): void
+	{
+		throw new \RuntimeException("This LuminanceSource does not support rotateCounterClockwise45");
 	}
 
 	public function _IMagickLuminanceSource(\Imagick $image, $width, $height): void
@@ -84,7 +94,7 @@ final class IMagickLuminanceSource extends LuminanceSource
 		}
 	}
 
-	//@Override
+	
 	public function getRow($y, $row = null)
 	{
 		if ($y < 0 || $y >= $this->getHeight()) {
@@ -100,7 +110,7 @@ final class IMagickLuminanceSource extends LuminanceSource
 		return $row;
 	}
 
-	//@Override
+	
 	public function getMatrix()
 	{
 		$width = $this->getWidth();
@@ -134,14 +144,14 @@ final class IMagickLuminanceSource extends LuminanceSource
 		return $matrix;
 	}
 
-	//@Override
-	public function isCropSupported(): bool 
+	
+	public function isCropSupported(): bool
 	{
 		return true;
 	}
 
-	//@Override
-	public function crop($left, $top, $width, $height)
+	
+	public function crop($left, $top, $width, $height): LuminanceSource
 	{
 		return $this->luminances->cropImage($width, $height, $left, $top);
 

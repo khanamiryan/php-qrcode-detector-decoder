@@ -28,11 +28,11 @@ class ErrorCorrectionLevel
 	/**
   * @var \Zxing\Qrcode\Decoder\ErrorCorrectionLevel[]|null
   */
- private static ?array $FOR_BITS = null;
+	private static ?array $FOR_BITS = null;
 
 	public function __construct(private $bits, private $ordinal = 0)
- {
- }
+	{
+	}
 
 	public static function Init(): void
 	{
@@ -59,7 +59,7 @@ class ErrorCorrectionLevel
 	 *
 	 * @return ErrorCorrectionLevel representing the encoded error correction level
 	 */
-	public static function forBits($bits)
+	public static function forBits(int $bits)
 	{
 		if ($bits < 0 || $bits >= (is_countable(self::$FOR_BITS) ? count(self::$FOR_BITS) : 0)) {
 			throw new \InvalidArgumentException();

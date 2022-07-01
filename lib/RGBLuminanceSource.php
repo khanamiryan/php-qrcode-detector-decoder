@@ -32,15 +32,15 @@ final class RGBLuminanceSource extends LuminanceSource
 	/**
   * @var mixed|int
   */
- private $left;
+	private $left;
 	/**
   * @var mixed|int
   */
- private $top;
+	private $top;
 	/**
   * @var mixed|null
   */
- private $pixels;
+	private $pixels;
 
 
 	public function __construct(
@@ -200,7 +200,10 @@ final class RGBLuminanceSource extends LuminanceSource
 		return $bitmap;
 	}
 
-	public function getMiddleBrightnessPerArea($image)
+	/**
+  * @return float[]&mixed[][]
+  */
+	public function getMiddleBrightnessPerArea($image): array
 	{
 		$numSqrtArea = 4;
 		//obtain middle brightness((min + max) / 2) per area
@@ -247,7 +250,7 @@ final class RGBLuminanceSource extends LuminanceSource
 		return $middle;
 	}
 
-	//@Override
+	
 	public function getRow($y, $row = null)
 	{
 		if ($y < 0 || $y >= $this->getHeight()) {
@@ -263,7 +266,7 @@ final class RGBLuminanceSource extends LuminanceSource
 		return $row;
 	}
 
-	//@Override
+	
 	public function getMatrix()
 	{
 		$width = $this->getWidth();
@@ -297,13 +300,13 @@ final class RGBLuminanceSource extends LuminanceSource
 		return $matrix;
 	}
 
-	//@Override
-	public function isCropSupported()
+	
+	public function isCropSupported(): bool
 	{
 		return true;
 	}
 
-	//@Override
+	
 	public function crop($left, $top, $width, $height): \Zxing\RGBLuminanceSource
 	{
 		return new RGBLuminanceSource(

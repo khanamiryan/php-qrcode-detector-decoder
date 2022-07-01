@@ -44,8 +44,7 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
 		$width,
 		$height,
 		$reverseHorizontal
-	)
-	{
+	) {
 		parent::__construct($width, $height);
 
 		if ($left + $width > $dataWidth || $top + $height > $dataHeight) {
@@ -60,7 +59,7 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
 		}
 	}
 
-	//@Override
+	
 	public function getRow($y, $row = null)
 	{
 		if ($y < 0 || $y >= $this->getHeight()) {
@@ -76,7 +75,7 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
 		return $row;
 	}
 
-	//@Override
+	
 	public function getMatrix()
 	{
 		$width = $this->getWidth();
@@ -111,7 +110,7 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
 	}
 
 	// @Override
-	public function isCropSupported()
+	public function isCropSupported(): bool
 	{
 		return true;
 	}
@@ -131,7 +130,10 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
 		);
 	}
 
-	public function renderThumbnail()
+	/**
+  * @return int[]
+  */
+	public function renderThumbnail(): array
 	{
 		$width = (int)($this->getWidth() / self::$THUMBNAIL_SCALE_FACTOR);
 		$height = (int)($this->getHeight() / self::$THUMBNAIL_SCALE_FACTOR);

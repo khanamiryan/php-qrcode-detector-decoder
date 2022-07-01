@@ -37,8 +37,8 @@ class Mode
 	public static $HANZI;
 
 	public function __construct(private $characterCountBitsForVersions, private $bits)
- {
- }
+	{
+	}
 
 	public static function Init(): void
 	{
@@ -64,18 +64,18 @@ class Mode
 	public static function forBits($bits)
 	{
 		return match ($bits) {
-      0x0 => self::$TERMINATOR,
-      0x1 => self::$NUMERIC,
-      0x2 => self::$ALPHANUMERIC,
-      0x3 => self::$STRUCTURED_APPEND,
-      0x4 => self::$BYTE,
-      0x5 => self::$FNC1_FIRST_POSITION,
-      0x7 => self::$ECI,
-      0x8 => self::$KANJI,
-      0x9 => self::$FNC1_SECOND_POSITION,
-      0xD => self::$HANZI,
-      default => throw new \InvalidArgumentException(),
-  };
+			0x0 => self::$TERMINATOR,
+	  0x1 => self::$NUMERIC,
+	  0x2 => self::$ALPHANUMERIC,
+	  0x3 => self::$STRUCTURED_APPEND,
+	  0x4 => self::$BYTE,
+	  0x5 => self::$FNC1_FIRST_POSITION,
+	  0x7 => self::$ECI,
+	  0x8 => self::$KANJI,
+	  0x9 => self::$FNC1_SECOND_POSITION,
+	  0xD => self::$HANZI,
+	  default => throw new \InvalidArgumentException(),
+		};
 	}
 
 	/**
@@ -84,7 +84,7 @@ class Mode
 	 * @return number of bits used, in this QR Code symbol {@link Version}, to encode the
 	 *         count of characters that will follow encoded in this Mode
 	 */
-	public function getCharacterCountBits($version)
+	public function getCharacterCountBits(\Zxing\Qrcode\Decoder\version $version)
 	{
 		$number = $version->getVersionNumber();
 		$offset = 0;

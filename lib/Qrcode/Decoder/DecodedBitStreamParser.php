@@ -48,8 +48,7 @@ final class DecodedBitStreamParser
 		$version,
 		$ecLevel,
 		$hints
-	): \Zxing\Common\DecoderResult
-	{
+	): \Zxing\Common\DecoderResult {
 		$bits = new BitSource($bytes);
 		$result = '';//new StringBuilder(50);
 		$byteSegments = [];
@@ -159,8 +158,7 @@ final class DecodedBitStreamParser
 		$bits,
 		&$result,
 		$count
-	)
-	{
+	) {
 		// Don't crash trying to read more bits than we have available.
 		if ($count * 13 > $bits->available()) {
 			throw FormatException::getFormatInstance();
@@ -193,8 +191,7 @@ final class DecodedBitStreamParser
 		$bits,
 		&$result,
 		$count
-	)
-	{
+	) {
 		// Read three digits at a time
 		while ($count >= 3) {
 			// Each 10 bits encodes three digits
@@ -248,8 +245,7 @@ final class DecodedBitStreamParser
 		&$result,
 		$count,
 		$fc1InEffect
-	)
-	{
+	) {
 		// Read two characters at a time
 		$start = strlen((string) $result);
 		while ($count > 1) {
@@ -292,8 +288,7 @@ final class DecodedBitStreamParser
 		$currentCharacterSetECI,
 		&$byteSegments,
 		$hints
-	)
-	{
+	) {
 		// Don't crash trying to read more bits than we have available.
 		if (8 * $count > $bits->available()) {
 			throw FormatException::getFormatInstance();
@@ -326,8 +321,7 @@ final class DecodedBitStreamParser
 		$bits,
 		&$result,
 		$count
-	)
-	{
+	) {
 		// Don't crash trying to read more bits than we have available.
 		if ($count * 13 > $bits->available()) {
 			throw FormatException::getFormatInstance();

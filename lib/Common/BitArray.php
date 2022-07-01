@@ -35,11 +35,11 @@ final class BitArray
 	/**
   * @var mixed[]|mixed|int[]|null
   */
- private $bits;
+	private $bits;
 	/**
   * @var mixed|null
   */
- private $size;
+	private $size;
 
 
 	public function __construct($bits = [], $size = 0)
@@ -212,7 +212,7 @@ final class BitArray
 	 * @return true iff all bits are set or not set in range, according to value argument
 	 * @throws InvalidArgumentException if end is less than or equal to start
 	 */
-	public function isRange($start, $end, $value)
+	public function isRange($start, $end, $value): bool
 	{
 		if ($end < $start) {
 			throw new \InvalidArgumentException();
@@ -313,7 +313,7 @@ final class BitArray
 	 * @param position    $offset in array to start writing
 	 * @param how  $numBytes many bytes to write
 	 */
-	public function toBytes($bitOffset, &$array, $offset, $numBytes): void
+	public function toBytes($bitOffset, array &$array, $offset, $numBytes): void
 	{
 		for ($i = 0; $i < $numBytes; $i++) {
 			$theByte = 0;
@@ -332,7 +332,7 @@ final class BitArray
 	 *
 	 * @return true iff bit i is set
 	 */
-	public function get($i)
+	public function get($i): bool
 	{
 		$key = (int)($i / 32);
 
@@ -390,7 +390,7 @@ final class BitArray
 		//        $bits = $newBits;
 	}
 
-	public function equals($o)
+	public function equals($o): bool
 	{
 		if (!($o instanceof BitArray)) {
 			return false;

@@ -44,7 +44,7 @@ class GlobalHistogramBinarizer extends Binarizer
 	/**
   * @var mixed|\Zxing\LuminanceSource
   */
- private $source = [];
+	private $source = [];
 
 	public function __construct($source)
 	{
@@ -95,7 +95,7 @@ class GlobalHistogramBinarizer extends Binarizer
 	}
 
 	// Does not sharpen the data, as this call is intended to only be used by 2D Readers.
-	private function initArrays($luminanceSize): void
+	private function initArrays(float $luminanceSize): void
 	{
 		if (count($this->luminances) < $luminanceSize) {
 			$this->luminances = [];
@@ -145,7 +145,7 @@ class GlobalHistogramBinarizer extends Binarizer
 		// If there is too little contrast in the image to pick a meaningful black point, throw rather
 		// than waste time trying to decode the image, and risk false positives.
 		if ($secondPeak - $firstPeak <= $numBuckets / 16) {
-			throw NotFoundException::getNotFoundInstance();
+			throw NotFoundException::getNotFoundInstance("too little contrast in the image to pick a meaningful black point");
 		}
 
 		// Find a valley between them that is low and closer to the white peak.

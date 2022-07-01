@@ -39,8 +39,8 @@ class Detector
 	private $resultPointCallback;
 
 	public function __construct(private $image)
- {
- }
+	{
+	}
 
 	/**
 	 * <p>Detects a QR Code in an image.</p>
@@ -51,11 +51,11 @@ class Detector
 	 * @throws NotFoundException if QR Code cannot be found
 	 * @throws FormatException if a QR Code cannot be decoded
 	 */
-	final public function detect($hints = null)
+	final public function detect(array $hints = null): DetectorResult
 	{/*Map<DecodeHintType,?>*/
 
-		$resultPointCallback = $hints == null ? null :
-			$hints->get('NEED_RESULT_POINT_CALLBACK');
+		$resultPointCallback = ($hints !== null && array_key_exists('NEED_RESULT_POINT_CALLBACK', $hints)) ?
+			$hints['NEED_RESULT_POINT_CALLBACK'] : null;
 		/* resultPointCallback = hints == null ? null :
 				(ResultPointCallback) hints.get(DecodeHintType.NEED_RESULT_POINT_CALLBACK);*/
 		$finder = new FinderPatternFinder($this->image, $resultPointCallback);
@@ -72,7 +72,7 @@ class Detector
 
 		$moduleSize = (float)$this->calculateModuleSize($topLeft, $topRight, $bottomLeft);
 		if ($moduleSize < 1.0) {
-			throw NotFoundException::getNotFoundInstance();
+			throw NotFoundException::getNotFoundInstance("Module size $moduleSize < 1.0");
 		}
 		$dimension = (int)self::computeDimension($topLeft, $topRight, $bottomLeft, $moduleSize);
 		$provisionalVersion = \Zxing\Qrcode\Decoder\Version::getProvisionalVersionForDimension($dimension);
@@ -82,7 +82,7 @@ class Detector
 		// Anything above version 1 has an alignment pattern
 		if ((is_countable($provisionalVersion->getAlignmentPatternCenters()) ? count($provisionalVersion->getAlignmentPatternCenters()) : 0) > 0) {
 
-// Guess where a "bottom right" finder pattern would have been
+			// Guess where a "bottom right" finder pattern would have been
 			$bottomRightX = $topRight->getX() - $topLeft->getX() + $bottomLeft->getX();
 			$bottomRightY = $topRight->getY() - $topLeft->getY() + $bottomLeft->getY();
 
@@ -93,7 +93,7 @@ class Detector
 			$estAlignmentY = (int)($topLeft->getY() + $correctionToTopLeft * ($bottomRightY - $topLeft->getY()));
 
 			// Kind of arbitrary -- expand search radius before giving up
-			for ($i = 4; $i <= 16; $i <<= 1) {//??????????
+			for ($i = 4; $i <= 16; $i <<= 1) { //??????????
 				try {
 					$alignmentPattern = $this->findAlignmentInRegion(
 						$moduleSize,
@@ -146,7 +146,7 @@ class Detector
 	{
 		// Take the average
 		return ($this->calculateModuleSizeOneWay($topLeft, $topRight) +
-				$this->calculateModuleSizeOneWay($topLeft, $bottomLeft)) / 2.0;
+			$this->calculateModuleSizeOneWay($topLeft, $bottomLeft)) / 2.0;
 	}
 
 	/**
@@ -184,7 +184,7 @@ class Detector
 	 * a finder pattern by looking for a black-white-black run from the center in the direction
 	 * of another po$(another finder pattern center), and in the opposite direction too.</p>
 	 */
-	private function sizeOfBlackWhiteBlackRunBothWays($fromX, $fromY, $toX, $toY)
+	private function sizeOfBlackWhiteBlackRunBothWays($fromX, int $fromY, int $toX, int $toY)
 	{
 		$result = $this->sizeOfBlackWhiteBlackRun($fromX, $fromY, $toX, $toY);
 
@@ -224,7 +224,7 @@ class Detector
 	 * <p>This is used when figuring out how wide a finder pattern is, when the finder pattern
 	 * may be skewed or rotated.</p>
 	 */
-	private function sizeOfBlackWhiteBlackRun($fromX, $fromY, $toX, $toY)
+	private function sizeOfBlackWhiteBlackRun($fromX, int $fromY, int $toX, int|float $toY)
 	{
 		// Mild variant of Bresenham's algorithm;
 		// see http://en.wikipedia.org/wiki/Bresenham's_line_algorithm
@@ -291,8 +291,7 @@ class Detector
 		$topRight,
 		$bottomLeft,
 		$moduleSize
-	)
-	{
+	) {
 		$tltrCentersDimension = MathUtils::round(ResultPoint::distance($topLeft, $topRight) / $moduleSize);
 		$tlblCentersDimension = MathUtils::round(ResultPoint::distance($topLeft, $bottomLeft) / $moduleSize);
 		$dimension = (($tltrCentersDimension + $tlblCentersDimension) / 2) + 7;
@@ -300,12 +299,12 @@ class Detector
 			case 0:
 				$dimension++;
 				break;
-// 1? do nothing
+				// 1? do nothing
 			case 2:
 				$dimension--;
 				break;
 			case 3:
-				throw NotFoundException::getNotFoundInstance();
+				throw NotFoundException::getNotFoundInstance("Dimension ($dimension) mod 4 == 3 unusable");
 		}
 
 		return $dimension;
@@ -315,10 +314,10 @@ class Detector
 	 * <p>Attempts to locate an alignment pattern in a limited region of the image, which is
 	 * guessed to contain it. This method uses {@link AlignmentPattern}.</p>
 	 *
-	 * @param estimated $overallEstModuleSize module size so far
-	 * @param x        $estAlignmentX coordinate of center of area probably containing alignment pattern
-	 * @param y        $estAlignmentY coordinate of above
-	 * @param number      $allowanceFactor of pixels in all directions to search from the center
+	 * @param int $overallEstModuleSize module size so far
+	 * @param int $estAlignmentX coordinate of center of area probably containing alignment pattern
+	 * @param int $estAlignmentY coordinate of above
+	 * @param int|float      $allowanceFactor of pixels in all directions to search from the center
 	 *
 	 * @return {@link AlignmentPattern} if found, or null otherwise
 	 * @throws NotFoundException if an unexpected error occurs during detection
@@ -327,22 +326,21 @@ class Detector
 		$overallEstModuleSize,
 		$estAlignmentX,
 		$estAlignmentY,
-		$allowanceFactor
-	)
-	{
+		int|float $allowanceFactor
+	) {
 		// Look for an alignment pattern (3 modules in size) around where it
 		// should be
 		$allowance = (int)($allowanceFactor * $overallEstModuleSize);
 		$alignmentAreaLeftX = max(0, $estAlignmentX - $allowance);
 		$alignmentAreaRightX = min($this->image->getWidth() - 1, $estAlignmentX + $allowance);
 		if ($alignmentAreaRightX - $alignmentAreaLeftX < $overallEstModuleSize * 3) {
-			throw NotFoundException::getNotFoundInstance();
+			throw NotFoundException::getNotFoundInstance("Alignment area right smaller than overall module size: $alignmentAreaRightX - $alignmentAreaLeftX < $overallEstModuleSize * 3");
 		}
 
 		$alignmentAreaTopY = max(0, $estAlignmentY - $allowance);
 		$alignmentAreaBottomY = min($this->image->getHeight() - 1, $estAlignmentY + $allowance);
 		if ($alignmentAreaBottomY - $alignmentAreaTopY < $overallEstModuleSize * 3) {
-			throw NotFoundException::getNotFoundInstance();
+			throw NotFoundException::getNotFoundInstance("Alignment area bottom smaller than overall module size: $alignmentAreaBottomY - $alignmentAreaTopY < $overallEstModuleSize * 3");
 		}
 
 		$alignmentFinder =
@@ -365,8 +363,7 @@ class Detector
 		$bottomLeft,
 		$alignmentPattern,
 		$dimension
-	)
-	{
+	) {
 		$dimMinusThree = (float)$dimension - 3.5;
 		$bottomRightX = 0.0;
 		$bottomRightY = 0.0;
@@ -409,8 +406,7 @@ class Detector
 		$image,
 		$transform,
 		$dimension
-	)
-	{
+	) {
 		$sampler = GridSampler::getInstance();
 
 		return $sampler->sampleGrid_($image, $dimension, $dimension, $transform);

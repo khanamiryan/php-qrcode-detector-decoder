@@ -29,20 +29,20 @@ final class DecoderResult
 	/**
   * @var mixed|null
   */
- private $errorsCorrected;
+	private $errorsCorrected;
 	/**
   * @var mixed|null
   */
- private $erasures;
+	private $erasures;
 	/**
   * @var mixed|null
   */
- private $other;
+	private $other;
 
 
 	public function __construct(private $rawBytes, private $text, private $byteSegments, private $ecLevel, private $structuredAppendSequenceNumber = -1, private $structuredAppendParity = -1)
- {
- }
+	{
+	}
 
 	public function getRawBytes()
 	{
@@ -94,7 +94,7 @@ final class DecoderResult
 		$this->other = $other;
 	}
 
-	public function hasStructuredAppend()
+	public function hasStructuredAppend(): bool
 	{
 		return $this->structuredAppendParity >= 0 && $this->structuredAppendSequenceNumber >= 0;
 	}

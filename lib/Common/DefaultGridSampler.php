@@ -24,7 +24,7 @@ use Zxing\NotFoundException;
  */
 final class DefaultGridSampler extends GridSampler
 {
-	//@Override
+	
 	public function sampleGrid(
 		$image,
 		$dimensionX,
@@ -68,7 +68,7 @@ final class DefaultGridSampler extends GridSampler
 		return $this->sampleGrid_($image, $dimensionX, $dimensionY, $transform);
 	}
 
-	//@Override
+	
 	public function sampleGrid_(
 		$image,
 		$dimensionX,
@@ -76,7 +76,7 @@ final class DefaultGridSampler extends GridSampler
 		$transform
 	) {
 		if ($dimensionX <= 0 || $dimensionY <= 0) {
-			throw NotFoundException::getNotFoundInstance();
+			throw NotFoundException::getNotFoundInstance("X or Y dimensions smaller than zero");
 		}
 		$bits = new BitMatrix($dimensionX, $dimensionY);
 		$points = fill_array(0, 2 * $dimensionX, 0.0);
@@ -106,7 +106,7 @@ final class DefaultGridSampler extends GridSampler
 				// This results in an ugly runtime exception despite our clever checks above -- can't have
 				// that. We could check each point's coordinates but that feels duplicative. We settle for
 				// catching and wrapping ArrayIndexOutOfBoundsException.
-				throw NotFoundException::getNotFoundInstance();
+				throw NotFoundException::getNotFoundInstance("ArrayIndexOutOfBoundsException");
 			}
 		}
 

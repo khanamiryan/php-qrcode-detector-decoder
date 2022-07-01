@@ -38,8 +38,8 @@ class MonochromeRectangleDetector
 	private static int $MAX_MODULES = 32;
 
 	public function __construct(private readonly BinaryBitmap $image)
- {
- }
+	{
+	}
 
 	/**
 	 * <p>Detects a rectangular region of black and white -- mostly black -- with a region of mostly
@@ -152,17 +152,16 @@ class MonochromeRectangleDetector
 	 * @throws NotFoundException if such a point cannot be found
 	 */
 	private function findCornerFromCenter(
-		$centerX,
-		$deltaX,
-		$left,
-		$right,
-		$centerY,
-		$deltaY,
-		$top,
-		$bottom,
-		$maxWhiteRun
-	): \Zxing\ResultPoint
-	{
+		int|float $centerX,
+		int|float $deltaX,
+		int $left,
+		int $right,
+		int|float $centerY,
+		float|int $deltaY,
+		int $top,
+		int $bottom,
+		int|float $maxWhiteRun
+	): \Zxing\ResultPoint {
 		$lastRange = null;
 		for ($y = $centerY, $x = $centerX;
 			 $y < $bottom && $y >= $top && $x < $right && $x >= $left;
@@ -177,7 +176,7 @@ class MonochromeRectangleDetector
 			}
 			if ($range == null) {
 				if ($lastRange == null) {
-					throw NotFoundException::getNotFoundInstance();
+					throw NotFoundException::getNotFoundInstance("No corner from center found");
 				}
 				// lastRange was found
 				if ($deltaX == 0) {
@@ -207,7 +206,7 @@ class MonochromeRectangleDetector
 			}
 			$lastRange = $range;
 		}
-		throw NotFoundException::getNotFoundInstance();
+		throw NotFoundException::getNotFoundInstance("No corner from center found");
 	}
 
 
@@ -227,7 +226,7 @@ class MonochromeRectangleDetector
 	 *  (e.g. only white was found)
 	 */
 
-	private function blackWhiteRange($fixedDimension, $maxWhiteRun, $minDim, $maxDim, $horizontal)
+	private function blackWhiteRange(float|int $fixedDimension, int|float $maxWhiteRun, int $minDim, int $maxDim, bool $horizontal)
 	{
 		$center = ($minDim + $maxDim) / 2;
 

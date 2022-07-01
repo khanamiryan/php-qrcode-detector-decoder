@@ -27,7 +27,7 @@ final class Result
 	/**
   * @var mixed[]|mixed
   */
- private $resultMetadata = null;
+	private $resultMetadata = null;
 	private $timestamp;
 
 	public function __construct(
@@ -87,7 +87,7 @@ final class Result
 	public function putMetadata($type, $value): void
 	{
 		$resultMetadata = [];
-  if ($this->resultMetadata === null) {
+		if ($this->resultMetadata === null) {
 			$this->resultMetadata = [];
 		}
 		$resultMetadata[$type] = $value;

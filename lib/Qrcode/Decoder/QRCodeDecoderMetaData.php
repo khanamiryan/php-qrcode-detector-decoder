@@ -9,8 +9,8 @@ class QRCodeDecoderMetaData
 	 * @param bool $mirrored
 	 */
 	public function __construct(private $mirrored)
- {
- }
+	{
+	}
 
 	public function isMirrored()
 	{

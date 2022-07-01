@@ -42,8 +42,8 @@ namespace Zxing\Common\Reedsolomon;
 final class ReedSolomonDecoder
 {
 	public function __construct(private $field)
- {
- }
+	{
+	}
 
 	/**
 	 * <p>Decodes given set of received codewords, which include both data and error-correction
@@ -87,7 +87,7 @@ final class ReedSolomonDecoder
 		}
 	}
 
-	private function runEuclideanAlgorithm($a, $b, $R)
+	private function runEuclideanAlgorithm($a, \Zxing\Common\Reedsolomon\GenericGFPoly $b, $R)
 	{
 		// Assume a's degree is >= b's
 		if ($a->getDegree() < $b->getDegree()) {

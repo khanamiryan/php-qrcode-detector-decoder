@@ -44,15 +44,15 @@ class Version
 	/**
   * @var mixed|null
   */
- private static $VERSIONS;
+	private static $VERSIONS;
 	private readonly float|int $totalCodewords;
 
 	public function __construct(
 		private $versionNumber,
 		private $alignmentPatternCenters,
 		private $ecBlocks
-	)
-	{$total = 0;
+	) {
+		$total = 0;
 		if (is_array($ecBlocks)) {
 			$ecCodewords = $ecBlocks[0]->getECCodewordsPerBlock();
 			$ecbArray = $ecBlocks[0]->getECBlocks();
@@ -85,7 +85,7 @@ class Version
 		return 17 + 4 * $this->versionNumber;
 	}
 
-	public function getECBlocksForLevel($ecLevel)
+	public function getECBlocksForLevel(ErrorCorrectionLevel $ecLevel)
 	{
 		return $this->ecBlocks[$ecLevel->getOrdinal()];
 	}
@@ -93,7 +93,7 @@ class Version
 	/**
 	 * <p>Deduces version information purely from QR Code dimensions.</p>
 	 *
-	 * @param dimension $dimension in modules
+	 * @param int $dimension dimension in modules
 	 * @return Version for a QR Code of that dimension
 	 * @throws FormatException if dimension is not 1 mod 4
 	 */
@@ -656,8 +656,8 @@ class Version
 final class ECBlocks
 {
 	public function __construct(private $ecCodewordsPerBlock, private $ecBlocks)
- {
- }
+	{
+	}
 
 	public function getECCodewordsPerBlock()
 	{
@@ -692,8 +692,8 @@ final class ECBlocks
 final class ECB
 {
 	public function __construct(private $count, private $dataCodewords)
- {
- }
+	{
+	}
 
 	public function getCount()
 	{
@@ -706,7 +706,7 @@ final class ECB
 	}
 
 
-	//@Override
+	
 	public function toString(): never
 	{
 		die('Version ECB toString()');

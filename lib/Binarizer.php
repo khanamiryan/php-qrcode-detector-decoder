@@ -31,8 +31,8 @@ use Zxing\Common\BitMatrix;
 abstract class Binarizer
 {
 	protected function __construct(private $source)
- {
- }
+	{
+	}
 
 	/**
 	 * @return LuminanceSource

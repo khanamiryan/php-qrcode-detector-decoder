@@ -10,7 +10,7 @@ final class BitMatrix
 	/**
   * @var mixed|int[]
   */
- private $bits;
+	private $bits;
 
 	public function __construct($width, $height = false, $rowSize = false, $bits = false)
 	{
@@ -375,7 +375,7 @@ final class BitMatrix
 		return $this->rowSize;
 	}
 
-	public function equals($o)
+	public function equals($o): bool
 	{
 		if (!($o instanceof BitMatrix)) {
 			return false;
@@ -388,7 +388,7 @@ final class BitMatrix
 			&& $this->bits === $other->bits;
 	}
 
-	//@Override
+	
 
 	public function hashCode()
 	{
@@ -401,7 +401,7 @@ final class BitMatrix
 		return $hash;
 	}
 
-	//@Override
+	
 
 	public function toString($setString = '', $unsetString = '', $lineSeparator = '')
 	{
@@ -441,7 +441,7 @@ final class BitMatrix
 	 *
 	 * @return value of given bit in matrix
 	 */
-	public function get($x, $y)
+	public function get(int $x, int $y): bool
 	{
 		$offset = (int)($y * $this->rowSize + ($x / 32));
 		if (!isset($this->bits[$offset])) {

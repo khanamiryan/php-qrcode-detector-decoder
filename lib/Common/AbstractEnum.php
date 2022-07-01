@@ -10,8 +10,9 @@ use ReflectionClass;
 final class AbstractEnum implements \Stringable
 {
 	/**
-	 * Default value.
-	 */
+  * Default value.
+  * @var null
+  */
 	public const __default = null;
 	/**
 	 * Current value.
@@ -24,7 +25,7 @@ final class AbstractEnum implements \Stringable
   *
   * @var array<string, mixed>|null
   */
- private ?array $constants = null;
+	private ?array $constants = null;
 
 	/**
 	 * Creates a new enum.
@@ -53,14 +54,14 @@ final class AbstractEnum implements \Stringable
 	}
 
 	/**
-	 * Gets all constants (possible values) as an array.
-	 *
-	 * @param  boolean $includeDefault
-	 *
-	 * @return array
-	 */
-	public function getConstList($includeDefault = true)
+  * Gets all constants (possible values) as an array.
+  *
+  *
+  * @return array
+  */
+	public function getConstList(bool $includeDefault = true)
 	{
+		$constants = [];
 		if ($this->constants === null) {
 			$reflection = new ReflectionClass($this);
 			$this->constants = $reflection->getConstants();

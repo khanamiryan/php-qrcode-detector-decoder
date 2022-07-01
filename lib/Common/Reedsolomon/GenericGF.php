@@ -52,10 +52,10 @@ final class GenericGF
  *                  coefficient
  * @param the      $size size of the field
   * @param the $generatorBase factor b in the generator polynomial can be 0- or 1-based
-                  (g(x) = (x+a^b)(x+a^(b+1))...(x+a^(b+2t-1))).
-                  In most cases it should be 1, but for QR code it is 0.
+				  (g(x) = (x+a^b)(x+a^(b+1))...(x+a^(b+2t-1))).
+				  In most cases it should be 1, but for QR code it is 0.
  */
- public function __construct(private $primitive, private $size, private $generatorBase)
+	public function __construct(private $primitive, private $size, private $generatorBase)
 	{
 		$x = 1;
 		for ($i = 0; $i < $size; $i++) {

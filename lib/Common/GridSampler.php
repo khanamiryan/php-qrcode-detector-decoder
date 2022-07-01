@@ -37,7 +37,7 @@ abstract class GridSampler
 	/**
   * @var mixed|\Zxing\Common\DefaultGridSampler|null
   */
- private static $gridSampler;
+	private static $gridSampler;
 
 	/**
 	 * Sets the implementation of GridSampler used by the library. One global
@@ -93,7 +93,7 @@ abstract class GridSampler
 			$x = (int)$points[$offset];
 			$y = (int)$points[$offset + 1];
 			if ($x < -1 || $x > $width || $y < -1 || $y > $height) {
-				throw NotFoundException::getNotFoundInstance();
+				throw NotFoundException::getNotFoundInstance("Endpoint lies outside the image boundaries");
 			}
 			$nudged = false;
 			if ($x == -1) {
@@ -117,7 +117,7 @@ abstract class GridSampler
 			$x = (int)$points[$offset];
 			$y = (int)$points[$offset + 1];
 			if ($x < -1 || $x > $width || $y < -1 || $y > $height) {
-				throw NotFoundException::getNotFoundInstance();
+				throw NotFoundException::getNotFoundInstance("Endpoint lies outside the image boundaries");
 			}
 			$nudged = false;
 			if ($x == -1) {

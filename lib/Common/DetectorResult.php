@@ -27,8 +27,8 @@ namespace Zxing\Common;
 class DetectorResult
 {
 	public function __construct(private $bits, private $points)
- {
- }
+	{
+	}
 
 	final public function getBits()
 	{

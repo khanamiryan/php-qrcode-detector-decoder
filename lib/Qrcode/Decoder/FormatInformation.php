@@ -37,7 +37,7 @@ final class FormatInformation
   * Offset i holds the number of 1 bits in the binary representation of i
   * @var int[]|null
   */
- private static ?array $BITS_SET_IN_HALF_BYTE = null;
+	private static ?array $BITS_SET_IN_HALF_BYTE = null;
 
 	private readonly \Zxing\Qrcode\Decoder\ErrorCorrectionLevel $errorCorrectionLevel;
 	private readonly int $dataMask;
@@ -171,14 +171,14 @@ final class FormatInformation
 		return $this->dataMask;
 	}
 
-	//@Override
+	
 	public function hashCode()
 	{
 		return ($this->errorCorrectionLevel->ordinal() << 3) | (int)($this->dataMask);
 	}
 
-	//@Override
-	public function equals($o)
+	
+	public function equals($o): bool
 	{
 		if (!($o instanceof FormatInformation)) {
 			return false;
