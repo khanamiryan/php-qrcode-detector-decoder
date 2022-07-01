@@ -89,7 +89,7 @@ final class DecoderResult
 		return $this->other;
 	}
 
-	public function setOther($other): void
+	public function setOther(\Zxing\Qrcode\Decoder\QRCodeDecoderMetaData $other): void
 	{
 		$this->other = $other;
 	}

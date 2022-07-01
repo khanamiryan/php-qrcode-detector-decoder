@@ -184,4 +184,14 @@ final class GDLuminanceSource extends LuminanceSource
 			$height
 		);
 	}
+
+	public function rotateCounterClockwise(): void
+	{
+		throw new \RuntimeException("This LuminanceSource does not support rotateCounterClockwise");
+	}
+
+	public function rotateCounterClockwise45(): void
+	{
+		throw new \RuntimeException("This LuminanceSource does not support rotateCounterClockwise45");
+	}
 }

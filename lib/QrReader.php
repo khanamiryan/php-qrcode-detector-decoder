@@ -106,12 +106,12 @@ final class QrReader
 		return $this->result;
 	}
 
-	public function getResult()
+	public function getResult(): bool|Result|null
 	{
 		return $this->result;
 	}
 
-	public function getError()
+	public function getError(): Exception|null
 	{
 		return $this->error;
 	}

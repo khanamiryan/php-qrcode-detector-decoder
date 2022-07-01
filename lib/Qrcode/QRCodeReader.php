@@ -35,7 +35,7 @@ use Zxing\Result;
 class QRCodeReader implements Reader
 {
 	private static array $NO_POINTS = [];
-	private readonly \Zxing\Qrcode\Decoder\Decoder $decoder;
+	private readonly Decoder $decoder;
 
 	public function __construct()
 	{
@@ -179,7 +179,10 @@ class QRCodeReader implements Reader
 		return $bits;
 	}
 
-	private static function moduleSize($leftTopBlack, BitMatrix $image)
+	/**
+	 * @psalm-param array{0: mixed, 1: mixed} $leftTopBlack
+	 */
+	private static function moduleSize(array $leftTopBlack, BitMatrix $image)
 	{
 		$height = $image->getHeight();
 		$width = $image->getWidth();
@@ -190,7 +193,7 @@ class QRCodeReader implements Reader
 		$inBlack = true;
 		$transitions = 0;
 		while ($x < $width && $y < $height) {
-			if ($inBlack != $image->get($x, $y)) {
+			if ($inBlack != $image->get((int)round($x), (int)round($y))) {
 				if (++$transitions == 5) {
 					break;
 				}
@@ -211,7 +214,7 @@ class QRCodeReader implements Reader
 		// do nothing
 	}
 
-	final protected function getDecoder()
+	final protected function getDecoder(): Decoder
 	{
 		return $this->decoder;
 	}

@@ -27,7 +27,7 @@ final class NotFoundException extends ReaderException
 {
 	private static ?\Zxing\NotFoundException $instance = null;
 
-	public static function getNotFoundInstance(string $message = "")
+	public static function getNotFoundInstance(string $message = ""): self
 	{
 		if (!self::$instance) {
 			self::$instance = new NotFoundException($message);

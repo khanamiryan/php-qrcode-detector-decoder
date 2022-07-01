@@ -40,7 +40,7 @@ final class Decoder
 		$this->rsDecoder = new ReedSolomonDecoder(GenericGF::$QR_CODE_FIELD_256);
 	}
 
-	public function decode($variable, $hints = null)
+	public function decode(BitMatrix|BitMatrixParser $variable, array|null $hints = null): string|DecoderResult
 	{
 		if (is_array($variable)) {
 			return $this->decodeImage($variable, $hints);
@@ -59,11 +59,12 @@ final class Decoder
 	 * @param array $image booleans representing white/black QR Code modules
 	 * @param array|null $hints       decoding  hints that should be used to influence decoding
 	 *
-	 * @return string text and bytes encoded within the QR Code
+	 * @return DecoderResult|string text and bytes encoded within the QR Code
+	 *
 	 * @throws FormatException if the QR Code cannot be decoded
 	 * @throws ChecksumException if error correction fails
 	 */
-	public function decodeImage(array $image, $hints = null)
+	public function decodeImage(array $image, $hints = null): string|DecoderResult
 	{
 		$dimension = is_countable($image) ? count($image) : 0;
 		$bits = new BitMatrix($dimension);
@@ -85,11 +86,12 @@ final class Decoder
 	 * @param BitMatrix $bits booleans representing white/black QR Code modules
 	 * @param array|null          $hints decoding hints that should be used to influence decoding
 	 *
-	 * @return DecoderResult string text and bytes encoded within the QR Code
+	 * @return DecoderResult|string string text and bytes encoded within the QR Code
+	 *
 	 * @throws FormatException if the QR Code cannot be decoded
 	 * @throws ChecksumException if error correction fails
 	 */
-	public function decodeBits(\Zxing\Common\BitMatrix $bits, $hints = null): DecoderResult
+	public function decodeBits(\Zxing\Common\BitMatrix $bits, $hints = null): string|DecoderResult
 	{
 
 		// Construct a parser and read version, error-correction level
@@ -181,12 +183,12 @@ final class Decoder
 	 * <p>Given data and error-correction codewords received, possibly corrupted by errors, attempts to
 	 * correct the errors in-place using Reed-Solomon error correction.</p>
 	 *
-	 * @param and $codewordBytes error correction codewords
+	 * @param array $codewordBytes and error correction codewords
 	 * @param int $numDataCodewords of codewords that are data bytes
 	 *
 	 * @throws ChecksumException if error correction fails
 	 */
-	private function correctErrors(&$codewordBytes, int $numDataCodewords)
+	private function correctErrors(&$codewordBytes, int $numDataCodewords): void
 	{
 		$numCodewords = is_countable($codewordBytes) ? count($codewordBytes) : 0;
 		// First read into an array of ints

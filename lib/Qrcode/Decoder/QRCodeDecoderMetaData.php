@@ -12,7 +12,7 @@ class QRCodeDecoderMetaData
 	{
 	}
 
-	public function isMirrored()
+	public function isMirrored(): bool
 	{
 		return $this->mirrored;
 	}

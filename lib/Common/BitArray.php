@@ -33,7 +33,7 @@ namespace Zxing\Common;
 final class BitArray
 {
 	/**
-  * @var mixed[]|mixed|int[]|null
+  * @var mixed[]|int[]|null
   */
 	private $bits;
 	/**
@@ -56,7 +56,10 @@ final class BitArray
 		}
 	}
 
-	private static function makeArray($size)
+	/**
+	 * @psalm-return array<empty, empty>
+	 */
+	private static function makeArray($size): array
 	{
 		return [];
 	}
@@ -74,7 +77,7 @@ final class BitArray
 	/**
 	 * Sets bit i.
 	 *
-	 * @param bit $i to set
+	 * @param int $i bit to set
 	 */
 	public function set($i): void
 	{
@@ -85,7 +88,7 @@ final class BitArray
 	/**
 	 * Flips bit i.
 	 *
-	 * @param bit $i to set
+	 * @param int $i bit to set
 	 */
 	public function flip($i): void
 	{
@@ -94,9 +97,9 @@ final class BitArray
 	}
 
 	/**
-	 * @param first $from bit to check
+	 * @param int $from first bit to check
 	 *
-	 * @return index of first bit that is set, starting from the given index, or size if none are set
+	 * @return int index of first bit that is set, starting from the given index, or size if none are set
 	 *  at or beyond this given index
 	 * @see #getNextUnset(int)
 	 */
@@ -121,9 +124,9 @@ final class BitArray
 	}
 
 	/**
-	 * @param index $from to start looking for unset bit
+	 * @param int $from index to start looking for unset bit
 	 *
-	 * @return index of next unset bit, or {@code size} if none are unset until the end
+	 * @return int index of next unset bit, or {@code size} if none are unset until the end
 	 * @see #getNextSet(int)
 	 */
 	public function getNextUnset($from)
@@ -149,8 +152,8 @@ final class BitArray
 	/**
 	 * Sets a block of 32 bits, starting at bit i.
 	 *
-	 * @param first       $i bit to set
-	 * @param the $newBits new value of the next 32 bits. Note again that the least-significant bit
+	 * @param int $i first  bit to set
+	 * @param int $newBits the new value of the next 32 bits. Note again that the least-significant bit
 	 *                corresponds to bit i, the next-least-significant to i+1, and so on.
 	 */
 	public function setBulk($i, $newBits): void
@@ -161,8 +164,10 @@ final class BitArray
 	/**
 	 * Sets a range of bits.
 	 *
-	 * @param start $start of range, inclusive.
-	 * @param end   $end of range, exclusive
+	 * @param int $start start of range, inclusive.
+	 * @param int $end end   of range, exclusive
+	 *
+	 * @return void
 	 */
 	public function setRange($start, $end)
 	{
@@ -205,12 +210,13 @@ final class BitArray
 	/**
 	 * Efficient method to check if a range of bits is set, or not set.
 	 *
-	 * @param start $start of range, inclusive.
-	 * @param end   $end of range, exclusive
-	 * @param if $value true, checks that bits in range are set, otherwise checks that they are not set
+	 * @param int $start start of range, inclusive.
+	 * @param int $end end   of range, exclusive
+	 * @param bool $value if true, checks that bits in range are set, otherwise checks that they are not set
 	 *
-	 * @return true iff all bits are set or not set in range, according to value argument
-	 * @throws InvalidArgumentException if end is less than or equal to start
+	 * @return bool iff all bits are set or not set in range, according to value argument
+	 *
+	 * @throws \InvalidArgumentException if end is less than or equal to start
 	 */
 	public function isRange($start, $end, $value): bool
 	{
@@ -251,10 +257,10 @@ final class BitArray
 	 * least-significant. For example, appending 6 bits from 0x000001E will append the bits
 	 * 0, 1, 1, 1, 1, 0 in that order.
 	 *
-	 * @param $value   {@code int} containing bits to append
-	 * @param bits $numBits from value to append
+	 * @param int $value   {@code int} containing bits to append
+	 * @param int $numBits bits from value to append
 	 */
-	public function appendBits($value, $numBits)
+	public function appendBits($value, $numBits): void
 	{
 		if ($numBits < 0 || $numBits > 32) {
 			throw new \InvalidArgumentException("Num bits must be between 0 and 32");
@@ -274,7 +280,7 @@ final class BitArray
 		}
 	}
 
-	public function appendBit($bit): void
+	public function appendBit(bool $bit): void
 	{
 		$this->ensureCapacity($this->size + 1);
 		if ($bit) {
@@ -292,7 +298,7 @@ final class BitArray
 		}
 	}
 
-	public function _xor($other)
+	public function _xor($other): void
 	{
 		if ((is_countable($this->bits) ? count($this->bits) : 0) !== (is_countable($other->bits) ? count($other->bits) : 0)) {
 			throw new \InvalidArgumentException("Sizes don't match");
@@ -307,11 +313,11 @@ final class BitArray
 
 	/**
 	 *
-	 * @param first $bitOffset bit to start writing
+	 * @param int $bitOffset first bit to start writing
 	 * @param array     $array to write into. Bytes are written most-significant byte first. This is the opposite
 	 *                  of the internal representation, which is exposed by {@link #getBitArray()}
-	 * @param position    $offset in array to start writing
-	 * @param how  $numBytes many bytes to write
+	 * @param int $offset position    in array to start writing
+	 * @param int $numBytes how  many bytes to write
 	 */
 	public function toBytes($bitOffset, array &$array, $offset, $numBytes): void
 	{
@@ -329,10 +335,11 @@ final class BitArray
 
 	/**
 	 * @param $i ; bit to get
+	 * @param float|int first $i
 	 *
-	 * @return true iff bit i is set
+	 * @return bool iff bit i is set
 	 */
-	public function get($i): bool
+	public function get(int|float $i): bool
 	{
 		$key = (int)($i / 32);
 
@@ -340,10 +347,11 @@ final class BitArray
 	}
 
 	/**
-	 * @return array underlying array of ints. The first element holds the first 32 bits, and the least
-	 *         significant bit is bit 0.
+	 * @return (int|mixed)[]|null underlying array of ints. The first element holds the first 32 bits, and the least significant bit is bit 0.
+	 *
+	 * @psalm-return array<int|mixed>|null
 	 */
-	public function getBitArray()
+	public function getBitArray(): array|null
 	{
 		return $this->bits;
 	}
@@ -405,7 +413,7 @@ final class BitArray
 		return 31 * $this->size + hashCode($this->bits);
 	}
 
-	public function toString()
+	public function toString(): string
 	{
 		$result = '';
 		for ($i = 0; $i < $this->size; $i++) {

@@ -64,7 +64,7 @@ class Detector
 		return $this->processFinderPatternInfo($info);
 	}
 
-	final protected function processFinderPatternInfo($info): \Zxing\Common\DetectorResult
+	final protected function processFinderPatternInfo(FinderPatternInfo $info): \Zxing\Common\DetectorResult
 	{
 		$topLeft = $info->getTopLeft();
 		$topRight = $info->getTopRight();
@@ -89,8 +89,8 @@ class Detector
 			// Estimate that alignment pattern is closer by 3 modules
 			// from "bottom right" to known top left location
 			$correctionToTopLeft = 1.0 - 3.0 / (float)$modulesBetweenFPCenters;
-			$estAlignmentX = (int)($topLeft->getX() + $correctionToTopLeft * ($bottomRightX - $topLeft->getX()));
-			$estAlignmentY = (int)($topLeft->getY() + $correctionToTopLeft * ($bottomRightY - $topLeft->getY()));
+			$estAlignmentX = (int)round($topLeft->getX() + $correctionToTopLeft * ($bottomRightX - $topLeft->getX()));
+			$estAlignmentY = (int)round($topLeft->getY() + $correctionToTopLeft * ($bottomRightY - $topLeft->getY()));
 
 			// Kind of arbitrary -- expand search radius before giving up
 			for ($i = 4; $i <= 16; $i <<= 1) { //??????????
@@ -136,13 +136,13 @@ class Detector
 	 * <p>Computes an average estimated module size based on estimated derived from the positions
 	 * of the three finder patterns.</p>
 	 *
-	 * @param detected    $topLeft top-left finder pattern center
-	 * @param detected   $topRight top-right finder pattern center
-	 * @param detected $bottomLeft bottom-left finder pattern center
+	 * @param FinderPattern $topLeft detected    top-left finder pattern center
+	 * @param FinderPattern $topRight detected   top-right finder pattern center
+	 * @param FinderPattern $bottomLeft detected bottom-left finder pattern center
 	 *
-	 * @return estimated module size
+	 * @return float estimated module size
 	 */
-	final protected function calculateModuleSize($topLeft, $topRight, $bottomLeft)
+	final protected function calculateModuleSize($topLeft, $topRight, $bottomLeft): float
 	{
 		// Take the average
 		return ($this->calculateModuleSizeOneWay($topLeft, $topRight) +
@@ -154,10 +154,10 @@ class Detector
 	 * {@link #sizeOfBlackWhiteBlackRunBothWays(int, int, int, int)} to figure the
 	 * width of each, measuring along the axis between their centers.</p>
 	 */
-	private function calculateModuleSizeOneWay($pattern, $otherPattern)
+	private function calculateModuleSizeOneWay(FinderPattern $pattern, FinderPattern $otherPattern): float
 	{
 		$moduleSizeEst1 = $this->sizeOfBlackWhiteBlackRunBothWays(
-			$pattern->getX(),
+			(int)$pattern->getX(),
 			(int)$pattern->getY(),
 			(int)$otherPattern->getX(),
 			(int)$otherPattern->getY()
@@ -184,7 +184,7 @@ class Detector
 	 * a finder pattern by looking for a black-white-black run from the center in the direction
 	 * of another po$(another finder pattern center), and in the opposite direction too.</p>
 	 */
-	private function sizeOfBlackWhiteBlackRunBothWays($fromX, int $fromY, int $toX, int $toY)
+	private function sizeOfBlackWhiteBlackRunBothWays(int $fromX, int $fromY, int $toX, int $toY): float
 	{
 		$result = $this->sizeOfBlackWhiteBlackRun($fromX, $fromY, $toX, $toY);
 
@@ -224,7 +224,7 @@ class Detector
 	 * <p>This is used when figuring out how wide a finder pattern is, when the finder pattern
 	 * may be skewed or rotated.</p>
 	 */
-	private function sizeOfBlackWhiteBlackRun($fromX, int $fromY, int $toX, int|float $toY)
+	private function sizeOfBlackWhiteBlackRun(int $fromX, int $fromY, int $toX, int|float $toY): float
 	{
 		// Mild variant of Bresenham's algorithm;
 		// see http://en.wikipedia.org/wiki/Bresenham's_line_algorithm
@@ -290,8 +290,8 @@ class Detector
 		$topLeft,
 		$topRight,
 		$bottomLeft,
-		$moduleSize
-	) {
+		float $moduleSize
+	): int {
 		$tltrCentersDimension = MathUtils::round(ResultPoint::distance($topLeft, $topRight) / $moduleSize);
 		$tlblCentersDimension = MathUtils::round(ResultPoint::distance($topLeft, $bottomLeft) / $moduleSize);
 		$dimension = (($tltrCentersDimension + $tlblCentersDimension) / 2) + 7;
@@ -307,14 +307,14 @@ class Detector
 				throw NotFoundException::getNotFoundInstance("Dimension ($dimension) mod 4 == 3 unusable");
 		}
 
-		return $dimension;
+		return (int)round($dimension);
 	}
 
 	/**
 	 * <p>Attempts to locate an alignment pattern in a limited region of the image, which is
 	 * guessed to contain it. This method uses {@link AlignmentPattern}.</p>
 	 *
-	 * @param int $overallEstModuleSize module size so far
+	 * @param float $overallEstModuleSize module size so far
 	 * @param int $estAlignmentX coordinate of center of area probably containing alignment pattern
 	 * @param int $estAlignmentY coordinate of above
 	 * @param int|float      $allowanceFactor of pixels in all directions to search from the center
@@ -323,9 +323,9 @@ class Detector
 	 * @throws NotFoundException if an unexpected error occurs during detection
 	 */
 	final protected function findAlignmentInRegion(
-		$overallEstModuleSize,
-		$estAlignmentX,
-		$estAlignmentY,
+		float $overallEstModuleSize,
+		int $estAlignmentX,
+		int $estAlignmentY,
 		int|float $allowanceFactor
 	) {
 		// Look for an alignment pattern (3 modules in size) around where it
@@ -362,8 +362,8 @@ class Detector
 		$topRight,
 		$bottomLeft,
 		$alignmentPattern,
-		$dimension
-	) {
+		int $dimension
+	): PerspectiveTransform {
 		$dimMinusThree = (float)$dimension - 3.5;
 		$bottomRightX = 0.0;
 		$bottomRightY = 0.0;
@@ -404,9 +404,9 @@ class Detector
 
 	private static function sampleGrid(
 		$image,
-		$transform,
-		$dimension
-	) {
+		PerspectiveTransform $transform,
+		int $dimension
+	): \Zxing\Common\BitMatrix {
 		$sampler = GridSampler::getInstance();
 
 		return $sampler->sampleGrid_($image, $dimension, $dimension, $transform);

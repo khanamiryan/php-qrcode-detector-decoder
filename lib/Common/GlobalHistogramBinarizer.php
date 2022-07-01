@@ -59,7 +59,7 @@ class GlobalHistogramBinarizer extends Binarizer
 	}
 
 	// Applies simple sharpening to the row data to improve performance of the 1D Readers.
-	public function getBlackRow($y, $row = null)
+	public function getBlackRow(int $y, ?BitArray $row = null): BitArray
 	{
 		$this->source = $this->getLuminanceSource();
 		$width = $this->source->getWidth();
@@ -105,7 +105,7 @@ class GlobalHistogramBinarizer extends Binarizer
 		}
 	}
 
-	private static function estimateBlackPoint($buckets)
+	private static function estimateBlackPoint(array $buckets): int
 	{
 		// Find the tallest peak in the histogram.
 		$numBuckets = is_countable($buckets) ? count($buckets) : 0;

@@ -70,7 +70,7 @@ final class AlignmentPatternFinder
 		$stateCount = [];
 		for ($iGen = 0; $iGen < $height; $iGen++) {
 			// Search from middle outwards
-			$i = $middleI + (($iGen & 0x01) == 0 ? ($iGen + 1) / 2 : -(($iGen + 1) / 2));
+			$i = $middleI + (($iGen & 0x01) == 0 ? ($iGen + 1) / 2 : - (($iGen + 1) / 2));
 			$i = (int)($i);
 			$stateCount[0] = 0;
 			$stateCount[1] = 0;
@@ -130,10 +130,9 @@ final class AlignmentPatternFinder
 	}
 
 	/**
-	 * @param count $stateCount of black/white/black pixels just read
+	 * @param int $stateCount count of black/white/black pixels just read
 	 *
-	 * @return true iff the proportions of the counts is close enough to the 1/1/1 ratios
-	 *         used by alignment patterns to be considered a match
+	 * @return bool iff the proportions of the counts is close enough to the 1/1/1 ratios used by alignment patterns to be considered a match
 	 */
 	private function foundPatternCross($stateCount): bool
 	{
@@ -154,9 +153,9 @@ final class AlignmentPatternFinder
 	 * found on a previous horizontal scan. If so, we consider it confirmed and conclude we have
 	 * found the alignment pattern.</p>
 	 *
-	 * @param state $stateCount module counts from horizontal scan
-	 * @param where $i alignment pattern may be found
-	 * @param of $j possible alignment pattern in row
+	 * @param array $stateCount state module counts from horizontal scan
+	 * @param int $i where alignment pattern may be found
+	 * @param int $j number of possible alignment pattern in row
 	 *
 	 * @return {@link AlignmentPattern} if we have found the same pattern twice, or null if not
 	 */
@@ -188,7 +187,7 @@ final class AlignmentPatternFinder
 	 * Given a count of black/white/black pixels just seen and an end position,
 	 * figures the location of the center of this black/white/black run.
 	 */
-	private static function centerFromEnd($stateCount, $end)
+	private static function centerFromEnd(array $stateCount, int $end)
 	{
 		return (float)($end - $stateCount[2]) - $stateCount[1] / 2.0;
 	}
@@ -198,16 +197,16 @@ final class AlignmentPatternFinder
 	 * "cross-checks" by scanning down vertically through the center of the possible
 	 * alignment pattern to see if the same proportion is detected.</p>
 	 *
-	 * @param int row   $startI where an alignment pattern was detected
-	 * @param float center  $centerJ of the section that appears to cross an alignment pattern
-	 * @param int maximum $maxCount reasonable number of modules that should be
+	 * @param int $startI row   where an alignment pattern was detected
+	 * @param float $centerJ center  of the section that appears to cross an alignment pattern
+	 * @param int $maxCount maximum reasonable number of modules that should be
 	 *                 observed in any reading state, based on the results of the horizontal scan
 	 *
 	 * @return float vertical center of alignment pattern, or {@link Float#NaN} if not found
 	 */
 	private function crossCheckVertical(
-		$startI,
-		$centerJ,
+		int $startI,
+		int $centerJ,
 		$maxCount,
 		$originalStateCountTotal
 	) {

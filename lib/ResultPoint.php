@@ -42,7 +42,7 @@ class ResultPoint
 	 *
 	 * @param array $patterns of three {@code ResultPoint} to order
 	 */
-	public static function orderBestPatterns(array $patterns)
+	public static function orderBestPatterns(array $patterns): array
 	{
 
 // Find distances between pattern centers
@@ -86,8 +86,8 @@ class ResultPoint
 	}
 
 	/**
-	 * @param first $pattern1 pattern
-	 * @param second $pattern2 pattern
+	 * @param ResultPoint $pattern1 first pattern
+	 * @param ResultPoint $pattern2 second pattern
 	 *
 	 * @return float distance between two points
 	 */
@@ -114,14 +114,14 @@ class ResultPoint
 
 	
 
-	final public function getX()
+	final public function getX(): float
 	{
 		return (float)($this->x);
 	}
 
 	
 
-	final public function getY()
+	final public function getY(): float
 	{
 		return (float)($this->y);
 	}
@@ -142,7 +142,7 @@ class ResultPoint
 		return 31 * floatToIntBits($this->x) + floatToIntBits($this->y);
 	}
 
-	final public function toString()
+	final public function toString(): string
 	{
 		$result = '';
 		$result .= ('(');

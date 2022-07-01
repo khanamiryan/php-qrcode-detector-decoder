@@ -17,6 +17,8 @@
 
 namespace Zxing;
 
+use Zxing\Common\BitMatrix;
+
 /**
  * The purpose of this class hierarchy is to abstract different bitmap implementations across
  * platforms into a standard interface for requesting greyscale luminance values. The interface
@@ -36,7 +38,7 @@ abstract class LuminanceSource
 	 * Fetches luminance data for the underlying bitmap. Values should be fetched using:
 	 * {@code int luminance = array[y * width + x] & 0xff}
 	 *
-	 * @return A row-major 2D array of luminance values. Do not use result.length as it may be
+	 * @return BitMatrix A row-major 2D array of luminance values. Do not use result.length as it may be
 	 *         larger than width * height bytes on some platforms. Do not modify the contents
 	 *         of the result.
 	 */
@@ -112,7 +114,7 @@ abstract class LuminanceSource
 	 */
 	abstract public function rotateCounterClockwise45(): void;
 
-	final public function toString()
+	final public function toString(): string
 	{
 		$row = [];
 		$result = '';
@@ -152,5 +154,5 @@ abstract class LuminanceSource
 	 * @return array
 	 * An array containing the luminance data.
 	 */
-	abstract public function getRow($y, $row);
+	abstract public function getRow(int $y, array $row);
 }

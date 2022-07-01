@@ -24,7 +24,10 @@ use Zxing\NotFoundException;
  */
 final class DefaultGridSampler extends GridSampler
 {
-	
+
+	/**
+	 * @return BitMatrix
+	 */
 	public function sampleGrid(
 		$image,
 		$dimensionX,
@@ -68,13 +71,16 @@ final class DefaultGridSampler extends GridSampler
 		return $this->sampleGrid_($image, $dimensionX, $dimensionY, $transform);
 	}
 
-	
+
+	/**
+	 * @return BitMatrix
+	 */
 	public function sampleGrid_(
-		$image,
-		$dimensionX,
-		$dimensionY,
-		$transform
-	) {
+		BitMatrix $image,
+		int $dimensionX,
+		int $dimensionY,
+		PerspectiveTransform $transform
+	): BitMatrix {
 		if ($dimensionX <= 0 || $dimensionY <= 0) {
 			throw NotFoundException::getNotFoundInstance("X or Y dimensions smaller than zero");
 		}
@@ -98,7 +104,7 @@ final class DefaultGridSampler extends GridSampler
 						$bits->set($x / 2, $y);
 					}
 				}
-			} catch (\Exception) {//ArrayIndexOutOfBoundsException
+			} catch (\Exception) { //ArrayIndexOutOfBoundsException
 				// This feels wrong, but, sometimes if the finder patterns are misidentified, the resulting
 				// transform gets "twisted" such that it maps a straight line of points to a set of points
 				// whose endpoints are in bounds, but others are not. There is probably some mathematical

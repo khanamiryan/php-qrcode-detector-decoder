@@ -68,6 +68,12 @@ final class RGBLuminanceSource extends LuminanceSource
 		$this->top = $top;
 	}
 
+	public function rotateCounterClockwise(): void {
+		throw new \RuntimeException("This LuminanceSource does not support rotateCounterClockwise"); }
+
+	public function rotateCounterClockwise45(): void {
+		throw new \RuntimeException("This LuminanceSource does not support rotateCounterClockwise45"); }
+
 	public function RGBLuminanceSource_($width, $height, $pixels): void
 	{
 		parent::__construct($width, $height);
@@ -141,7 +147,12 @@ final class RGBLuminanceSource extends LuminanceSource
 		//   $this->luminances = $this->grayScaleToBitmap($this->luminances);
 	}
 
-	public function grayscale()
+	/**
+	 * @return (int|mixed)[]
+	 *
+	 * @psalm-return array<int|mixed>
+	 */
+	public function grayscale(): array
 	{
 		$width = $this->dataWidth;
 		$height = $this->dataHeight;
@@ -158,7 +169,7 @@ final class RGBLuminanceSource extends LuminanceSource
 		return $ret;
 	}
 
-	public function getPixel($x, $y, $width, $height)
+	public function getPixel(int $x, int $y, $width, $height): int
 	{
 		$image = $this->pixels;
 		if ($width < $x) {
@@ -179,7 +190,12 @@ final class RGBLuminanceSource extends LuminanceSource
 		return $p;
 	}
 
-	public function grayScaleToBitmap($grayScale)
+	/**
+	 * @return (int|mixed)[]
+	 *
+	 * @psalm-return array<int, 0|255|mixed>
+	 */
+	public function grayScaleToBitmap($grayScale): array
 	{
 		$middle = $this->getMiddleBrightnessPerArea($grayScale);
 		$sqrtNumArea = is_countable($middle) ? count($middle) : 0;
@@ -254,7 +270,7 @@ final class RGBLuminanceSource extends LuminanceSource
 	public function getRow($y, $row = null)
 	{
 		if ($y < 0 || $y >= $this->getHeight()) {
-			throw new \InvalidArgumentException("Requested row is outside the image: " + \Y);
+			throw new \InvalidArgumentException("Requested row is outside the image: " + $y);
 		}
 		$width = $this->getWidth();
 		if ($row == null || (is_countable($row) ? count($row) : 0) < $width) {

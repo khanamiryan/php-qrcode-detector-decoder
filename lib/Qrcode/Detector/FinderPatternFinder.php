@@ -53,7 +53,7 @@ class FinderPatternFinder
 		$this->crossCheckStateCount = fill_array(0, 5, 0);
 	}
 
-	final public function find($hints): \Zxing\Qrcode\Detector\FinderPatternInfo
+	final public function find(array|null $hints): \Zxing\Qrcode\Detector\FinderPatternInfo
 	{/*final FinderPatternInfo find(Map<DecodeHintType,?> hints) throws NotFoundException {*/
 		$tryHarder = $hints != null && array_key_exists('TRY_HARDER', $hints) && $hints['TRY_HARDER'];
 		$pureBarcode = $hints != null && array_key_exists('PURE_BARCODE', $hints) && $hints['PURE_BARCODE'];
@@ -166,11 +166,13 @@ class FinderPatternFinder
 
 	/**
 	 * @param $stateCount ; count of black/white/black/white/black pixels just read
+	 * @param int[] $stateCount
 	 *
-	 * @return true iff the proportions of the counts is close enough to the 1/1/3/1/1 ratios
-	 *         used by finder patterns to be considered a match
+	 * @return bool iff the proportions of the counts is close enough to the 1/1/3/1/1 ratios used by finder patterns to be considered a match
+	 *
+	 * @psalm-param array<0|positive-int, int> $stateCount
 	 */
-	protected static function foundPatternCross($stateCount): bool
+	protected static function foundPatternCross(array $stateCount): bool
 	{
 		$totalModuleSize = 0;
 		for ($i = 0; $i < 5; $i++) {
@@ -207,12 +209,12 @@ class FinderPatternFinder
 	 * Each additional find is more evidence that the location is in fact a finder
 	 * pattern center
 	 *
-	 * @param int $stateCount reading state module counts from horizontal scan
+	 * @param array $stateCount reading state module counts from horizontal scan
 	 * @param int $i row           where finder pattern may be found
 	 * @param int $j end           of possible finder pattern in row
 	 * @param bool $pureBarcode true if in "pure barcode" mode
 	 *
-	 * @return true if a finder pattern candidate was found this time
+	 * @return bool if a finder pattern candidate was found this time
 	 */
 	final protected function handlePossibleCenter($stateCount, int $i, int $j, bool $pureBarcode): bool
 	{
@@ -257,7 +259,7 @@ class FinderPatternFinder
 	 * Given a count of black/white/black/white/black pixels just seen and an end position,
 	 * figures the location of the center of this run.
 	 */
-	private static function centerFromEnd($stateCount, $end)
+	private static function centerFromEnd(array $stateCount, int $end)
 	{
 		return (float)($end - $stateCount[4] - $stateCount[3]) - $stateCount[2] / 2.0;
 	}
@@ -440,7 +442,7 @@ class FinderPatternFinder
 	 *                                observed in any reading state, based on the results of the horizontal scan
 	 * @param $originalStateCountTotal ; The original state count total.
 	 *
-	 * @return true if proportions are withing expected limits
+	 * @return bool if proportions are withing expected limits
 	 */
 	private function crossCheckDiagonal(int $startI, int $centerJ, $maxCount, int|float $originalStateCountTotal): bool
 	{
@@ -448,8 +450,6 @@ class FinderPatternFinder
 
 		// Start counting up, left from center finding black center mass
 		$i = 0;
-		$startI = (int)($startI);
-		$centerJ = (int)($centerJ);
 		while ($startI >= $i && $centerJ >= $i && $this->image->get($centerJ - $i, $startI - $i)) {
 			$stateCount[2]++;
 			$i++;
@@ -534,11 +534,9 @@ class FinderPatternFinder
 	}
 
 	/**
-	 * @return true iff we have found at least 3 finder patterns that have been detected
-	 *         at least {@link #CENTER_QUORUM} times each, and, the estimated module size of the
-	 *         candidates is "pretty similar"
+	 * @return bool iff we have found at least 3 finder patterns that have been detected at least {@link #CENTER_QUORUM} times each, and, the estimated module size of the candidates is "pretty similar"
 	 */
-	private function haveMultiplyConfirmedCenters()
+	private function haveMultiplyConfirmedCenters(): bool
 	{
 		$confirmedCount = 0;
 		$totalModuleSize = 0.0;
@@ -660,8 +658,10 @@ class FinderPatternFinder
 
 	/**
 	 * <p>Orders by furthest from average</p>
+	 *
+	 * @psalm-return -1|0|1
 	 */
-	public function FurthestFromAverageComparator($center1, $center2)
+	public function FurthestFromAverageComparator($center1, $center2): int
 	{
 		$dA = abs($center2->getEstimatedModuleSize() - $this->average);
 		$dB = abs($center1->getEstimatedModuleSize() - $this->average);
@@ -691,16 +691,14 @@ class FinderPatternFinder
 		}
 	}
 
-	final protected function getImage()
+	final protected function getImage(): BitMatrix
 	{
 		return $this->image;
 	}
 	/**
 	 * <p>Orders by {@link FinderPattern#getCount()}, descending.</p>
 	 */
-
-	
-	final protected function getPossibleCenters()
+	final protected function getPossibleCenters(): array
 	{ //List<FinderPattern> getPossibleCenters()
 		return $this->possibleCenters;
 	}

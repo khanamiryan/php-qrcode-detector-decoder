@@ -75,7 +75,7 @@ class Version
 		return $this->alignmentPatternCenters;
 	}
 
-	public function getTotalCodewords()
+	public function getTotalCodewords(): int|float
 	{
 		return $this->totalCodewords;
 	}
@@ -109,7 +109,10 @@ class Version
 		}
 	}
 
-	public static function getVersionForNumber($versionNumber)
+	/**
+	 * @param float|int $versionNumber
+	 */
+	public static function getVersionForNumber(int|float $versionNumber)
 	{
 		if ($versionNumber < 1 || $versionNumber > 40) {
 			throw new \InvalidArgumentException();
@@ -120,7 +123,10 @@ class Version
 		return self::$VERSIONS[$versionNumber - 1];
 	}
 
-	public static function decodeVersionInformation($versionBits)
+	/**
+	 * @psalm-param 0|1 $versionBits
+	 */
+	public static function decodeVersionInformation(int $versionBits)
 	{
 		$bestDifference = PHP_INT_MAX;
 		$bestVersion = 0;
@@ -150,7 +156,7 @@ class Version
 	/**
 	 * See ISO 18004:2006 Annex E
 	 */
-	public function buildFunctionPattern()
+	public function buildFunctionPattern(): BitMatrix
 	{
 		$dimension = self::getDimensionForVersion();
 		$bitMatrix = new BitMatrix($dimension);
@@ -191,8 +197,12 @@ class Version
 	}
 	/**
 	 * See ISO 18004:2006 6.5.1 Table 9
+	 *
+	 * @return self[]
+	 *
+	 * @psalm-return array{0: self, 1: self, 2: self, 3: self, 4: self, 5: self, 6: self, 7: self, 8: self, 9: self, 10: self, 11: self, 12: self, 13: self, 14: self, 15: self, 16: self, 17: self, 18: self, 19: self, 20: self, 21: self, 22: self, 23: self, 24: self, 25: self, 26: self, 27: self, 28: self, 29: self, 30: self, 31: self, 32: self, 33: self, 34: self, 35: self, 36: self, 37: self, 38: self, 39: self}
 	 */
-	private static function buildVersions()
+	private static function buildVersions(): array
 	{
 		return [
 			new Version(
@@ -705,9 +715,7 @@ final class ECB
 		return $this->dataCodewords;
 	}
 
-
-	
-	public function toString(): never
+	public function toString(): string
 	{
 		die('Version ECB toString()');
 		//  return parent::$versionNumber;

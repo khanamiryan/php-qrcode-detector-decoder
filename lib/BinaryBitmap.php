@@ -60,13 +60,14 @@ final class BinaryBitmap
 	 * This method is intended for decoding 1D barcodes and may choose to apply sharpening.
 	 *
 	 * @param $y   The row to fetch, which must be in [0, bitmap height)
-	 * @param An $row optional preallocated array. If null or too small, it will be ignored.
+	 * @param array|null $row An optional preallocated array. If null or too small, it will be ignored.
 	 *            If used, the Binarizer will call BitArray.clear(). Always use the returned object.
 	 *
-	 * @return array The array of bits for this row (true means black).
+	 * @return Common\BitArray The array of bits for this row (true means black).
+	 *
 	 * @throws NotFoundException if row can't be binarized
 	 */
-	public function getBlackRow($y, $row)
+	public function getBlackRow($y, $row): Common\BitArray
 	{
 		return $this->binarizer->getBlackRow($y, $row);
 	}
@@ -98,7 +99,7 @@ final class BinaryBitmap
 	}
 
 	/**
-	 * @return Whether this bitmap supports counter-clockwise rotation.
+	 * @return bool this Whether bitmap supports counter-clockwise rotation.
 	 */
 	public function isRotateSupported()
 	{
@@ -131,7 +132,7 @@ final class BinaryBitmap
 		return new BinaryBitmap($this->binarizer->createBinarizer($newSource));
 	}
 
-	public function toString()
+	public function toString(): string
 	{
 		try {
 			return $this->getBlackMatrix()->toString();

@@ -35,7 +35,7 @@ final class FormatException extends ReaderException
 		}
 	}
 
-	public static function getFormatInstance($cause = null)
+	public static function getFormatInstance($cause = null): self
 	{
 		if (!self::$instance) {
 			self::$instance = new FormatException();

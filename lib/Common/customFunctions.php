@@ -1,7 +1,7 @@
 <?php
 
 if (!function_exists('arraycopy')) {
-	function arraycopy($srcArray, $srcPos, $destArray, $destPos, $length)
+	function arraycopy($srcArray, $srcPos, $destArray, $destPos, $length): array
 	{
 		$srcArrayToCopy = array_slice($srcArray, $srcPos, $length);
 		array_splice($destArray, $destPos, $length, $srcArrayToCopy);
@@ -11,7 +11,7 @@ if (!function_exists('arraycopy')) {
 }
 
 if (!function_exists('hashCode')) {
-	function hashCode($s)
+	function hashCode($s): int
 	{
 		$h = 0;
 		$len = strlen((string) $s);
@@ -24,7 +24,10 @@ if (!function_exists('hashCode')) {
 }
 
 if (!function_exists('numberOfTrailingZeros')) {
-	function numberOfTrailingZeros($i)
+	/**
+	 * @psalm-return 0|32|positive-int
+	 */
+	function numberOfTrailingZeros($i): int
 	{
 		if ($i == 0) {
 			return 32;
@@ -92,7 +95,10 @@ if (!function_exists('floatToIntBits')) {
 
 
 if (!function_exists('fill_array')) {
-	function fill_array($index, $count, $value)
+	/**
+	 * @psalm-return array<int, mixed>
+	 */
+	function fill_array($index, $count, $value): array
 	{
 		if ($count <= 0) {
 			return [0];

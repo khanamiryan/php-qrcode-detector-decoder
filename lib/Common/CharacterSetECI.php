@@ -188,6 +188,13 @@ final class CharacterSetECI
 		}
 	}
 
+	/**
+	 * @param (int|string) $value
+	 *
+	 * @psalm-param array-key $value
+	 *
+	 * @return null|true
+	 */
 	private static function setName($value)
 	{
 		foreach (self::$nameToEci as $name => $key) {
@@ -211,9 +218,9 @@ final class CharacterSetECI
 	/**
 	 * Gets character set ECI name.
 	 *
-	 * @return character set ECI name|null
+	 * @return int|null|string set ECI name|null
 	 */
-	public static function name()
+	public static function name(): string|int|null
 	{
 		return self::$name;
 	}

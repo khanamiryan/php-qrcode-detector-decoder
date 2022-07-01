@@ -38,7 +38,7 @@ final class MathUtils
 		return (int)($d + ($d < 0.0 ? -0.5 : 0.5));
 	}
 
-	public static function distance($aX, $aY, $bX, $bY): float
+	public static function distance(float|int $aX, float|int $aY, float $bX, float $bY): float
 	{
 		$xDiff = $aX - $bX;
 		$yDiff = $aY - $bY;

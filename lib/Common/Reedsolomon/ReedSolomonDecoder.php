@@ -50,10 +50,12 @@ final class ReedSolomonDecoder
 	 * codewords. Really, this means it uses Reed-Solomon to detect and correct errors, in-place,
 	 * in the input.</p>
 	 *
-	 * @param data $received and error-correction codewords
-	 * @param number     $twoS of error-correction codewords available
+	 * @param array $received data and error-correction codewords
+	 * @param int|float $twoS number     of error-correction codewords available
 	 *
 	 * @throws ReedSolomonException if decoding fails for any reason
+	 *
+	 * @return void
 	 */
 	public function decode(&$received, $twoS)
 	{
@@ -87,7 +89,10 @@ final class ReedSolomonDecoder
 		}
 	}
 
-	private function runEuclideanAlgorithm($a, \Zxing\Common\Reedsolomon\GenericGFPoly $b, $R)
+	/**
+	 * @psalm-return array{0: mixed, 1: mixed}
+	 */
+	private function runEuclideanAlgorithm($a, \Zxing\Common\Reedsolomon\GenericGFPoly $b, int|float $R): array
 	{
 		// Assume a's degree is >= b's
 		if ($a->getDegree() < $b->getDegree()) {
@@ -143,7 +148,10 @@ final class ReedSolomonDecoder
 		return [$sigma, $omega];
 	}
 
-	private function findErrorLocations($errorLocator)
+	/**
+	 * @psalm-return array<int, mixed>
+	 */
+	private function findErrorLocations($errorLocator): array
 	{
 		// This is a direct application of Chien's search
 		$numErrors = $errorLocator->getDegree();
@@ -165,7 +173,11 @@ final class ReedSolomonDecoder
 		return $result;
 	}
 
-	private function findErrorMagnitudes($errorEvaluator, $errorLocations)
+	/**
+	 * @psalm-return array<int, mixed>
+	 * @psalm-param array<int, mixed> $errorLocations
+	 */
+	private function findErrorMagnitudes($errorEvaluator, array $errorLocations): array
 	{
 		// This is directly applying Forney's Formula
 		$s = is_countable($errorLocations) ? count($errorLocations) : 0;

@@ -57,9 +57,9 @@ class ErrorCorrectionLevel
 	/**
 	 * @param int $bits containing the two bits encoding a QR Code's error correction level
 	 *
-	 * @return ErrorCorrectionLevel representing the encoded error correction level
+	 * @return null|self representing the encoded error correction level
 	 */
-	public static function forBits(int $bits)
+	public static function forBits(int $bits): self|null
 	{
 		if ($bits < 0 || $bits >= (is_countable(self::$FOR_BITS) ? count(self::$FOR_BITS) : 0)) {
 			throw new \InvalidArgumentException();

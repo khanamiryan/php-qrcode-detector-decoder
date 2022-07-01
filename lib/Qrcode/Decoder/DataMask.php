@@ -56,7 +56,7 @@ abstract class DataMask
 	}
 
 	/**
-	 * @param a $reference value between 0 and 7 indicating one of the eight possible
+	 * @param int $reference a value between 0 and 7 indicating one of the eight possible
 	 *                  data mask patterns a QR Code may use
 	 *
 	 * @return DataMask encapsulating the data mask pattern
@@ -74,8 +74,8 @@ abstract class DataMask
 	 * <p>Implementations of this method reverse the data masking process applied to a QR Code and
 	 * make its bits ready to read.</p>
 	 *
-	 * @param representation      $bits of QR Code bits
-	 * @param dimension $dimension of QR Code, represented by bits, being unmasked
+	 * @param BitMatrix $bits representation      of QR Code bits
+	 * @param int $dimension dimension of QR Code, represented by bits, being unmasked
 	 */
 	final public function unmaskBitMatrix($bits, $dimension): void
 	{
@@ -88,7 +88,11 @@ abstract class DataMask
 		}
 	}
 
-	abstract public function isMasked($i, $j);
+	/**
+	 * @psalm-param 0|positive-int $i
+	 * @psalm-param 0|positive-int $j
+	 */
+	abstract public function isMasked(int $i, int $j);
 }
 
 DataMask::Init();
