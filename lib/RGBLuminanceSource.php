@@ -68,11 +68,15 @@ final class RGBLuminanceSource extends LuminanceSource
 		$this->top = $top;
 	}
 
-	public function rotateCounterClockwise(): void {
-		throw new \RuntimeException("This LuminanceSource does not support rotateCounterClockwise"); }
+	public function rotateCounterClockwise(): void
+	{
+		throw new \RuntimeException("This LuminanceSource does not support rotateCounterClockwise");
+	}
 
-	public function rotateCounterClockwise45(): void {
-		throw new \RuntimeException("This LuminanceSource does not support rotateCounterClockwise45"); }
+	public function rotateCounterClockwise45(): void
+	{
+		throw new \RuntimeException("This LuminanceSource does not support rotateCounterClockwise45");
+	}
 
 	public function RGBLuminanceSource_($width, $height, $pixels): void
 	{

@@ -24,7 +24,6 @@ use Zxing\NotFoundException;
  */
 final class DefaultGridSampler extends GridSampler
 {
-
 	/**
 	 * @return BitMatrix
 	 */

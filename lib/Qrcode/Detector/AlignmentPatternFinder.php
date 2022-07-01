@@ -70,7 +70,7 @@ final class AlignmentPatternFinder
 		$stateCount = [];
 		for ($iGen = 0; $iGen < $height; $iGen++) {
 			// Search from middle outwards
-			$i = $middleI + (($iGen & 0x01) == 0 ? ($iGen + 1) / 2 : - (($iGen + 1) / 2));
+			$i = $middleI + (($iGen & 0x01) == 0 ? ($iGen + 1) / 2 : -(($iGen + 1) / 2));
 			$i = (int)($i);
 			$stateCount[0] = 0;
 			$stateCount[1] = 0;

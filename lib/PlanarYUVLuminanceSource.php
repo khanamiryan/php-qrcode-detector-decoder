@@ -179,10 +179,10 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
 	}*/
 
 	/**
-	 * 
-	 * @param int $width 
-	 * @param int $height 
-	 * @return void 
+	 *
+	 * @param int $width
+	 * @param int $height
+	 * @return void
 	 */
 	private function reverseHorizontal(int $width, int $height): void
 	{

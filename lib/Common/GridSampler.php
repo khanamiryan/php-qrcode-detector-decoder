@@ -18,7 +18,6 @@
 namespace Zxing\Common;
 
 use Zxing\NotFoundException;
-use Zxing\Common\PerspectiveTransform;
 
 /**
  * Implementations of this class can, given locations of finder patterns for a QR code in an
@@ -36,7 +35,7 @@ use Zxing\Common\PerspectiveTransform;
 abstract class GridSampler
 {
 	/**
-	 * @var mixed|\Zxing\Common\DefaultGridSampler|null
+	 * @var GridSampler|null
 	 */
 	private static $gridSampler;
 
@@ -47,7 +46,7 @@ abstract class GridSampler
 	 * in the whole lifetime of the JVM. For instance, an Android activity can swap in
 	 * an implementation that takes advantage of native platform libraries.
 	 *
-	 * @param $newGridSampler The platform-specific object to install.
+	 * @param GridSampler $newGridSampler The platform-specific object to install.
 	 */
 	public static function setGridSampler($newGridSampler): void
 	{
@@ -77,13 +76,13 @@ abstract class GridSampler
 	 * <p>For efficiency, the method will check points from either end of the line until one is found
 	 * to be within the image. Because the set of points are assumed to be linear, this is valid.</p>
 	 *
-	 * @param $image image  into which the points should map
-	 * @param $points actual points in x1,y1,...,xn,yn form
-	 * @param (float|mixed)[] $points
+	 * @param BitMatrix $image  image into which the points should map
+	 * @param array $points actual points in x1,y1,...,xn,yn form
+	 * @param float[] $points
 	 *
 	 * @throws NotFoundException if an endpoint is lies outside the image boundaries
 	 *
-	 * @psalm-param array<int, float|mixed> $points
+	 * @psalm-param array<int, float> $points
 	 */
 	protected static function checkAndNudgePoints(
 		BitMatrix $image,
@@ -146,7 +145,7 @@ abstract class GridSampler
 	 * transformation is determined by the coordinates of 4 points, in the original and transformed
 	 * image space.
 	 *
-	 * @param $image image      to sample
+	 * @param image $image      to sample
 	 * @param int $dimensionX width of {@link BitMatrix} to sample from image
 	 * @param int $dimensionY height of {@link BitMatrix} to sample from image
 	 * @param float      $p1ToX point 1 preimage X

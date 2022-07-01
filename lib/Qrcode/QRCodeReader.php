@@ -98,7 +98,7 @@ class QRCodeReader implements Reader
 	 * @throws NotFoundException if a QR code cannot be found
 	 * @throws FormatException if a QR code cannot be decoded
 	 * @throws ChecksumException if error correction fails
-	 * 
+	 *
 	 * @see com.google.zxing.datamatrix.DataMatrixReader#extractPureBits(BitMatrix)
 	 */
 	private static function extractPureBits(BitMatrix $image): BitMatrix
