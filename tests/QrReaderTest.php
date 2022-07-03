@@ -11,6 +11,7 @@ class QrReaderTest extends TestCase
 	public function setUp(): void
 	{
 		error_reporting(E_ALL);
+		ini_set('memory_limit','2G');
 	}
 
 	public function testText1()
