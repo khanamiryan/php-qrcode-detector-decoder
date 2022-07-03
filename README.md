@@ -22,7 +22,7 @@ $text = $qrcode->text(); //return decoded text from QR Code
 ```
 
 ## Requirements 
-* PHP >= 5.6
+* PHP >= 8.1
 * GD Library
 
 
