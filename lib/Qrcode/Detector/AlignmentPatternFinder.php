@@ -126,7 +126,7 @@ final class AlignmentPatternFinder
 			return $this->possibleCenters[0];
 		}
 
-		throw  NotFoundException::getNotFoundInstance("Bottom right alignment pattern not found");
+		throw  new NotFoundException("Bottom right alignment pattern not found");
 	}
 
 	/**

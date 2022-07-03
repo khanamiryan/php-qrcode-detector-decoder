@@ -177,7 +177,7 @@ class MonochromeRectangleDetector
 			}
 			if ($range == null) {
 				if ($lastRange == null) {
-					throw NotFoundException::getNotFoundInstance("No corner from center found");
+					throw new NotFoundException("No corner from center found");
 				}
 				// lastRange was found
 				if ($deltaX == 0) {
@@ -207,7 +207,7 @@ class MonochromeRectangleDetector
 			}
 			$lastRange = $range;
 		}
-		throw NotFoundException::getNotFoundInstance("No corner from center found");
+		throw new NotFoundException("No corner from center found");
 	}
 
 

@@ -57,6 +57,7 @@ class FinderPatternFinder
 	{/*final FinderPatternInfo find(Map<DecodeHintType,?> hints) throws NotFoundException {*/
 		$tryHarder = $hints != null && array_key_exists('TRY_HARDER', $hints) && $hints['TRY_HARDER'];
 		$pureBarcode = $hints != null && array_key_exists('PURE_BARCODE', $hints) && $hints['PURE_BARCODE'];
+		$nrOfRowsSkippable = $hints != null && array_key_exists('NR_ALLOW_SKIP_ROWS', $hints) ? $hints['NR_ALLOW_SKIP_ROWS'] : ($tryHarder ? 0 : null);
 		$maxI = $this->image->getHeight();
 		$maxJ = $this->image->getWidth();
 		// We are looking for black/white/black/white/black modules in
@@ -100,7 +101,7 @@ class FinderPatternFinder
 									if ($this->hasSkipped) {
 										$done = $this->haveMultiplyConfirmedCenters();
 									} else {
-										$rowSkip = $this->findRowSkip();
+										$rowSkip = $nrOfRowsSkippable === null ? $this->findRowSkip() : $nrOfRowsSkippable;
 										if ($rowSkip > $stateCount[2]) {
 											// Skip rows between row of lower confirmed center
 											// and top of presumed third confirmed center

@@ -17,6 +17,7 @@
 
 namespace Zxing\Qrcode\Decoder;
 
+use ValueError;
 use Zxing\Common\BitSource;
 use Zxing\Common\CharacterSetECI;
 use Zxing\Common\DecoderResult;
@@ -53,7 +54,7 @@ final class DecodedBitStreamParser
 		array|null $hints
 	): \Zxing\Common\DecoderResult {
 		$bits = new BitSource($bytes);
-		$result = '';//new StringBuilder(50);
+		$result = ''; //new StringBuilder(50);
 		$byteSegments = [];
 		$symbolSequence = -1;
 		$parityData = -1;
@@ -76,7 +77,7 @@ final class DecodedBitStreamParser
 						$fc1InEffect = true;
 					} elseif ($mode == Mode::$STRUCTURED_APPEND) {
 						if ($bits->available() < 16) {
-							throw FormatException::getFormatInstance();
+							throw FormatException::getFormatInstance("Bits available < 16");
 						}
 						// sequence number and parity is added later to the result metadata
 						// Read next 8 bits (symbol sequence #) and 8 bits (parity data), then continue
@@ -87,7 +88,7 @@ final class DecodedBitStreamParser
 						$value = self::parseECIValue($bits);
 						$currentCharacterSetECI = CharacterSetECI::getCharacterSetECIByValue($value);
 						if ($currentCharacterSetECI == null) {
-							throw FormatException::getFormatInstance();
+							throw FormatException::getFormatInstance("Current character set ECI is null");
 						}
 					} else {
 						// First handle Hanzi mode which does not start with character count
@@ -111,22 +112,22 @@ final class DecodedBitStreamParser
 							} elseif ($mode == Mode::$KANJI) {
 								self::decodeKanjiSegment($bits, $result, $count);
 							} else {
-								throw FormatException::getFormatInstance();
+								throw FormatException::getFormatInstance("Unknown mode $mode to decode");
 							}
 						}
 					}
 				}
 			} while ($mode != Mode::$TERMINATOR);
-		} catch (\InvalidArgumentException) {
+		} catch (\InvalidArgumentException $e) {
 			// from readBits() calls
-			throw FormatException::getFormatInstance();
+			throw FormatException::getFormatInstance("Invalid argument exception when formatting: " . $e->getMessage());
 		}
 
 		return new DecoderResult(
 			$bytes,
 			$result,
 			empty($byteSegments) ? null : $byteSegments,
-			$ecLevel == null ? null : 'L',//ErrorCorrectionLevel::toString($ecLevel),
+			$ecLevel == null ? null : 'L', //ErrorCorrectionLevel::toString($ecLevel),
 			$symbolSequence,
 			$parityData
 		);
@@ -151,7 +152,7 @@ final class DecodedBitStreamParser
 
 			return (($firstByte & 0x1F) << 16) | $secondThirdBytes;
 		}
-		throw FormatException::getFormatInstance();
+		throw FormatException::getFormatInstance("ECI Value parsing failed.");
 	}
 
 	/**
@@ -166,7 +167,7 @@ final class DecodedBitStreamParser
 	): void {
 		// Don't crash trying to read more bits than we have available.
 		if ($count * 13 > $bits->available()) {
-			throw FormatException::getFormatInstance();
+			throw FormatException::getFormatInstance("Trying to read more bits than we have available");
 		}
 
 		// Each character will require 2 bytes. Read the characters as 2-byte pairs
@@ -184,8 +185,8 @@ final class DecodedBitStreamParser
 				// In the 0xB0A1 to 0xFAFE range
 				$assembledTwoBytes += 0x0A6A1;
 			}
-			$buffer[$offset] = (($assembledTwoBytes >> 8) & 0xFF);//(byte)
-			$buffer[$offset + 1] = ($assembledTwoBytes & 0xFF);//(byte)
+			$buffer[$offset] = (($assembledTwoBytes >> 8) & 0xFF); //(byte)
+			$buffer[$offset + 1] = ($assembledTwoBytes & 0xFF); //(byte)
 			$offset += 2;
 			$count--;
 		}
@@ -201,11 +202,11 @@ final class DecodedBitStreamParser
 		while ($count >= 3) {
 			// Each 10 bits encodes three digits
 			if ($bits->available() < 10) {
-				throw FormatException::getFormatInstance();
+				throw FormatException::getFormatInstance("Not enough bits available");
 			}
 			$threeDigitsBits = $bits->readBits(10);
 			if ($threeDigitsBits >= 1000) {
-				throw FormatException::getFormatInstance();
+				throw FormatException::getFormatInstance("Too many three digit bits");
 			}
 			$result .= (self::toAlphaNumericChar($threeDigitsBits / 100));
 			$result .= (self::toAlphaNumericChar(($threeDigitsBits / 10) % 10));
@@ -215,22 +216,22 @@ final class DecodedBitStreamParser
 		if ($count == 2) {
 			// Two digits left over to read, encoded in 7 bits
 			if ($bits->available() < 7) {
-				throw FormatException::getFormatInstance();
+				throw FormatException::getFormatInstance("Two digits left over to read, encoded in 7 bits, but only " . $bits->available() . ' bits available');
 			}
 			$twoDigitsBits = $bits->readBits(7);
 			if ($twoDigitsBits >= 100) {
-				throw FormatException::getFormatInstance();
+				throw FormatException::getFormatInstance("Too many bits: $twoDigitsBits expected < 100");
 			}
 			$result .= (self::toAlphaNumericChar($twoDigitsBits / 10));
 			$result .= (self::toAlphaNumericChar($twoDigitsBits % 10));
 		} elseif ($count == 1) {
 			// One digit left over to read
 			if ($bits->available() < 4) {
-				throw FormatException::getFormatInstance();
+				throw FormatException::getFormatInstance("One digit left to read, but < 4 bits available");
 			}
 			$digitBits = $bits->readBits(4);
 			if ($digitBits >= 10) {
-				throw FormatException::getFormatInstance();
+				throw FormatException::getFormatInstance("Too many bits: $digitBits expected < 10");
 			}
 			$result .= (self::toAlphaNumericChar($digitBits));
 		}
@@ -242,7 +243,7 @@ final class DecodedBitStreamParser
 	private static function toAlphaNumericChar(int|float $value)
 	{
 		if ($value >= count(self::$ALPHANUMERIC_CHARS)) {
-			throw FormatException::getFormatInstance();
+			throw FormatException::getFormatInstance("$value has too many alphanumeric chars");
 		}
 
 		return self::$ALPHANUMERIC_CHARS[$value];
@@ -258,7 +259,7 @@ final class DecodedBitStreamParser
 		$start = strlen((string) $result);
 		while ($count > 1) {
 			if ($bits->available() < 11) {
-				throw FormatException::getFormatInstance();
+				throw FormatException::getFormatInstance("Not enough bits available to read two expected characters");
 			}
 			$nextTwoCharsBits = $bits->readBits(11);
 			$result .= (self::toAlphaNumericChar($nextTwoCharsBits / 45));
@@ -268,7 +269,7 @@ final class DecodedBitStreamParser
 		if ($count == 1) {
 			// special case: one character left
 			if ($bits->available() < 6) {
-				throw FormatException::getFormatInstance();
+				throw FormatException::getFormatInstance("Not enough bits available to read one expected character");
 			}
 			$result .= self::toAlphaNumericChar($bits->readBits(6));
 		}
@@ -279,7 +280,7 @@ final class DecodedBitStreamParser
 				if ($result[$i] == '%') {
 					if ($i < strlen((string) $result) - 1 && $result[$i + 1] == '%') {
 						// %% is rendered as %
-						$result = substr_replace($result, '', $i + 1, 1);//deleteCharAt(i + 1);
+						$result = substr_replace($result, '', $i + 1, 1); //deleteCharAt(i + 1);
 					} else {
 						// In alpha mode, % should be converted to FNC1 separator 0x1D
 						$result[$i] = chr(0x1D);
@@ -299,12 +300,12 @@ final class DecodedBitStreamParser
 	): void {
 		// Don't crash trying to read more bits than we have available.
 		if (8 * $count > $bits->available()) {
-			throw FormatException::getFormatInstance();
+			throw FormatException::getFormatInstance("Trying to read more bits than we have available");
 		}
 
 		$readBytes = fill_array(0, $count, 0);
 		for ($i = 0; $i < $count; $i++) {
-			$readBytes[$i] = $bits->readBits(8);//(byte)
+			$readBytes[$i] = $bits->readBits(8); //(byte)
 		}
 		$text = implode(array_map('chr', $readBytes));
 		$encoding = '';
@@ -315,12 +316,16 @@ final class DecodedBitStreamParser
 			// Shift_JIS -- without anything like an ECI designator to
 			// give a hint.
 
-			$encoding = mb_detect_encoding($text, $hints);
+			try {
+				$encoding = mb_detect_encoding($text, $hints);
+			} catch (ValueError $e) {
+				$encoding = mb_detect_encoding($text, mb_detect_order(), false);
+			}
 		} else {
 			$encoding = $currentCharacterSetECI->name();
 		}
-		//  $result.= mb_convert_encoding($text ,$encoding);//(new String(readBytes, encoding));
-		$result .= $text;//(new String(readBytes, encoding));
+		$result .= mb_convert_encoding($text, $encoding); //(new String(readBytes, encoding));
+		// $result .= $text; //(new String(readBytes, encoding));
 
 		$byteSegments = array_merge($byteSegments, $readBytes);
 	}
@@ -332,7 +337,7 @@ final class DecodedBitStreamParser
 	): void {
 		// Don't crash trying to read more bits than we have available.
 		if ($count * 13 > $bits->available()) {
-			throw FormatException::getFormatInstance();
+			throw FormatException::getFormatInstance("Trying to read more bits than we have available");
 		}
 
 		// Each character will require 2 bytes. Read the characters as 2-byte pairs
@@ -350,7 +355,7 @@ final class DecodedBitStreamParser
 				// In the 0xE040 to 0xEBBF range
 				$assembledTwoBytes += 0x0C140;
 			}
-			$buffer[$offset] = ($assembledTwoBytes >> 8);//(byte)
+			$buffer[$offset] = ($assembledTwoBytes >> 8); //(byte)
 			$buffer[$offset + 1] = $assembledTwoBytes; //(byte)
 			$offset += 2;
 			$count--;

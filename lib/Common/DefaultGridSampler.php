@@ -81,7 +81,7 @@ final class DefaultGridSampler extends GridSampler
 		PerspectiveTransform $transform
 	): BitMatrix {
 		if ($dimensionX <= 0 || $dimensionY <= 0) {
-			throw NotFoundException::getNotFoundInstance("X or Y dimensions smaller than zero");
+			throw new NotFoundException("X or Y dimensions smaller than zero");
 		}
 		$bits = new BitMatrix($dimensionX, $dimensionY);
 		$points = fill_array(0, 2 * $dimensionX, 0.0);
@@ -111,7 +111,7 @@ final class DefaultGridSampler extends GridSampler
 				// This results in an ugly runtime exception despite our clever checks above -- can't have
 				// that. We could check each point's coordinates but that feels duplicative. We settle for
 				// catching and wrapping ArrayIndexOutOfBoundsException.
-				throw NotFoundException::getNotFoundInstance("ArrayIndexOutOfBoundsException");
+				throw new NotFoundException("ArrayIndexOutOfBoundsException");
 			}
 		}
 

@@ -106,7 +106,7 @@ class QRCodeReader implements Reader
 		$leftTopBlack = $image->getTopLeftOnBit();
 		$rightBottomBlack = $image->getBottomRightOnBit();
 		if ($leftTopBlack === null || $rightBottomBlack == null) {
-			throw NotFoundException::getNotFoundInstance("Top left or bottom right on bit not found");
+			throw new NotFoundException("Top left or bottom right on bit not found");
 		}
 
 		$moduleSize = self::moduleSize($leftTopBlack, $image);
@@ -118,7 +118,7 @@ class QRCodeReader implements Reader
 
 		// Sanity check!
 		if ($left >= $right || $top >= $bottom) {
-			throw NotFoundException::getNotFoundInstance("Left vs. right ($left >= $right) or top vs. bottom ($top >= $bottom) sanity violated.");
+			throw new NotFoundException("Left vs. right ($left >= $right) or top vs. bottom ($top >= $bottom) sanity violated.");
 		}
 
 		if ($bottom - $top != $right - $left) {
@@ -130,11 +130,11 @@ class QRCodeReader implements Reader
 		$matrixWidth = round(($right - $left + 1) / $moduleSize);
 		$matrixHeight = round(($bottom - $top + 1) / $moduleSize);
 		if ($matrixWidth <= 0 || $matrixHeight <= 0) {
-			throw NotFoundException::getNotFoundInstance("Matrix dimensions <= 0 ($matrixWidth, $matrixHeight)");
+			throw new NotFoundException("Matrix dimensions <= 0 ($matrixWidth, $matrixHeight)");
 		}
 		if ($matrixHeight != $matrixWidth) {
 			// Only possibly decode square regions
-			throw NotFoundException::getNotFoundInstance("Matrix height  $matrixHeight != matrix width $matrixWidth");
+			throw new NotFoundException("Matrix height  $matrixHeight != matrix width $matrixWidth");
 		}
 
 		// Push in the "border" by half the module width so that we start
@@ -151,7 +151,7 @@ class QRCodeReader implements Reader
 		if ($nudgedTooFarRight > 0) {
 			if ($nudgedTooFarRight > $nudge) {
 				// Neither way fits; abort
-				throw NotFoundException::getNotFoundInstance("Nudge too far right ($nudgedTooFarRight > $nudge), no fit found");
+				throw new NotFoundException("Nudge too far right ($nudgedTooFarRight > $nudge), no fit found");
 			}
 			$left -= $nudgedTooFarRight;
 		}
@@ -160,7 +160,7 @@ class QRCodeReader implements Reader
 		if ($nudgedTooFarDown > 0) {
 			if ($nudgedTooFarDown > $nudge) {
 				// Neither way fits; abort
-				throw NotFoundException::getNotFoundInstance("Nudge too far down ($nudgedTooFarDown > $nudge), no fit found");
+				throw new NotFoundException("Nudge too far down ($nudgedTooFarDown > $nudge), no fit found");
 			}
 			$top -= $nudgedTooFarDown;
 		}
@@ -203,7 +203,7 @@ class QRCodeReader implements Reader
 			$y++;
 		}
 		if ($x == $width || $y == $height) {
-			throw NotFoundException::getNotFoundInstance("$x == $width || $y == $height");
+			throw new NotFoundException("$x == $width || $y == $height");
 		}
 
 		return ($x - $leftTopBlack[0]) / 7.0; //return ($x - $leftTopBlack[0]) / 7.0f;

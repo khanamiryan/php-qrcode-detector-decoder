@@ -96,7 +96,7 @@ abstract class GridSampler
 			$x = (int)$points[$offset];
 			$y = (int)$points[$offset + 1];
 			if ($x < -1 || $x > $width || $y < -1 || $y > $height) {
-				throw NotFoundException::getNotFoundInstance("Endpoint lies outside the image boundaries");
+				throw new NotFoundException("Endpoint ($x, $y) lies outside the image boundaries ($width, $height)");
 			}
 			$nudged = false;
 			if ($x == -1) {
@@ -120,7 +120,7 @@ abstract class GridSampler
 			$x = (int)$points[$offset];
 			$y = (int)$points[$offset + 1];
 			if ($x < -1 || $x > $width || $y < -1 || $y > $height) {
-				throw NotFoundException::getNotFoundInstance("Endpoint lies outside the image boundaries");
+				throw new NotFoundException("Endpoint ($x, $y) lies outside the image boundaries ($width, $height)");
 			}
 			$nudged = false;
 			if ($x == -1) {

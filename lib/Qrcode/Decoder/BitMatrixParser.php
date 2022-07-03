@@ -221,7 +221,7 @@ final class BitMatrixParser
 
 			return $theParsedVersion;
 		}
-		throw FormatException::getFormatInstance();
+		throw FormatException::getFormatInstance("both version information locations cannot be parsed as the valid encoding of version information");
 	}
 
 	/**
