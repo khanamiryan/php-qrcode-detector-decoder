@@ -145,7 +145,7 @@ abstract class GridSampler
 	 * transformation is determined by the coordinates of 4 points, in the original and transformed
 	 * image space.
 	 *
-	 * @param image $image      to sample
+	 * @param BitMatrix $image      image to sample
 	 * @param int $dimensionX width of {@link BitMatrix} to sample from image
 	 * @param int $dimensionY height of {@link BitMatrix} to sample from image
 	 * @param float      $p1ToX point 1 preimage X
