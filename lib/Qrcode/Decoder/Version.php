@@ -100,12 +100,12 @@ class Version
 	public static function getProvisionalVersionForDimension($dimension)
 	{
 		if ($dimension % 4 != 1) {
-			throw FormatException::getFormatInstance();
+			throw new FormatException();
 		}
 		try {
 			return self::getVersionForNumber(($dimension - 17) / 4);
 		} catch (\InvalidArgumentException) {
-			throw FormatException::getFormatInstance();
+			throw new FormatException();
 		}
 	}
 

@@ -42,7 +42,7 @@ final class BitMatrixParser
 	{
 		$dimension = $bitMatrix->getHeight();
 		if ($dimension < 21 || ($dimension & 0x03) != 1) {
-			throw FormatException::getFormatInstance();
+			throw new FormatException();
 		}
 		$this->bitMatrix = $bitMatrix;
 	}
@@ -108,7 +108,7 @@ final class BitMatrixParser
 			$readingUp ^= true; // readingUp = !readingUp; // switch directions
 		}
 		if ($resultOffset != $version->getTotalCodewords()) {
-			throw FormatException::getFormatInstance();
+			throw new FormatException();
 		}
 
 		return $result;
@@ -156,7 +156,7 @@ final class BitMatrixParser
 		if ($parsedFormatInfo != null) {
 			return $parsedFormatInfo;
 		}
-		throw FormatException::getFormatInstance();
+		throw new FormatException();
 	}
 
 	/**
@@ -221,7 +221,7 @@ final class BitMatrixParser
 
 			return $theParsedVersion;
 		}
-		throw FormatException::getFormatInstance("both version information locations cannot be parsed as the valid encoding of version information");
+		throw new FormatException("both version information locations cannot be parsed as the valid encoding of version information");
 	}
 
 	/**
