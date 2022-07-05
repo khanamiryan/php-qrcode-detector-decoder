@@ -47,15 +47,15 @@ final class GenericGF
 	/**
  * Create a representation of GF(size) using the given primitive polynomial.
  *
- * @param irreducible $primitive polynomial whose coefficients are represented by
+ * @param int $primitive irreducible polynomial whose coefficients are represented by
  *                  the bits of an int, where the least-significant bit represents the constant
  *                  coefficient
- * @param the      $size size of the field
-  * @param the $generatorBase factor b in the generator polynomial can be 0- or 1-based
-                  (g(x) = (x+a^b)(x+a^(b+1))...(x+a^(b+2t-1))).
-                  In most cases it should be 1, but for QR code it is 0.
+ * @param int $size      the size of the field
+  * @param int $generatorBase the factor b in the generator polynomial can be 0- or 1-based
+				  (g(x) = (x+a^b)(x+a^(b+1))...(x+a^(b+2t-1))).
+				  In most cases it should be 1, but for QR code it is 0.
  */
- public function __construct(private $primitive, private $size, private $generatorBase)
+	public function __construct(private $primitive, private $size, private $generatorBase)
 	{
 		$x = 1;
 		for ($i = 0; $i < $size; $i++) {
@@ -89,19 +89,21 @@ final class GenericGF
 	/**
 	 * Implements both addition and subtraction -- they are the same in GF(size).
 	 *
-	 * @return sum/difference of a and b
+	 * @return float|int sum/difference of a and b
+	 *
+	 * @param float|int|null $b
 	 */
-	public static function addOrSubtract($a, $b)
+	public static function addOrSubtract(int $a, int|float|null $b)
 	{
 		return $a ^ $b;
 	}
 
-	public function getZero()
+	public function getZero(): GenericGFPoly
 	{
 		return $this->zero;
 	}
 
-	public function getOne()
+	public function getOne(): GenericGFPoly
 	{
 		return $this->one;
 	}
@@ -109,7 +111,7 @@ final class GenericGF
 	/**
 	 * @return GenericGFPoly  the monomial representing coefficient * x^degree
 	 */
-	public function buildMonomial($degree, $coefficient)
+	public function buildMonomial($degree, int $coefficient)
 	{
 		if ($degree < 0) {
 			throw new \InvalidArgumentException();
@@ -132,9 +134,9 @@ final class GenericGF
 	}
 
 	/**
-	 * @return base 2 log of a in GF(size)
+	 * @return float base 2 log of a in GF(size)
 	 */
-	public function log($a)
+	public function log(float|int|null $a)
 	{
 		if ($a == 0) {
 			throw new \InvalidArgumentException();
@@ -144,7 +146,7 @@ final class GenericGF
 	}
 
 	/**
-	 * @return multiplicative inverse of a
+	 * @return float multiplicative inverse of a
 	 */
 	public function inverse($a)
 	{
@@ -157,8 +159,11 @@ final class GenericGF
 
 	/**
 	 * @return int product of a and b in GF(size)
+	 *
+	 * @param float|int|null $b
+	 * @param float|int|null $a
 	 */
-	public function multiply($a, $b)
+	public function multiply(int|float|null $a, int|float|null $b)
 	{
 		if ($a == 0 || $b == 0) {
 			return 0;
@@ -178,7 +183,7 @@ final class GenericGF
 	}
 
 	// @Override
-	public function toString()
+	public function toString(): string
 	{
 		return "GF(0x" . dechex((int)($this->primitive)) . ',' . $this->size . ')';
 	}

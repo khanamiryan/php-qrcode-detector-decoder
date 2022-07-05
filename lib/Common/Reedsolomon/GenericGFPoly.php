@@ -29,17 +29,17 @@ namespace Zxing\Common\Reedsolomon;
 final class GenericGFPoly
 {
 	/**
-  * @var int[]|mixed|null
+  * @var int[]|float[]|null
   */
- private $coefficients;
+	private $coefficients;
 
 	/**
-	 * @param the        $field {@link GenericGF} instance representing the field to use
+	 * @param GenericGF $field {@link GenericGF} the        instance representing the field to use
 	 * to perform computations
 	 * @param array $coefficients coefficients as ints representing elements of GF(size), arranged
 	 *                     from most significant (highest-power term) coefficient to least significant
 	 *
-	 * @throws InvalidArgumentException if argument is null or empty,
+	 * @throws \InvalidArgumentException if argument is null or empty,
 	 * or if leading coefficient is 0 and this is not a
 	 * constant polynomial (that is, it is not the monomial "0")
 	 */
@@ -72,15 +72,20 @@ final class GenericGFPoly
 		}
 	}
 
-	public function getCoefficients()
+	/**
+	 * @return (float|int)[]|null
+	 *
+	 * @psalm-return array<float|int>|null
+	 */
+	public function getCoefficients(): array|null
 	{
 		return $this->coefficients;
 	}
 
 	/**
-	 * @return evaluation of this polynomial at a given point
+	 * @return float|int|null evaluation of this polynomial at a given point
 	 */
-	public function evaluateAt($a)
+	public function evaluateAt($a): int|float|null
 	{
 		if ($a == 0) {
 			// Just return the x^0 coefficient
@@ -105,21 +110,23 @@ final class GenericGFPoly
 	}
 
 	/**
-	 * @return coefficient of x^degree term in this polynomial
+	 * @return float|int|null coefficient of x^degree term in this polynomial
+	 *
+	 * @param float|int $degree
 	 */
-	public function getCoefficient($degree)
+	public function getCoefficient(int|float $degree): int|float|null
 	{
 		return $this->coefficients[(is_countable($this->coefficients) ? count($this->coefficients) : 0) - 1 - $degree];
 	}
 
-	public function multiply($other)
+	public function multiply($other): self
 	{
 		$aCoefficients = [];
-  $bCoefficients = [];
-  $aLength = null;
-  $bLength = null;
-  $product = [];
-  if (is_int($other)) {
+		$bCoefficients = [];
+		$aLength = null;
+		$bLength = null;
+		$product = [];
+		if (is_int($other)) {
 			return $this->multiply_($other);
 		}
 		if ($this->field !== $other->field) {
@@ -146,7 +153,7 @@ final class GenericGFPoly
 		return new GenericGFPoly($this->field, $product);
 	}
 
-	public function multiply_($scalar)
+	public function multiply_(int $scalar): self
 	{
 		if ($scalar == 0) {
 			return $this->field->getZero();
@@ -164,14 +171,14 @@ final class GenericGFPoly
 	}
 
 	/**
-	 * @return true iff this polynomial is the monomial "0"
+	 * @return bool iff this polynomial is the monomial "0"
 	 */
-	public function isZero()
+	public function isZero(): bool
 	{
 		return $this->coefficients[0] == 0;
 	}
 
-	public function multiplyByMonomial($degree, $coefficient)
+	public function multiplyByMonomial($degree, $coefficient): self
 	{
 		if ($degree < 0) {
 			throw new \InvalidArgumentException();
@@ -188,7 +195,10 @@ final class GenericGFPoly
 		return new GenericGFPoly($this->field, $product);
 	}
 
-	public function divide($other)
+	/**
+	 * @psalm-return array{0: mixed, 1: mixed}
+	 */
+	public function divide($other): array
 	{
 		if ($this->field !== $other->field) {
 			throw new \InvalidArgumentException("GenericGFPolys do not have same GenericGF field");
@@ -216,21 +226,21 @@ final class GenericGFPoly
 	}
 
 	/**
-	 * @return degree of this polynomial
+	 * @return int of this polynomial
 	 */
-	public function getDegree()
+	public function getDegree(): int
 	{
 		return (is_countable($this->coefficients) ? count($this->coefficients) : 0) - 1;
 	}
 
-	public function addOrSubtract($other)
+	public function addOrSubtract(self $other): self
 	{
 		$smallerCoefficients = [];
-  $largerCoefficients = [];
-  $sumDiff = [];
-  $lengthDiff = null;
-  $countLargerCoefficients = null;
-  if ($this->field !== $other->field) {
+		$largerCoefficients = [];
+		$sumDiff = [];
+		$lengthDiff = null;
+		$countLargerCoefficients = null;
+		if ($this->field !== $other->field) {
 			throw new \InvalidArgumentException("GenericGFPolys do not have same GenericGF field");
 		}
 		if ($this->isZero()) {
@@ -260,9 +270,9 @@ final class GenericGFPoly
 		return new GenericGFPoly($this->field, $sumDiff);
 	}
 
-	//@Override
+	
 
-	public function toString()
+	public function toString(): string
 	{
 		$result = '';
 		for ($degree = $this->getDegree(); $degree >= 0; $degree--) {

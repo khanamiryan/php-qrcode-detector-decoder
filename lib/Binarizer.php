@@ -31,8 +31,8 @@ use Zxing\Common\BitMatrix;
 abstract class Binarizer
 {
 	protected function __construct(private $source)
- {
- }
+	{
+	}
 
 	/**
 	 * @return LuminanceSource
@@ -50,14 +50,14 @@ abstract class Binarizer
 	 * and passed in with each call for performance. However it is legal to keep more than one row
 	 * at a time if needed.
 	 *
-	 * @param $y   The row to fetch, which must be in [0, bitmap height)
-	 * @param An $row optional preallocated array. If null or too small, it will be ignored.
+	 * @param int $y   The row to fetch, which must be in [0, bitmap height)
+	 * @param BitArray|null $row An optional preallocated array. If null or too small, it will be ignored.
 	 *            If used, the Binarizer will call BitArray.clear(). Always use the returned object.
 	 *
-	 * @return array The array of bits for this row (true means black).
+	 * @return BitArray The array of bits for this row (true means black).
 	 * @throws NotFoundException if row can't be binarized
 	 */
-	abstract public function getBlackRow($y, $row);
+	abstract public function getBlackRow(int $y, ?BitArray $row = null): BitArray;
 
 	/**
 	 * Converts a 2D array of luminance data to 1 bit data. As above, assume this method is expensive

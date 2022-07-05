@@ -37,7 +37,7 @@ final class FormatInformation
   * Offset i holds the number of 1 bits in the binary representation of i
   * @var int[]|null
   */
- private static ?array $BITS_SET_IN_HALF_BYTE = null;
+	private static ?array $BITS_SET_IN_HALF_BYTE = null;
 
 	private readonly \Zxing\Qrcode\Decoder\ErrorCorrectionLevel $errorCorrectionLevel;
 	private readonly int $dataMask;
@@ -95,10 +95,13 @@ final class FormatInformation
 	 * @param $maskedFormatInfo2 ; second copy of same info; both are checked at the same time
 	 *                          to establish best match
 	 *
-	 * @return information about the format it specifies, or {@code null}
+	 * @return FormatInformation|null information about the format it specifies, or {@code null}
 	 *  if doesn't seem to match any known pattern
+	 *
+	 * @psalm-param 0|1 $maskedFormatInfo1
+	 * @psalm-param 0|1 $maskedFormatInfo2
 	 */
-	public static function decodeFormatInformation($maskedFormatInfo1, $maskedFormatInfo2)
+	public static function decodeFormatInformation(int $maskedFormatInfo1, int $maskedFormatInfo2)
 	{
 		$formatInfo = self::doDecodeFormatInformation($maskedFormatInfo1, $maskedFormatInfo2);
 		if ($formatInfo != null) {
@@ -113,7 +116,11 @@ final class FormatInformation
 		);
 	}
 
-	private static function doDecodeFormatInformation($maskedFormatInfo1, $maskedFormatInfo2)
+	/**
+	 * @psalm-param 0|1 $maskedFormatInfo1
+	 * @psalm-param 0|1 $maskedFormatInfo2
+	 */
+	private static function doDecodeFormatInformation(int $maskedFormatInfo1, int $maskedFormatInfo2): self|null
 	{
 		// Find the int in FORMAT_INFO_DECODE_LOOKUP with fewest bits differing
 		$bestDifference = PHP_INT_MAX;
@@ -147,7 +154,10 @@ final class FormatInformation
 		return null;
 	}
 
-	public static function numBitsDiffering($a, $b)
+	/**
+	 * @psalm-param 0|1 $a
+	 */
+	public static function numBitsDiffering(int $a, $b): int
 	{
 		$a ^= $b; // a now has a 1 bit exactly where its bit differs with b's
 		// Count bits set quickly with a series of lookups:
@@ -161,24 +171,24 @@ final class FormatInformation
 			self::$BITS_SET_IN_HALF_BYTE[(uRShift($a, 28) & 0x0F)];
 	}
 
-	public function getErrorCorrectionLevel()
+	public function getErrorCorrectionLevel(): ErrorCorrectionLevel
 	{
 		return $this->errorCorrectionLevel;
 	}
 
-	public function getDataMask()
+	public function getDataMask(): int
 	{
 		return $this->dataMask;
 	}
 
-	//@Override
+	
 	public function hashCode()
 	{
 		return ($this->errorCorrectionLevel->ordinal() << 3) | (int)($this->dataMask);
 	}
 
-	//@Override
-	public function equals($o)
+	
+	public function equals($o): bool
 	{
 		if (!($o instanceof FormatInformation)) {
 			return false;

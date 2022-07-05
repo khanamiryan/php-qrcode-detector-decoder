@@ -32,35 +32,35 @@ final class BitSource
 	private int $bitOffset = 0;
 
 	/**
-	 * @param bytes $bytes from which this will read bits. Bits will be read from the first byte first.
+	 * @param array $bytes bytes from which this will read bits. Bits will be read from the first byte first.
 	 *              Bits are read within a byte from most-significant to least-significant bit.
 	 */
-	public function __construct(private $bytes)
- {
- }
+	public function __construct(private array $bytes)
+	{
+	}
 
 	/**
-	 * @return index of next bit in current byte which would be read by the next call to {@link #readBits(int)}.
+	 * @return int of next bit in current byte which would be read by the next call to {@link #readBits(int)}.
 	 */
-	public function getBitOffset()
+	public function getBitOffset(): int
 	{
 		return $this->bitOffset;
 	}
 
 	/**
-	 * @return index of next byte in input byte array which would be read by the next call to {@link #readBits(int)}.
+	 * @return int of next byte in input byte array which would be read by the next call to {@link #readBits(int)}.
 	 */
-	public function getByteOffset()
+	public function getByteOffset(): int
 	{
 		return $this->byteOffset;
 	}
 
 	/**
-	 * @param number $numBits of bits to read
+	 * @param int $numBits number of bits to read
 	 *
 	 * @return int representing the bits read. The bits will appear as the least-significant
 	 *         bits of the int
-	 * @throws InvalidArgumentException if numBits isn't in [1,32] or more than is available
+	 * @throws \InvalidArgumentException if numBits isn't in [1,32] or more than is available
 	 */
 	public function readBits($numBits)
 	{
@@ -106,9 +106,9 @@ final class BitSource
 	}
 
 	/**
-	 * @return number of bits that can be read successfully
+	 * @return int of bits that can be read successfully
 	 */
-	public function available()
+	public function available(): int
 	{
 		return 8 * ((is_countable($this->bytes) ? count($this->bytes) : 0) - $this->byteOffset) - $this->bitOffset;
 	}

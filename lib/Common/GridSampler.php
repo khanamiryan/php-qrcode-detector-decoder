@@ -35,9 +35,9 @@ use Zxing\NotFoundException;
 abstract class GridSampler
 {
 	/**
-  * @var mixed|\Zxing\Common\DefaultGridSampler|null
-  */
- private static $gridSampler;
+	 * @var GridSampler|null
+	 */
+	private static $gridSampler;
 
 	/**
 	 * Sets the implementation of GridSampler used by the library. One global
@@ -46,7 +46,7 @@ abstract class GridSampler
 	 * in the whole lifetime of the JVM. For instance, an Android activity can swap in
 	 * an implementation that takes advantage of native platform libraries.
 	 *
-	 * @param $newGridSampler The platform-specific object to install.
+	 * @param GridSampler $newGridSampler The platform-specific object to install.
 	 */
 	public static function setGridSampler($newGridSampler): void
 	{
@@ -76,15 +76,18 @@ abstract class GridSampler
 	 * <p>For efficiency, the method will check points from either end of the line until one is found
 	 * to be within the image. Because the set of points are assumed to be linear, this is valid.</p>
 	 *
-	 * @param image  $image into which the points should map
-	 * @param actual $points points in x1,y1,...,xn,yn form
+	 * @param BitMatrix $image  image into which the points should map
+	 * @param array $points actual points in x1,y1,...,xn,yn form
+	 * @param float[] $points
 	 *
 	 * @throws NotFoundException if an endpoint is lies outside the image boundaries
+	 *
+	 * @psalm-param array<int, float> $points
 	 */
 	protected static function checkAndNudgePoints(
-		$image,
-		$points
-	) {
+		BitMatrix $image,
+		array $points
+	): void {
 		$width = $image->getWidth();
 		$height = $image->getHeight();
 		// Check and nudge points from start until we see some that are OK:
@@ -93,7 +96,7 @@ abstract class GridSampler
 			$x = (int)$points[$offset];
 			$y = (int)$points[$offset + 1];
 			if ($x < -1 || $x > $width || $y < -1 || $y > $height) {
-				throw NotFoundException::getNotFoundInstance();
+				throw new NotFoundException("Endpoint ($x, $y) lies outside the image boundaries ($width, $height)");
 			}
 			$nudged = false;
 			if ($x == -1) {
@@ -117,7 +120,7 @@ abstract class GridSampler
 			$x = (int)$points[$offset];
 			$y = (int)$points[$offset + 1];
 			if ($x < -1 || $x > $width || $y < -1 || $y > $height) {
-				throw NotFoundException::getNotFoundInstance();
+				throw new NotFoundException("Endpoint ($x, $y) lies outside the image boundaries ($width, $height)");
 			}
 			$nudged = false;
 			if ($x == -1) {
@@ -142,25 +145,25 @@ abstract class GridSampler
 	 * transformation is determined by the coordinates of 4 points, in the original and transformed
 	 * image space.
 	 *
-	 * @param image      $image to sample
-	 * @param width $dimensionX of {@link BitMatrix} to sample from image
-	 * @param height $dimensionY of {@link BitMatrix} to sample from image
-	 * @param point      $p1ToX 1 preimage X
-	 * @param point      $p1ToY 1 preimage Y
-	 * @param point      $p2ToX 2 preimage X
-	 * @param point      $p2ToY 2 preimage Y
-	 * @param point      $p3ToX 3 preimage X
-	 * @param point      $p3ToY 3 preimage Y
-	 * @param point      $p4ToX 4 preimage X
-	 * @param point      $p4ToY 4 preimage Y
-	 * @param point    $p1FromX 1 image X
-	 * @param point    $p1FromY 1 image Y
-	 * @param point    $p2FromX 2 image X
-	 * @param point    $p2FromY 2 image Y
-	 * @param point    $p3FromX 3 image X
-	 * @param point    $p3FromY 3 image Y
-	 * @param point    $p4FromX 4 image X
-	 * @param point    $p4FromY 4 image Y
+	 * @param BitMatrix $image      image to sample
+	 * @param int $dimensionX width of {@link BitMatrix} to sample from image
+	 * @param int $dimensionY height of {@link BitMatrix} to sample from image
+	 * @param float      $p1ToX point 1 preimage X
+	 * @param float      $p1ToY point 1 preimage Y
+	 * @param float      $p2ToX point 2 preimage X
+	 * @param float      $p2ToY point 2 preimage Y
+	 * @param float      $p3ToX point 3 preimage X
+	 * @param float      $p3ToY point 3 preimage Y
+	 * @param float      $p4ToX point 4 preimage X
+	 * @param float      $p4ToY point 4 preimage Y
+	 * @param float    $p1FromX point 1 image X
+	 * @param float    $p1FromY point 1 image Y
+	 * @param float    $p2FromX point 2 image X
+	 * @param float    $p2FromY point 2 image Y
+	 * @param float    $p3FromX point 3 image X
+	 * @param float    $p3FromY point 3 image Y
+	 * @param float    $p4FromX point 4 image X
+	 * @param float    $p4FromY point 4 image Y
 	 *
 	 * @return {@link BitMatrix} representing a grid of points sampled from the image within a region
 	 *   defined by the "from" parameters
@@ -190,9 +193,9 @@ abstract class GridSampler
 	);
 
 	abstract public function sampleGrid_(
-		$image,
-		$dimensionX,
-		$dimensionY,
-		$transform
-	);
+		BitMatrix $image,
+		int $dimensionX,
+		int $dimensionY,
+		PerspectiveTransform $transform
+	): BitMatrix;
 }

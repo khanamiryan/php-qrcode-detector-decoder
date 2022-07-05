@@ -12,13 +12,13 @@ final class IMagickLuminanceSource extends LuminanceSource
 	private $dataWidth;
 	private $dataHeight;
 	/**
-  * @var mixed|int
-  */
- private $left;
+	 * @var mixed|int
+	 */
+	private $left;
 	/**
-  * @var mixed|int
-  */
- private $top;
+	 * @var mixed|int
+	 */
+	private $top;
 	private ?\Imagick $image = null;
 
 	public function __construct(
@@ -46,6 +46,42 @@ final class IMagickLuminanceSource extends LuminanceSource
 		$this->top = $top;
 	}
 
+	public function rotateCounterClockwise(): void
+	{
+		throw new \RuntimeException("This LuminanceSource does not support rotateCounterClockwise");
+	}
+
+	public function rotateCounterClockwise45(): void
+	{
+		throw new \RuntimeException("This LuminanceSource does not support rotateCounterClockwise45");
+	}
+
+	/**
+	 * TODO: move to some utility class or something
+	 * Converts shorthand memory notation value to bytes
+	 * From http://php.net/manual/en/function.ini-get.php
+	 *
+	 * @param int $val Memory size shorthand notation string
+	 */
+	protected static function kmgStringToBytes(string $val)
+	{
+		$val = trim($val);
+		$last = strtolower($val[strlen($val) - 1]);
+		$val = substr($val, 0, -1);
+		switch ($last) {
+				// The 'G' modifier is available since PHP 5.1.0
+			case 'g':
+				$val *= 1024;
+				// no break
+			case 'm':
+				$val *= 1024;
+				// no break
+			case 'k':
+				$val *= 1024;
+		}
+		return $val;
+	}
+
 	public function _IMagickLuminanceSource(\Imagick $image, $width, $height): void
 	{
 		parent::__construct($width, $height);
@@ -56,13 +92,15 @@ final class IMagickLuminanceSource extends LuminanceSource
 		$this->top = 0;
 		$this->image = $image;
 
-
 		// In order to measure pure decoding speed, we convert the entire image to a greyscale array
 		// up front, which is the same as the Y channel of the YUVLuminanceSource in the real app.
 		$this->luminances = [];
 
 		$image->setImageColorspace(\Imagick::COLORSPACE_GRAY);
-		// $image->newPseudoImage(0, 0, "magick:rose");
+		// Check that we actually have enough space to do it
+		if ($width * $height * 16 * 3 > $this->kmgStringToBytes(ini_get('memory_limit'))) {
+			throw new \RuntimeException("PHP Memory Limit does not allow pixel export.");
+		}
 		$pixels = $image->exportImagePixels(1, 1, $width, $height, "RGB", \Imagick::PIXEL_CHAR);
 
 		$array = [];
@@ -75,16 +113,15 @@ final class IMagickLuminanceSource extends LuminanceSource
 			$b = $pixels[$i + 2] & 0xff;
 			if ($r == $g && $g == $b) {
 				// Image is already greyscale, so pick any channel.
-
-				$this->luminances[] = $r;//(($r + 128) % 256) - 128;
+				$this->luminances[] = $r; //(($r + 128) % 256) - 128;
 			} else {
 				// Calculate luminance cheaply, favoring green.
-				$this->luminances[] = ($r + 2 * $g + $b) / 4;//(((($r + 2 * $g + $b) / 4) + 128) % 256) - 128;
+				$this->luminances[] = ($r + 2 * $g + $b) / 4; //(((($r + 2 * $g + $b) / 4) + 128) % 256) - 128;
 			}
 		}
 	}
 
-	//@Override
+
 	public function getRow($y, $row = null)
 	{
 		if ($y < 0 || $y >= $this->getHeight()) {
@@ -100,7 +137,7 @@ final class IMagickLuminanceSource extends LuminanceSource
 		return $row;
 	}
 
-	//@Override
+
 	public function getMatrix()
 	{
 		$width = $this->getWidth();
@@ -134,14 +171,14 @@ final class IMagickLuminanceSource extends LuminanceSource
 		return $matrix;
 	}
 
-	//@Override
-	public function isCropSupported(): bool 
+
+	public function isCropSupported(): bool
 	{
 		return true;
 	}
 
-	//@Override
-	public function crop($left, $top, $width, $height)
+
+	public function crop($left, $top, $width, $height): LuminanceSource
 	{
 		return $this->luminances->cropImage($width, $height, $left, $top);
 

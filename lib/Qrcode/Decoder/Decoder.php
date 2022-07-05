@@ -19,6 +19,7 @@ namespace Zxing\Qrcode\Decoder;
 
 use Zxing\ChecksumException;
 use Zxing\Common\BitMatrix;
+use Zxing\Common\DecoderResult;
 use Zxing\Common\Reedsolomon\GenericGF;
 use Zxing\Common\Reedsolomon\ReedSolomonDecoder;
 use Zxing\Common\Reedsolomon\ReedSolomonException;
@@ -39,7 +40,7 @@ final class Decoder
 		$this->rsDecoder = new ReedSolomonDecoder(GenericGF::$QR_CODE_FIELD_256);
 	}
 
-	public function decode($variable, $hints = null)
+	public function decode(BitMatrix|BitMatrixParser $variable, array|null $hints = null): string|DecoderResult
 	{
 		if (is_array($variable)) {
 			return $this->decodeImage($variable, $hints);
@@ -56,15 +57,16 @@ final class Decoder
 	 * "true" is taken to mean a black module.</p>
 	 *
 	 * @param array $image booleans representing white/black QR Code modules
-	 * @param       decoding  $hints hints that should be used to influence decoding
+	 * @param array|null $hints       decoding  hints that should be used to influence decoding
 	 *
-	 * @return text and bytes encoded within the QR Code
+	 * @return DecoderResult|string text and bytes encoded within the QR Code
+	 *
 	 * @throws FormatException if the QR Code cannot be decoded
 	 * @throws ChecksumException if error correction fails
 	 */
-	public function decodeImage($image, $hints = null)
+	public function decodeImage(array $image, $hints = null): string|DecoderResult
 	{
-		$dimension = count($image);
+		$dimension = is_countable($image) ? count($image) : 0;
 		$bits = new BitMatrix($dimension);
 		for ($i = 0; $i < $dimension; $i++) {
 			for ($j = 0; $j < $dimension; $j++) {
@@ -82,16 +84,17 @@ final class Decoder
 	 * <p>Decodes a QR Code represented as a {@link BitMatrix}. A 1 or "true" is taken to mean a black module.</p>
 	 *
 	 * @param BitMatrix $bits booleans representing white/black QR Code modules
-	 * @param           decoding $hints hints that should be used to influence decoding
+	 * @param array|null          $hints decoding hints that should be used to influence decoding
 	 *
-	 * @return text and bytes encoded within the QR Code
+	 * @return DecoderResult|string string text and bytes encoded within the QR Code
+	 *
 	 * @throws FormatException if the QR Code cannot be decoded
 	 * @throws ChecksumException if error correction fails
 	 */
-	public function decodeBits($bits, $hints = null)
+	public function decodeBits(\Zxing\Common\BitMatrix $bits, $hints = null): string|DecoderResult
 	{
 
-// Construct a parser and read version, error-correction level
+		// Construct a parser and read version, error-correction level
 		$parser = new BitMatrixParser($bits);
 		$fe = null;
 		$ce = null;
@@ -132,7 +135,7 @@ final class Decoder
 			$result->setOther(new QRCodeDecoderMetaData(true));
 
 			return $result;
-		} catch (FormatException $e) {// catch (FormatException | ChecksumException e) {
+		} catch (FormatException $e) { // catch (FormatException | ChecksumException e) {
 			// Throw the exception from the original reading
 			if ($fe != null) {
 				throw $fe;
@@ -144,7 +147,7 @@ final class Decoder
 		}
 	}
 
-	private function decodeParser($parser, $hints = null)
+	private function decodeParser(\Zxing\Qrcode\Decoder\BitMatrixParser $parser, array $hints = null): DecoderResult
 	{
 		$version = $parser->readVersion();
 		$ecLevel = $parser->readFormatInformation()->getErrorCorrectionLevel();
@@ -180,12 +183,12 @@ final class Decoder
 	 * <p>Given data and error-correction codewords received, possibly corrupted by errors, attempts to
 	 * correct the errors in-place using Reed-Solomon error correction.</p>
 	 *
-	 * @param data    $codewordBytes and error correction codewords
-	 * @param number $numDataCodewords of codewords that are data bytes
+	 * @param array $codewordBytes and error correction codewords
+	 * @param int $numDataCodewords of codewords that are data bytes
 	 *
 	 * @throws ChecksumException if error correction fails
 	 */
-	private function correctErrors(&$codewordBytes, $numDataCodewords)
+	private function correctErrors(&$codewordBytes, int $numDataCodewords): void
 	{
 		$numCodewords = is_countable($codewordBytes) ? count($codewordBytes) : 0;
 		// First read into an array of ints

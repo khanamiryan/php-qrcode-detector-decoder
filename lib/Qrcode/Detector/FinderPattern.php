@@ -53,7 +53,7 @@ final class FinderPattern extends ResultPoint
 	 * <p>Determines if this finder pattern "about equals" a finder pattern at the stated
 	 * position and size -- meaning, it is at nearly the same center with nearly the same size.</p>
 	 */
-	public function aboutEquals($moduleSize, $i, $j)
+	public function aboutEquals($moduleSize, $i, $j): bool
 	{
 		if (abs($i - $this->getY()) <= $moduleSize && abs($j - $this->getX()) <= $moduleSize) {
 			$moduleSizeDiff = abs($moduleSize - $this->estimatedModuleSize);

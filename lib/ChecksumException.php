@@ -27,7 +27,7 @@ final class ChecksumException extends ReaderException
 {
 	private static ?\Zxing\ChecksumException $instance = null;
 
-	public static function getChecksumInstance($cause = null)
+	public static function getChecksumInstance($cause = null): self
 	{
 		if (self::$isStackTrace) {
 			return new ChecksumException($cause);

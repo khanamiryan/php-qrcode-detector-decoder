@@ -10,7 +10,7 @@ final class BitMatrix
 	/**
   * @var mixed|int[]
   */
- private $bits;
+	private $bits;
 
 	public function __construct($width, $height = false, $rowSize = false, $bits = false)
 	{
@@ -30,7 +30,7 @@ final class BitMatrix
 		$this->bits = $bits;
 	}
 
-	public static function parse($stringRepresentation, $setString, $unsetString)
+	public static function parse($stringRepresentation, $setString, $unsetString): self
 	{
 		if (!$stringRepresentation) {
 			throw new \InvalidArgumentException();
@@ -94,8 +94,10 @@ final class BitMatrix
 	 *
 	 * @param $x ;  The horizontal component (i.e. which column)
 	 * @param $y ;   The vertical component (i.e. which row)
+	 * @param float|int $x
+	 * @param float|int $y
 	 */
-	public function set($x, $y): void
+	public function set(int|float $x, int|float $y): void
 	{
 		$offset = (int)($y * $this->rowSize + ($x / 32));
 		if (!isset($this->bits[$offset])) {
@@ -126,7 +128,11 @@ final class BitMatrix
 	 * @param $x ;  The horizontal component (i.e. which column)
 	 * @param $y ;  The vertical component (i.e. which row)
 	 */
-	public function flip($x, $y): void
+	/**
+	 * @psalm-param 0|positive-int $x
+	 * @psalm-param 0|positive-int $y
+	 */
+	public function flip(int $x, int $y): void
 	{
 		$offset = $y * $this->rowSize + (int)($x / 32);
 
@@ -139,7 +145,7 @@ final class BitMatrix
 	 *
 	 * @param $mask ;  XOR mask
 	 */
-	public function _xor($mask)
+	public function _xor($mask): void
 	{//было xor, php не позволяет использовать xor
 		if ($this->width != $mask->getWidth() || $this->height != $mask->getHeight()
 			|| $this->rowSize != $mask->getRowSize()) {
@@ -173,8 +179,11 @@ final class BitMatrix
 	 * @param $top    ;  The vertical position to begin at (inclusive)
 	 * @param $width  ;  The width of the region
 	 * @param $height ;  The height of the region
+	 *
+	 * @psalm-param 0|6|9 $left
+	 * @psalm-param 0|6|9 $top
 	 */
-	public function setRegion($left, $top, $width, $height)
+	public function setRegion(int $left, int $top, int $width, int $height): void
 	{
 		if ($top < 0 || $left < 0) {
 			throw new \InvalidArgumentException("Left and top must be nonnegative");
@@ -227,11 +236,11 @@ final class BitMatrix
 	 *
 	 * @param $y   ;  The row to retrieve
 	 * @param $row ;  An optional caller-allocated BitArray, will be allocated if null or too small
+	 * @param float|int $y
 	 *
-	 * @return BitArray The resulting BitArray - this reference should always be used even when passing
-	 *         your own row
+	 * @psalm-param 0|float|positive-int $y
 	 */
-	public function getRow($y, $row)
+	public function getRow(int|float $y, BitArray $row): BitArray
 	{
 		if ($row == null || $row->getSize() < $this->width) {
 			$row = new BitArray($this->width);
@@ -249,8 +258,11 @@ final class BitMatrix
 	/**
 	 * @param $y   ;  row to set
 	 * @param $row ;  {@link BitArray} to copy from
+	 * @param float|int $y
+	 *
+	 * @psalm-param 0|float|positive-int $y
 	 */
-	public function setRow($y, $row): void
+	public function setRow(int|float $y, BitArray $row): void
 	{
 		$this->bits = arraycopy($row->getBitArray(), 0, $this->bits, $y * $this->rowSize, $this->rowSize);
 	}
@@ -258,9 +270,11 @@ final class BitMatrix
 	/**
 	 * This is useful in detecting the enclosing rectangle of a 'pure' barcode.
 	 *
-	 * @return {@code left,top,width,height} enclosing rectangle of all 1 bits, or null if it is all white
+	 * @return (int|mixed)[]|null
+	 *
+	 * @psalm-return array{0: int|mixed, 1: 0|mixed|positive-int, 2: mixed, 3: mixed}|null
 	 */
-	public function getEnclosingRectangle()
+	public function getEnclosingRectangle(): array|null
 	{
 		$left = $this->width;
 		$top = $this->height;
@@ -312,9 +326,9 @@ final class BitMatrix
 	/**
 	 * This is useful in detecting a corner of a 'pure' barcode.
 	 *
-	 * @return {@code x,y} coordinate of top-left-most 1 bit, or null if it is all white
+	 * @psalm-return array{0: mixed, 1: mixed}|null
 	 */
-	public function getTopLeftOnBit()
+	public function getTopLeftOnBit(): array|null
 	{
 		$bitsOffset = 0;
 		while ($bitsOffset < (is_countable($this->bits) ? count($this->bits) : 0) && $this->bits[$bitsOffset] == 0) {
@@ -336,7 +350,10 @@ final class BitMatrix
 		return [$x, $y];
 	}
 
-	public function getBottomRightOnBit()
+	/**
+	 * @psalm-return array{0: mixed, 1: mixed}|null
+	 */
+	public function getBottomRightOnBit(): array|null
 	{
 		$bitsOffset = (is_countable($this->bits) ? count($this->bits) : 0) - 1;
 		while ($bitsOffset >= 0 && $this->bits[$bitsOffset] == 0) {
@@ -375,7 +392,7 @@ final class BitMatrix
 		return $this->rowSize;
 	}
 
-	public function equals($o)
+	public function equals($o): bool
 	{
 		if (!($o instanceof BitMatrix)) {
 			return false;
@@ -388,7 +405,7 @@ final class BitMatrix
 			&& $this->bits === $other->bits;
 	}
 
-	//@Override
+	
 
 	public function hashCode()
 	{
@@ -401,9 +418,9 @@ final class BitMatrix
 		return $hash;
 	}
 
-	//@Override
+	
 
-	public function toString($setString = '', $unsetString = '', $lineSeparator = '')
+	public function toString($setString = '', $unsetString = '', $lineSeparator = ''): string
 	{
 		if (!$setString || !$unsetString) {
 			return (string)'X ' . '  ';
@@ -415,7 +432,7 @@ final class BitMatrix
 		return (string)($setString . $unsetString . "\n");
 	}
 
-	public function toString_($setString, $unsetString, $lineSeparator)
+	public function toString_($setString, $unsetString, $lineSeparator): string
 	{
 		//$result = new StringBuilder(height * (width + 1));
 		$result = '';
@@ -439,9 +456,9 @@ final class BitMatrix
 	 * @param $x ;  The horizontal component (i.e. which column)
 	 * @param $y ;  The vertical component (i.e. which row)
 	 *
-	 * @return value of given bit in matrix
+	 * @return bool of given bit in matrix
 	 */
-	public function get($x, $y)
+	public function get(int $x, int $y): bool
 	{
 		$offset = (int)($y * $this->rowSize + ($x / 32));
 		if (!isset($this->bits[$offset])) {

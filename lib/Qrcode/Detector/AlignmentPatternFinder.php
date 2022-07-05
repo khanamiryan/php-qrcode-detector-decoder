@@ -49,8 +49,8 @@ final class AlignmentPatternFinder
 	 * @param float estimated $moduleSize module size so far
 	 */
 	public function __construct(private $image, private $startX, private $startY, private $width, private $height, private $moduleSize, private $resultPointCallback)
- {
- }
+	{
+	}
 
 	/**
 	 * <p>This method attempts to find the bottom-right alignment pattern in the image. It is a bit messy since
@@ -126,16 +126,15 @@ final class AlignmentPatternFinder
 			return $this->possibleCenters[0];
 		}
 
-		throw  NotFoundException::getNotFoundInstance();
+		throw  new NotFoundException("Bottom right alignment pattern not found");
 	}
 
 	/**
-	 * @param count $stateCount of black/white/black pixels just read
+	 * @param int $stateCount count of black/white/black pixels just read
 	 *
-	 * @return true iff the proportions of the counts is close enough to the 1/1/1 ratios
-	 *         used by alignment patterns to be considered a match
+	 * @return bool iff the proportions of the counts is close enough to the 1/1/1 ratios used by alignment patterns to be considered a match
 	 */
-	private function foundPatternCross($stateCount)
+	private function foundPatternCross($stateCount): bool
 	{
 		$moduleSize = $this->moduleSize;
 		$maxVariance = $moduleSize / 2.0;
@@ -154,9 +153,9 @@ final class AlignmentPatternFinder
 	 * found on a previous horizontal scan. If so, we consider it confirmed and conclude we have
 	 * found the alignment pattern.</p>
 	 *
-	 * @param reading $stateCount state module counts from horizontal scan
-	 * @param row          $i where alignment pattern may be found
-	 * @param end          $j of possible alignment pattern in row
+	 * @param array $stateCount state module counts from horizontal scan
+	 * @param int $i where alignment pattern may be found
+	 * @param int $j number of possible alignment pattern in row
 	 *
 	 * @return {@link AlignmentPattern} if we have found the same pattern twice, or null if not
 	 */
@@ -188,7 +187,7 @@ final class AlignmentPatternFinder
 	 * Given a count of black/white/black pixels just seen and an end position,
 	 * figures the location of the center of this black/white/black run.
 	 */
-	private static function centerFromEnd($stateCount, $end)
+	private static function centerFromEnd(array $stateCount, int $end)
 	{
 		return (float)($end - $stateCount[2]) - $stateCount[1] / 2.0;
 	}
@@ -198,20 +197,19 @@ final class AlignmentPatternFinder
 	 * "cross-checks" by scanning down vertically through the center of the possible
 	 * alignment pattern to see if the same proportion is detected.</p>
 	 *
-	 * @param int row   $startI where an alignment pattern was detected
-	 * @param float center  $centerJ of the section that appears to cross an alignment pattern
-	 * @param int maximum $maxCount reasonable number of modules that should be
+	 * @param int $startI row   where an alignment pattern was detected
+	 * @param float $centerJ center  of the section that appears to cross an alignment pattern
+	 * @param int $maxCount maximum reasonable number of modules that should be
 	 *                 observed in any reading state, based on the results of the horizontal scan
 	 *
 	 * @return float vertical center of alignment pattern, or {@link Float#NaN} if not found
 	 */
 	private function crossCheckVertical(
-		$startI,
-		$centerJ,
+		int $startI,
+		int $centerJ,
 		$maxCount,
 		$originalStateCountTotal
-	)
-	{
+	) {
 		$image = $this->image;
 
 		$maxI = $image->getHeight();

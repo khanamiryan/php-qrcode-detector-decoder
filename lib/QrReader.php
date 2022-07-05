@@ -2,18 +2,29 @@
 
 namespace Zxing;
 
+use Exception;
 use Zxing\Common\HybridBinarizer;
 use Zxing\Qrcode\QRCodeReader;
 
 final class QrReader
 {
+	/**
+	 * @var string
+	 */
 	public const SOURCE_TYPE_FILE = 'file';
+	/**
+	 * @var string
+	 */
 	public const SOURCE_TYPE_BLOB = 'blob';
+	/**
+	 * @var string
+	 */
 	public const SOURCE_TYPE_RESOURCE = 'resource';
 
 	private readonly \Zxing\BinaryBitmap $bitmap;
 	private readonly \Zxing\Qrcode\QRCodeReader $reader;
 	private \Zxing\Result|bool|null $result = null;
+	private ?Exception $error = null;
 
 	public function __construct($imgSource, $sourceType = QrReader::SOURCE_TYPE_FILE, $useImagickIfAvailable = true)
 	{
@@ -78,8 +89,9 @@ final class QrReader
 	{
 		try {
 			$this->result = $this->reader->decode($this->bitmap, $hints);
-		} catch (NotFoundException|FormatException|ChecksumException) {
+		} catch (NotFoundException | FormatException | ChecksumException $e) {
 			$this->result = false;
+			$this->error = $e;
 		}
 	}
 
@@ -94,8 +106,13 @@ final class QrReader
 		return $this->result;
 	}
 
-	public function getResult()
+	public function getResult(): bool|Result|null
 	{
 		return $this->result;
+	}
+
+	public function getError(): Exception|null
+	{
+		return $this->error;
 	}
 }

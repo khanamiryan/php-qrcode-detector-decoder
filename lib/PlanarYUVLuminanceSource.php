@@ -44,8 +44,7 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
 		$width,
 		$height,
 		$reverseHorizontal
-	)
-	{
+	) {
 		parent::__construct($width, $height);
 
 		if ($left + $width > $dataWidth || $top + $height > $dataHeight) {
@@ -60,15 +59,24 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
 		}
 	}
 
-	//@Override
+	public function rotateCounterClockwise(): void
+	{
+		throw new \RuntimeException("This LuminanceSource does not support rotateCounterClockwise");
+	}
+
+	public function rotateCounterClockwise45(): void
+	{
+		throw new \RuntimeException("This LuminanceSource does not support rotateCounterClockwise45");
+	}
+
 	public function getRow($y, $row = null)
 	{
 		if ($y < 0 || $y >= $this->getHeight()) {
-			throw new \InvalidArgumentException("Requested row is outside the image: " + \Y);
+			throw new \InvalidArgumentException("Requested row is outside the image: " + $y);
 		}
 		$width = $this->getWidth();
 		if ($row == null || (is_countable($row) ? count($row) : 0) < $width) {
-			$row = [];//new byte[width];
+			$row = []; //new byte[width];
 		}
 		$offset = ($y + $this->top) * $this->dataWidth + $this->left;
 		$row = arraycopy($this->yuvData, $offset, $row, 0, $width);
@@ -76,7 +84,7 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
 		return $row;
 	}
 
-	//@Override
+
 	public function getMatrix()
 	{
 		$width = $this->getWidth();
@@ -89,7 +97,7 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
 		}
 
 		$area = $width * $height;
-		$matrix = [];//new byte[area];
+		$matrix = []; //new byte[area];
 		$inputOffset = $this->top * $this->dataWidth + $this->left;
 
 		// If the width matches the full width of the underlying data, perform a single copy.
@@ -111,7 +119,7 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
 	}
 
 	// @Override
-	public function isCropSupported()
+	public function isCropSupported(): bool
 	{
 		return true;
 	}
@@ -131,11 +139,14 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
 		);
 	}
 
-	public function renderThumbnail()
+	/**
+	 * @return int[]
+	 */
+	public function renderThumbnail(): array
 	{
 		$width = (int)($this->getWidth() / self::$THUMBNAIL_SCALE_FACTOR);
 		$height = (int)($this->getHeight() / self::$THUMBNAIL_SCALE_FACTOR);
-		$pixels = [];//new int[width * height];
+		$pixels = []; //new int[width * height];
 		$yuv = $this->yuvData;
 		$inputOffset = $this->top * $this->dataWidth + $this->left;
 
@@ -162,21 +173,27 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
 	/**
 	 * @return height of image from {@link #renderThumbnail()}
 	 */
-	/*
-  public int getThumbnailHeight() {
-	return getHeight() / THUMBNAIL_SCALE_FACTOR;
-  }
+	/**public function getThumbnailHeight(): int
+	{
+		return getHeight() / THUMBNAIL_SCALE_FACTOR;
+	}*/
 
-  private void reverseHorizontal(int width, int height) {
-	byte[] yuvData = this.yuvData;
-	for (int y = 0, rowStart = top * dataWidth + left; y < height; y++, rowStart += dataWidth) {
-		int middle = rowStart + width / 2;
-	  for (int x1 = rowStart, x2 = rowStart + width - 1; x1 < middle; x1++, x2--) {
-			byte temp = yuvData[x1];
-		yuvData[x1] = yuvData[x2];
-		yuvData[x2] = temp;
-	  }
+	/**
+	 *
+	 * @param int $width
+	 * @param int $height
+	 * @return void
+	 */
+	private function reverseHorizontal(int $width, int $height): void
+	{
+		$yuvData = $this->yuvData;
+		for ($y = 0, $rowStart = $this->top * $this->dataWidth + $this->left; $y < $height; $y++, $rowStart += $this->dataWidth) {
+			$middle = (int)round($rowStart + $width / 2);
+			for ($x1 = $rowStart, $x2 = $rowStart + $width - 1; $x1 < $middle; $x1++, $x2--) {
+				$temp = $yuvData[$x1];
+				$yuvData[$x1] = $yuvData[$x2];
+				$yuvData[$x2] = $temp;
+			}
+		}
 	}
-  }
-*/
 }

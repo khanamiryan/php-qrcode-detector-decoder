@@ -29,27 +29,26 @@ final class DataBlock
 	//byte[]
 
 	private function __construct(private $numDataCodewords, private $codewords)
- {
- }
+	{
+	}
 
 	/**
 	 * <p>When QR Codes use multiple data blocks, they are actually interleaved.
 	 * That is, the first byte of data block 1 to n is written, then the second bytes, and so on. This
 	 * method will separate the data into original blocks.</p>
 	 *
-	 * @param bytes $rawCodewords as read directly from the QR Code
-	 * @param version      $version of the QR Code
-	 * @param error      $ecLevel-correction level of the QR Code
+	 * @param array $rawCodewords as read directly from the QR Code
+	 * @param Version $version of the QR Code
+	 * @param ErrorCorrectionLevel $ecLevel error-correction level of the QR Code
 	 *
-	 * @return array DataBlocks containing original bytes, "de-interleaved" from representation in the
-	 *         QR Code
+	 * @return \Zxing\Qrcode\Decoder\DataBlock[] DataBlocks containing original bytes, "de-interleaved" from representation in the
+		 QR Code
 	 */
 	public static function getDataBlocks(
 		$rawCodewords,
-		$version,
-		$ecLevel
-	)
-	{
+		Version $version,
+		ErrorCorrectionLevel $ecLevel
+	): array {
 		if ((is_countable($rawCodewords) ? count($rawCodewords) : 0) != $version->getTotalCodewords()) {
 			throw new \InvalidArgumentException();
 		}
@@ -66,7 +65,7 @@ final class DataBlock
 		}
 
 		// Now establish DataBlocks of the appropriate size and number of data codewords
-		$result = [];//new DataBlock[$totalBlocks];
+		$result = []; //new DataBlock[$totalBlocks];
 		$numResultBlocks = 0;
 		foreach ($ecBlockArray as $ecBlock) {
 			$ecBlockCount = $ecBlock->getCount();

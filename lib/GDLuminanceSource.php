@@ -18,15 +18,15 @@ final class GDLuminanceSource extends LuminanceSource
 	/**
   * @var mixed|int
   */
- private $left;
+	private $left;
 	/**
   * @var mixed|int
   */
- private $top;
+	private $top;
 	/**
   * @var mixed|null
   */
- private $gdImage;
+	private $gdImage;
 
 	public function __construct(
 		$gdImage,
@@ -115,7 +115,7 @@ final class GDLuminanceSource extends LuminanceSource
 		//   $this->luminances = $this->grayScaleToBitmap($this->luminances);
 	}
 
-	//@Override
+	
 	public function getRow($y, $row = null)
 	{
 		if ($y < 0 || $y >= $this->getHeight()) {
@@ -131,7 +131,7 @@ final class GDLuminanceSource extends LuminanceSource
 		return $row;
 	}
 
-	//@Override
+	
 	public function getMatrix()
 	{
 		$width = $this->getWidth();
@@ -165,13 +165,13 @@ final class GDLuminanceSource extends LuminanceSource
 		return $matrix;
 	}
 
-	//@Override
-	public function isCropSupported()
+	
+	public function isCropSupported(): bool
 	{
 		return true;
 	}
 
-	//@Override
+	
 	public function crop($left, $top, $width, $height): \Zxing\GDLuminanceSource
 	{
 		return new GDLuminanceSource(
@@ -183,5 +183,15 @@ final class GDLuminanceSource extends LuminanceSource
 			$width,
 			$height
 		);
+	}
+
+	public function rotateCounterClockwise(): void
+	{
+		throw new \RuntimeException("This LuminanceSource does not support rotateCounterClockwise");
+	}
+
+	public function rotateCounterClockwise45(): void
+	{
+		throw new \RuntimeException("This LuminanceSource does not support rotateCounterClockwise45");
 	}
 }

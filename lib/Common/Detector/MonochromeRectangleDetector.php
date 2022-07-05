@@ -38,8 +38,8 @@ class MonochromeRectangleDetector
 	private static int $MAX_MODULES = 32;
 
 	public function __construct(private readonly BinaryBitmap $image)
- {
- }
+	{
+	}
 
 	/**
 	 * <p>Detects a rectangular region of black and white -- mostly black -- with a region of mostly
@@ -138,31 +138,31 @@ class MonochromeRectangleDetector
 	 *
 	 * @param float $centerX     center's x component (horizontal)
 	 * @param float $deltaX      same as deltaY but change in x per step instead
-	 * @param float $left        minimum value of x
-	 * @param float $right       maximum value of x
+	 * @param int $left
+	 * @param int $right
 	 * @param float $centerY     center's y component (vertical)
 	 * @param float $deltaY      change in y per step. If scanning up this is negative; down, positive;
 	 *                    left or right, 0
-	 * @param float $top         minimum value of y to search through (meaningless when di == 0)
-	 * @param float $bottom      maximum value of y
+	 * @param int $top
+	 * @param int $bottom
 	 * @param float $maxWhiteRun maximum run of white pixels that can still be considered to be within
 	 *                    the barcode
 	 *
 	 * @return ResultPoint {@link com.google.zxing.ResultPoint} encapsulating the corner that was found
+	 *
 	 * @throws NotFoundException if such a point cannot be found
 	 */
 	private function findCornerFromCenter(
-		$centerX,
-		$deltaX,
-		$left,
-		$right,
-		$centerY,
-		$deltaY,
-		$top,
-		$bottom,
-		$maxWhiteRun
-	): \Zxing\ResultPoint
-	{
+		int|float $centerX,
+		int|float $deltaX,
+		int $left,
+		int $right,
+		int|float $centerY,
+		float|int $deltaY,
+		int $top,
+		int $bottom,
+		int|float $maxWhiteRun
+	): \Zxing\ResultPoint {
 		$lastRange = null;
 		for ($y = $centerY, $x = $centerX;
 			 $y < $bottom && $y >= $top && $x < $right && $x >= $left;
@@ -177,7 +177,7 @@ class MonochromeRectangleDetector
 			}
 			if ($range == null) {
 				if ($lastRange == null) {
-					throw NotFoundException::getNotFoundInstance();
+					throw new NotFoundException("No corner from center found");
 				}
 				// lastRange was found
 				if ($deltaX == 0) {
@@ -207,7 +207,7 @@ class MonochromeRectangleDetector
 			}
 			$lastRange = $range;
 		}
-		throw NotFoundException::getNotFoundInstance();
+		throw new NotFoundException("No corner from center found");
 	}
 
 
@@ -215,19 +215,17 @@ class MonochromeRectangleDetector
 	 * Computes the start and end of a region of pixels, either horizontally or vertically, that could
 	 * be part of a Data Matrix barcode.
 	 *
-	 * @param if $fixedDimension scanning horizontally, this is the row (the fixed vertical location)
-	 *                       where we are scanning. If scanning vertically it's the column, the fixed horizontal location
-	 * @param largest    $maxWhiteRun run of white pixels that can still be considered part of the
-	 *                       barcode region
-	 * @param minimum         $minDim pixel location, horizontally or vertically, to consider
-	 * @param maximum         $maxDim pixel location, horizontally or vertically, to consider
-	 * @param if     $horizontal true, we're scanning left-right, instead of up-down
+	 * @param float|int $fixedDimension
+	 * @param float|int $maxWhiteRun
+	 * @param int $minDim
+	 * @param int $maxDim
+	 * @param bool $horizontal
 	 *
-	 * @return int[] with start and end of found range, or null if no such range is found
-	 *  (e.g. only white was found)
+	 * @return (float|int)[]|null with start and end of found range, or null if no such range is found (e.g. only white was found)
+	 *
+	 * @psalm-return array{0: float|int, 1: float|int}|null
 	 */
-
-	private function blackWhiteRange($fixedDimension, $maxWhiteRun, $minDim, $maxDim, $horizontal)
+	private function blackWhiteRange(float|int $fixedDimension, int|float $maxWhiteRun, int $minDim, int $maxDim, bool $horizontal): array|null
 	{
 		$center = ($minDim + $maxDim) / 2;
 

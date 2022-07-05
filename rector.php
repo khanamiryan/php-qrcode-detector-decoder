@@ -10,15 +10,23 @@ use Rector\Symfony\Set\SymfonySetList;
 use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Symfony\Set\SensiolabsSetList;
+use Rector\CodingStyle\Rector\ClassConst\VarConstantCommentRector;
+use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\AddArrayParamDocTypeRector;
 use Rector\TypeDeclaration\Rector\Property\PropertyTypeDeclarationRector;
+use Rector\TypeDeclaration\Rector\FunctionLike\ParamTypeDeclarationRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector;
 use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ArrayShapeFromConstantArrayReturnRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictBoolReturnExprRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeFuncCallRector;
 
 
 return static function (RectorConfig $rectorConfig): void {
@@ -45,16 +53,21 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
     $rectorConfig->rule(AddReturnTypeDeclarationRector::class);
     $rectorConfig->rules([
+        AddArrayParamDocTypeRector::class,
+        AddMethodCallBasedStrictParamTypeRector::class,
         AddVoidReturnTypeWhereNoReturnRector::class,
         ArrayShapeFromConstantArrayReturnRector::class,
         ParamTypeByMethodCallTypeRector::class,
         ParamTypeByParentCallTypeRector::class,
+        ParamTypeDeclarationRector::class,
         PropertyTypeDeclarationRector::class,
+        RemoveUselessParamTagRector::class,
         ReturnTypeFromReturnNewRector::class,
-        // ReturnTypeFromStrictBoolReturnExprRector::class,
-        // ReturnTypeFromStrictNativeFuncCallRector::class,
-        // ReturnTypeFromStrictNewArrayRector::class,
-        TypedPropertyFromAssignsRector::class
+        ReturnTypeFromStrictBoolReturnExprRector::class,
+        ReturnTypeFromStrictNativeFuncCallRector::class,
+        ReturnTypeFromStrictNewArrayRector::class,
+        TypedPropertyFromAssignsRector::class,
+        VarConstantCommentRector::class
     ]);
 
     // define sets of rules

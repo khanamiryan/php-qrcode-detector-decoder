@@ -29,7 +29,7 @@ final class BitMatrixParser
 	/**
   * @var mixed|null
   */
- private $parsedVersion;
+	private $parsedVersion;
 	private $parsedFormatInfo;
 	private $mirror;
 
@@ -52,7 +52,7 @@ final class BitMatrixParser
 	 * correct order in order to reconstruct the codewords bytes contained within the
 	 * QR Code.</p>
 	 *
-	 * @return bytes encoded within the QR Code
+	 * @return array bytes encoded within the QR Code
 	 * @throws FormatException if the exact number of bytes expected is not read
 	 */
 	public function readCodewords()
@@ -159,7 +159,12 @@ final class BitMatrixParser
 		throw FormatException::getFormatInstance();
 	}
 
-	private function copyBit($i, $j, $versionBits)
+	/**
+	 * @psalm-param 0 $versionBits
+	 *
+	 * @psalm-return 0|1
+	 */
+	private function copyBit(int|float $i, int|float $j, int $versionBits): int
 	{
 		$bit = $this->mirror ? $this->bitMatrix->get($j, $i) : $this->bitMatrix->get($i, $j);
 
@@ -216,7 +221,7 @@ final class BitMatrixParser
 
 			return $theParsedVersion;
 		}
-		throw FormatException::getFormatInstance();
+		throw FormatException::getFormatInstance("both version information locations cannot be parsed as the valid encoding of version information");
 	}
 
 	/**
@@ -238,7 +243,7 @@ final class BitMatrixParser
 	 * {@link #readVersion()}. Before proceeding with {@link #readCodewords()} the
 	 * {@link #mirror()} method should be called.
 	 *
-	 * @param Whether $mirror to read version and format information mirrored.
+	 * @param bool $mirror Whether to read version and format information mirrored.
 	 */
 	public function setMirror($mirror): void
 	{

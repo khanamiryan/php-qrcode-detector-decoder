@@ -98,14 +98,18 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
 	 * Calculates a single black point for each block of pixels and saves it away.
 	 * See the following thread for a discussion of this algorithm:
 	 *  http://groups.google.com/group/zxing/browse_thread/thread/d06efa2c35a7ddc0
+	 *
+	 * @return ((int|mixed)[]|mixed)[]
+	 *
+	 * @psalm-return array<int, array<int, int|mixed>|mixed>
 	 */
 	private static function calculateBlackPoints(
-		$luminances,
-		$subWidth,
-		$subHeight,
-		$width,
-		$height
-	) {
+		array|BitMatrix $luminances,
+		float $subWidth,
+		float $subHeight,
+		float $width,
+		float $height
+	): array {
 		$blackPoints = fill_array(0, $subHeight, 0);
 		foreach ($blackPoints as $key => $point) {
 			$blackPoints[$key] = fill_array(0, $subWidth, 0);
@@ -185,15 +189,19 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
 	 * For each block in the image, calculate the average black point using a 5x5 grid
 	 * of the blocks around it. Also handles the corner cases (fractional blocks are computed based
 	 * on the last pixels in the row/column which are also used in the previous block).
+	 *
+	 * @param ((int|mixed)[]|mixed)[] $blackPoints
+	 *
+	 * @psalm-param array<int, array<int, int|mixed>|mixed> $blackPoints
 	 */
 	private static function calculateThresholdForBlock(
-		$luminances,
-		$subWidth,
-		$subHeight,
-		$width,
-		$height,
-		$blackPoints,
-		$matrix
+		array|BitMatrix $luminances,
+		float $subWidth,
+		float $subHeight,
+		float $width,
+		float $height,
+		array $blackPoints,
+		BitMatrix $matrix
 	): void {
 		for ($y = 0; $y < $subHeight; $y++) {
 			$yoffset = ($y << self::$BLOCK_SIZE_POWER);
@@ -221,7 +229,15 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
 		}
 	}
 
-	private static function cap($value, $min, $max)
+	/**
+	 * @psalm-param 0|positive-int $value
+	 * @psalm-param 2 $min
+	 *
+	 * @return float|int
+	 *
+	 * @psalm-return float|int<2, max>
+	 */
+	private static function cap(int $value, int $min, float $max): int|float
 	{
 		if ($value < $min) {
 			return $min;
@@ -234,14 +250,18 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
 
 	/**
 	 * Applies a single threshold to a block of pixels.
+	 *
+	 * @param BitMatrix|array $luminances
+	 * @param float|int $xoffset
+	 * @param float|int $yoffset
 	 */
 	private static function thresholdBlock(
-		$luminances,
-		$xoffset,
-		$yoffset,
-		$threshold,
-		$stride,
-		$matrix
+		array|BitMatrix $luminances,
+		int|float $xoffset,
+		int|float $yoffset,
+		int $threshold,
+		float $stride,
+		BitMatrix $matrix
 	): void {
 		for ($y = 0, $offset = $yoffset * $stride + $xoffset; $y < self::$BLOCK_SIZE; $y++, $offset += $stride) {
 			for ($x = 0; $x < self::$BLOCK_SIZE; $x++) {

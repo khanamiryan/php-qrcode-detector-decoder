@@ -27,7 +27,7 @@ final class Result
 	/**
   * @var mixed[]|mixed
   */
- private $resultMetadata = null;
+	private $resultMetadata = null;
 	private $timestamp;
 
 	public function __construct(
@@ -41,7 +41,7 @@ final class Result
 	}
 
 	/**
-	 * @return raw text encoded by the barcode
+	 * @return string raw text encoded by the barcode
 	 */
 	public function getText()
 	{
@@ -49,7 +49,7 @@ final class Result
 	}
 
 	/**
-	 * @return raw bytes encoded by the barcode, if applicable, otherwise {@code null}
+	 * @return array|string raw bytes encoded by the barcode, if applicable, otherwise {@code null}
 	 */
 	public function getRawBytes()
 	{
@@ -57,7 +57,7 @@ final class Result
 	}
 
 	/**
-	 * @return points related to the barcode in the image. These are typically points
+	 * @return array points related to the barcode in the image. These are typically points
 	 *         identifying finder patterns or the corners of the barcode. The exact meaning is
 	 *         specific to the type of barcode that was decoded.
 	 */
@@ -84,10 +84,10 @@ final class Result
 		return $this->resultMetadata;
 	}
 
-	public function putMetadata($type, $value): void
+	public function putMetadata(string $type, $value): void
 	{
 		$resultMetadata = [];
-  if ($this->resultMetadata === null) {
+		if ($this->resultMetadata === null) {
 			$this->resultMetadata = [];
 		}
 		$resultMetadata[$type] = $value;

@@ -27,27 +27,27 @@ namespace Zxing\Common;
 final class PerspectiveTransform
 {
 	private function __construct(private $a11, private $a21, private $a31, private $a12, private $a22, private $a32, private $a13, private $a23, private $a33)
- {
- }
+	{
+	}
 
 	public static function quadrilateralToQuadrilateral(
-		$x0,
-		$y0,
-		$x1,
-		$y1,
-		$x2,
-		$y2,
-		$x3,
-		$y3,
-		$x0p,
-		$y0p,
-		$x1p,
-		$y1p,
-		$x2p,
-		$y2p,
-		$x3p,
-		$y3p
-	) {
+		float $x0,
+		float $y0,
+		float $x1,
+		float $y1,
+		float $x2,
+		float $y2,
+		float $x3,
+		float $y3,
+		float $x0p,
+		float $y0p,
+		float $x1p,
+		float $y1p,
+		float $x2p,
+		float $y2p,
+		float $x3p,
+		float $y3p
+	): self {
 		$qToS = self::quadrilateralToSquare($x0, $y0, $x1, $y1, $x2, $y2, $x3, $y3);
 		$sToQ = self::squareToQuadrilateral($x0p, $y0p, $x1p, $y1p, $x2p, $y2p, $x3p, $y3p);
 
@@ -55,15 +55,15 @@ final class PerspectiveTransform
 	}
 
 	public static function quadrilateralToSquare(
-		$x0,
-		$y0,
-		$x1,
-		$y1,
-		$x2,
-		$y2,
-		$x3,
-		$y3
-	) {
+		float $x0,
+		float $y0,
+		float $x1,
+		float $y1,
+		float $x2,
+		float $y2,
+		float $x3,
+		float $y3
+	): self {
 		// Here, the adjoint serves as the inverse:
 		return self::squareToQuadrilateral($x0, $y0, $x1, $y1, $x2, $y2, $x3, $y3)->buildAdjoint();
 	}
@@ -85,14 +85,14 @@ final class PerspectiveTransform
 	}
 
 	public static function squareToQuadrilateral(
-		$x0,
-		$y0,
-		$x1,
-		$y1,
-		$x2,
-		$y2,
-		$x3,
-		$y3
+		float $x0,
+		float $y0,
+		float $x1,
+		float $y1,
+		float $x2,
+		float $y2,
+		float $x3,
+		float $y3
 	): \Zxing\Common\PerspectiveTransform {
 		$dx3 = $x0 - $x1 + $x2 - $x3;
 		$dy3 = $y0 - $y1 + $y2 - $y3;
@@ -132,7 +132,7 @@ final class PerspectiveTransform
 		}
 	}
 
-	public function times($other): \Zxing\Common\PerspectiveTransform
+	public function times(self $other): \Zxing\Common\PerspectiveTransform
 	{
 		return new PerspectiveTransform(
 			$this->a11 * $other->a11 + $this->a21 * $other->a12 + $this->a31 * $other->a13,
@@ -147,7 +147,12 @@ final class PerspectiveTransform
 		);
 	}
 
-	public function transformPoints(&$points, &$yValues = 0): void
+	/**
+	 * @param (float|mixed)[] $points
+	 *
+	 * @psalm-param array<int, float|mixed> $points
+	 */
+	public function transformPoints(array &$points, &$yValues = 0): void
 	{
 		if ($yValues) {
 			$this->transformPoints_($points, $yValues);
@@ -173,7 +178,12 @@ final class PerspectiveTransform
 		}
 	}
 
-	public function transformPoints_(&$xValues, &$yValues): void
+	/**
+	 * @param (float|mixed)[] $xValues
+	 *
+	 * @psalm-param array<int, float|mixed> $xValues
+	 */
+	public function transformPoints_(array &$xValues, &$yValues): void
 	{
 		$n = is_countable($xValues) ? count($xValues) : 0;
 		for ($i = 0; $i < $n; $i++) {
