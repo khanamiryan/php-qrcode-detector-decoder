@@ -609,7 +609,7 @@ class FinderPatternFinder
 		$startSize = count($this->possibleCenters);
 		if ($startSize < 3) {
 			// Couldn't find enough finder patterns
-			throw new NotFoundException();
+			throw new NotFoundException("Could not find 3 finder patterns");
 		}
 
 		// Filter outlier possibilities whose module size is too different

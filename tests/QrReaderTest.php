@@ -11,7 +11,7 @@ class QrReaderTest extends TestCase
 	public function setUp(): void
 	{
 		error_reporting(E_ALL);
-		ini_set('memory_limit','2G');
+		ini_set('memory_limit', '2G');
 	}
 
 	public function testText1()
@@ -53,5 +53,16 @@ class QrReaderTest extends TestCase
 		]);
 		$this->assertSame(null, $qrcode->getError());
 		$this->assertSame("https://www.gosuslugi.ru/covid-cert/verify/9770000014233333?lang=ru&ck=733a9d218d312fe134f1c2cc06e1a800", $qrcode->text());
+	}
+
+	public function testText4()
+	{
+		$image = __DIR__ . "/qrcodes/174419877-f6b5dae1-2251-4b67-95f1-5e1143e40fae.jpg";
+		$qrcode = new QrReader($image);
+		$qrcode->decode([
+			'NR_ALLOW_SKIP_ROWS' => 0
+		]);
+		$this->assertSame(null, $qrcode->getError());
+		$this->assertSame("some text", $qrcode->text());
 	}
 }
