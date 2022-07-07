@@ -58,6 +58,7 @@ class FinderPatternFinder
 		$tryHarder = $hints != null && array_key_exists('TRY_HARDER', $hints) && $hints['TRY_HARDER'];
 		$pureBarcode = $hints != null && array_key_exists('PURE_BARCODE', $hints) && $hints['PURE_BARCODE'];
 		$nrOfRowsSkippable = $hints != null && array_key_exists('NR_ALLOW_SKIP_ROWS', $hints) ? $hints['NR_ALLOW_SKIP_ROWS'] : ($tryHarder ? 0 : null);
+		$allowedDeviation = $hints != null && array_key_exists('ALLOWED_DEVIATION', $hints) ? $hints['ALLOWED_DEVIATION'] : null;
 		$maxI = $this->image->getHeight();
 		$maxJ = $this->image->getWidth();
 		// We are looking for black/white/black/white/black modules in
@@ -99,7 +100,7 @@ class FinderPatternFinder
 									// expensive and didn't improve performance.
 									$iSkip = 3;
 									if ($this->hasSkipped) {
-										$done = $this->haveMultiplyConfirmedCenters();
+										$done = $this->haveMultiplyConfirmedCenters($allowedDeviation);
 									} else {
 										$rowSkip = $nrOfRowsSkippable === null ? $this->findRowSkip() : $nrOfRowsSkippable;
 										if ($rowSkip > $stateCount[2]) {
@@ -153,7 +154,7 @@ class FinderPatternFinder
 					$iSkip = $stateCount[0];
 					if ($this->hasSkipped) {
 						// Found a third one
-						$done = $this->haveMultiplyConfirmedCenters();
+						$done = $this->haveMultiplyConfirmedCenters($allowedDeviation);
 					}
 				}
 			}
@@ -537,7 +538,7 @@ class FinderPatternFinder
 	/**
 	 * @return bool iff we have found at least 3 finder patterns that have been detected at least {@link #CENTER_QUORUM} times each, and, the estimated module size of the candidates is "pretty similar"
 	 */
-	private function haveMultiplyConfirmedCenters(): bool
+	private function haveMultiplyConfirmedCenters(?float $allowedDeviation = 0.05): bool
 	{
 		$confirmedCount = 0;
 		$totalModuleSize = 0.0;
@@ -561,7 +562,7 @@ class FinderPatternFinder
 			$totalDeviation += abs($pattern->getEstimatedModuleSize() - $average);
 		}
 
-		return $totalDeviation <= 0.05 * $totalModuleSize;
+		return $totalDeviation <= $allowedDeviation * $totalModuleSize;
 	}
 
 	/**
@@ -609,7 +610,7 @@ class FinderPatternFinder
 		$startSize = count($this->possibleCenters);
 		if ($startSize < 3) {
 			// Couldn't find enough finder patterns
-			throw new NotFoundException("Could not find 3 finder patterns");
+			throw new NotFoundException("Could not find 3 finder patterns ($startSize found)");
 		}
 
 		// Filter outlier possibilities whose module size is too different

@@ -60,7 +60,8 @@ class QrReaderTest extends TestCase
 		$image = __DIR__ . "/qrcodes/174419877-f6b5dae1-2251-4b67-95f1-5e1143e40fae.jpg";
 		$qrcode = new QrReader($image);
 		$qrcode->decode([
-			'NR_ALLOW_SKIP_ROWS' => 0
+			'NR_ALLOW_SKIP_ROWS' => 0,
+			'ALLOWED_DEVIATION' => 0.1
 		]);
 		$this->assertSame(null, $qrcode->getError());
 		$this->assertSame("some text", $qrcode->text());

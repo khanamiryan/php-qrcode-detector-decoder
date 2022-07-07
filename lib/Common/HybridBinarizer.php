@@ -146,7 +146,7 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
 						// finish the rest of the rows quickly
 						for ($yy++, $offset += $width; $yy < self::$BLOCK_SIZE; $yy++, $offset += $width) {
 							for ($xx = 0; $xx < self::$BLOCK_SIZE; $xx++) {
-								$sum += ($luminances[$offset + $xx] & 0xFF);
+								$sum += (((int)$luminances[(int)round($offset + $xx)]) & 0xFF);
 							}
 						}
 					}
