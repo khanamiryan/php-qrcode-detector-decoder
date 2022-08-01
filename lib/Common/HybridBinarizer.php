@@ -146,7 +146,7 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
 						// finish the rest of the rows quickly
 						for ($yy++, $offset += $width; $yy < self::$BLOCK_SIZE; $yy++, $offset += $width) {
 							for ($xx = 0; $xx < self::$BLOCK_SIZE; $xx++) {
-								$sum += ($luminances[$offset + $xx] & 0xFF);
+								$sum += ((int)$luminances[(int)($offset + $xx)] & 0xFF);
 							}
 						}
 					}
@@ -266,7 +266,7 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
 		for ($y = 0, $offset = $yoffset * $stride + $xoffset; $y < self::$BLOCK_SIZE; $y++, $offset += $stride) {
 			for ($x = 0; $x < self::$BLOCK_SIZE; $x++) {
 				// Comparison needs to be <= so that black == 0 pixels are black even if the threshold is 0.
-				if (($luminances[$offset + $x] & 0xFF) <= $threshold) {
+				if (((int)$luminances[(int)($offset + $x)] & 0xFF) <= $threshold) {
 					$matrix->set($xoffset + $x, $yoffset + $y);
 				}
 			}
