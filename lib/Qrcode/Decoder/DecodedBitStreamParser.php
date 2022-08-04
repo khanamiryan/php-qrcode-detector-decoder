@@ -209,7 +209,7 @@ final class DecodedBitStreamParser
 				throw new FormatException("Too many three digit bits");
 			}
 			$result .= (self::toAlphaNumericChar($threeDigitsBits / 100));
-			$result .= (self::toAlphaNumericChar(($threeDigitsBits / 10) % 10));
+			$result .= (self::toAlphaNumericChar(((int)round($threeDigitsBits / 10)) % 10));
 			$result .= (self::toAlphaNumericChar($threeDigitsBits % 10));
 			$count -= 3;
 		}
@@ -242,11 +242,12 @@ final class DecodedBitStreamParser
 	 */
 	private static function toAlphaNumericChar(int|float $value)
 	{
-		if ($value >= count(self::$ALPHANUMERIC_CHARS)) {
-			throw new FormatException("$value has too many alphanumeric chars");
+		$intVal = (int) $value;
+		if ($intVal >= count(self::$ALPHANUMERIC_CHARS)) {
+			throw new FormatException("$intVal is too many alphanumeric chars");
 		}
 
-		return self::$ALPHANUMERIC_CHARS[(int)round($value)];
+		return self::$ALPHANUMERIC_CHARS[(int)($intVal)];
 	}
 
 	private static function decodeAlphanumericSegment(

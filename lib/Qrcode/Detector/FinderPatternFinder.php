@@ -58,7 +58,8 @@ class FinderPatternFinder
 		$tryHarder = $hints != null && array_key_exists('TRY_HARDER', $hints) && $hints['TRY_HARDER'];
 		$pureBarcode = $hints != null && array_key_exists('PURE_BARCODE', $hints) && $hints['PURE_BARCODE'];
 		$nrOfRowsSkippable = $hints != null && array_key_exists('NR_ALLOW_SKIP_ROWS', $hints) ? $hints['NR_ALLOW_SKIP_ROWS'] : ($tryHarder ? 0 : null);
-		$allowedDeviation = $hints != null && array_key_exists('ALLOWED_DEVIATION', $hints) ? $hints['ALLOWED_DEVIATION'] : null;
+		$allowedDeviation = $hints != null && array_key_exists('ALLOWED_DEVIATION', $hints) ? $hints['ALLOWED_DEVIATION'] : 0.05;
+		$maxVariance = $hints != null && array_key_exists('MAX_VARIANCE', $hints) ? $hints['MAX_VARIANCE'] : 0.5;
 		$maxI = $this->image->getHeight();
 		$maxJ = $this->image->getWidth();
 		// We are looking for black/white/black/white/black modules in
@@ -93,7 +94,7 @@ class FinderPatternFinder
 				} else { // White pixel
 					if (($currentState & 1) == 0) { // Counting black pixels
 						if ($currentState == 4) { // A winner?
-							if (self::foundPatternCross($stateCount)) { // Yes
+							if (self::foundPatternCross($stateCount, $maxVariance)) { // Yes
 								$confirmed = $this->handlePossibleCenter($stateCount, $i, $j, $pureBarcode);
 								if ($confirmed) {
 									// Start examining every other line. Checking each line turned out to be too
@@ -148,7 +149,7 @@ class FinderPatternFinder
 					}
 				}
 			}
-			if (self::foundPatternCross($stateCount)) {
+			if (self::foundPatternCross($stateCount, $maxVariance)) {
 				$confirmed = $this->handlePossibleCenter($stateCount, $i, $maxJ, $pureBarcode);
 				if ($confirmed) {
 					$iSkip = $stateCount[0];
@@ -174,7 +175,7 @@ class FinderPatternFinder
 	 *
 	 * @psalm-param array<0|positive-int, int> $stateCount
 	 */
-	protected static function foundPatternCross(array $stateCount): bool
+	protected static function foundPatternCross(array $stateCount, float $maxVariance = 0.5): bool
 	{
 		$totalModuleSize = 0;
 		for ($i = 0; $i < 5; $i++) {
@@ -188,7 +189,7 @@ class FinderPatternFinder
 			return false;
 		}
 		$moduleSize = $totalModuleSize / 7.0;
-		$maxVariance = $moduleSize / 2.0;
+		$maxVariance = $moduleSize * $maxVariance;
 
 		// Allow less than 50% variance from 1-1-3-1-1 proportions
 		return
