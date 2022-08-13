@@ -98,7 +98,7 @@ final class IMagickLuminanceSource extends LuminanceSource
 
 		$image->setImageColorspace(\Imagick::COLORSPACE_GRAY);
 		// Check that we actually have enough space to do it
-		if ($width * $height * 16 * 3 > $this->kmgStringToBytes(ini_get('memory_limit'))) {
+		if (ini_get('memory_limit') > 0 && $width * $height * 16 * 3 > $this->kmgStringToBytes(ini_get('memory_limit'))) {
 			throw new \RuntimeException("PHP Memory Limit does not allow pixel export.");
 		}
 		$pixels = $image->exportImagePixels(1, 1, $width, $height, "RGB", \Imagick::PIXEL_CHAR);
