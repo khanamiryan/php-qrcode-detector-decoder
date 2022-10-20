@@ -2,3 +2,6 @@
 /vendor
 .idea/
 .phpunit.result.cache
+
+tests/qrcodes/private_test.png
+tests/qrcodes/private_test2.png

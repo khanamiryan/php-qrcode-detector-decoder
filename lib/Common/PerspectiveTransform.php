@@ -173,8 +173,11 @@ final class PerspectiveTransform
 			$x = $points[$i];
 			$y = $points[$i + 1];
 			$denominator = $a13 * $x + $a23 * $y + $a33;
-			$points[$i] = ($a11 * $x + $a21 * $y + $a31) / $denominator;
-			$points[$i + 1] = ($a12 * $x + $a22 * $y + $a32) / $denominator;
+			// TODO: think what we do if $denominator == 0 (division by zero)
+			if ($denominator != 0.0) {
+				$points[$i] = ($a11 * $x + $a21 * $y + $a31) / $denominator;
+				$points[$i + 1] = ($a12 * $x + $a22 * $y + $a32) / $denominator;
+			}
 		}
 	}
 
