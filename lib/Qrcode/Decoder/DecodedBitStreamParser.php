@@ -208,8 +208,8 @@ final class DecodedBitStreamParser
 			if ($threeDigitsBits >= 1000) {
 				throw new FormatException("Too many three digit bits");
 			}
-			$result .= (self::toAlphaNumericChar($threeDigitsBits / 100));
-			$result .= (self::toAlphaNumericChar(((int)round($threeDigitsBits / 10)) % 10));
+			$result .= (self::toAlphaNumericChar(intdiv($threeDigitsBits, 100)));
+			$result .= (self::toAlphaNumericChar(intdiv($threeDigitsBits, 10) % 10));
 			$result .= (self::toAlphaNumericChar($threeDigitsBits % 10));
 			$count -= 3;
 		}
@@ -222,7 +222,7 @@ final class DecodedBitStreamParser
 			if ($twoDigitsBits >= 100) {
 				throw new FormatException("Too many bits: $twoDigitsBits expected < 100");
 			}
-			$result .= (self::toAlphaNumericChar($twoDigitsBits / 10));
+			$result .= (self::toAlphaNumericChar(intdiv($twoDigitsBits, 10)));
 			$result .= (self::toAlphaNumericChar($twoDigitsBits % 10));
 		} elseif ($count == 1) {
 			// One digit left over to read
@@ -263,7 +263,7 @@ final class DecodedBitStreamParser
 				throw new FormatException("Not enough bits available to read two expected characters");
 			}
 			$nextTwoCharsBits = $bits->readBits(11);
-			$result .= (self::toAlphaNumericChar($nextTwoCharsBits / 45));
+			$result .= (self::toAlphaNumericChar(intdiv($nextTwoCharsBits, 45)));
 			$result .= (self::toAlphaNumericChar($nextTwoCharsBits % 45));
 			$count -= 2;
 		}
