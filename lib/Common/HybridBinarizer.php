@@ -266,7 +266,7 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
 		for ($y = 0, $offset = $yoffset * $stride + $xoffset; $y < self::$BLOCK_SIZE; $y++, $offset += $stride) {
 			for ($x = 0; $x < self::$BLOCK_SIZE; $x++) {
 				// Comparison needs to be <= so that black == 0 pixels are black even if the threshold is 0.
-				if (($luminances[(int)round($offset + $x)] & 0xFF) <= $threshold) {
+				if ((((int)$luminances[(int)round($offset + $x)]) & 0xFF) <= $threshold) {
 					$matrix->set($xoffset + $x, $yoffset + $y);
 				}
 			}
