@@ -325,6 +325,8 @@ final class DecodedBitStreamParser
 		} else {
 			$encoding = $currentCharacterSetECI->name();
 		}
+		// in case of no encoding found, default to UTF-8
+		if (empty($encoding)) { $encoding = 'UTF-8'; }
 		$result .= mb_convert_encoding($text, $encoding); //(new String(readBytes, encoding));
 		// $result .= $text; //(new String(readBytes, encoding));
 
