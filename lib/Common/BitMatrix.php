@@ -113,7 +113,7 @@ final class BitMatrix
 		//$this->bits[$offset] = intval32bits($this->bits[$offset]);
 
 		//}
-//16777216
+		//16777216
 	}
 
 	public function _unset($x, $y): void

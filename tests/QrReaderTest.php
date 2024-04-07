@@ -26,7 +26,7 @@ class QrReaderTest extends TestCase
 	{
 		$image = __DIR__ . "/qrcodes/empty.png";
 		$qrcode = new QrReader($image);
-		$this->assertSame(false, $qrcode->text());
+		$this->assertFalse($qrcode->text());
 	}
 
 	public function testText2()
@@ -38,7 +38,7 @@ class QrReaderTest extends TestCase
 			'NR_ALLOW_SKIP_ROWS' => 0
 		];
 		$qrcode->decode($hints);
-		$this->assertSame(null, $qrcode->getError());
+		$this->assertNull($qrcode->getError());
 		$this->assertInstanceOf(Result::class, $qrcode->getResult());
 		$this->assertEquals("https://www.gosuslugi.ru/covid-cert/verify/9770000014233333?lang=ru&ck=733a9d218d312fe134f1c2cc06e1a800", $qrcode->getResult()->getText());
 		$this->assertSame("https://www.gosuslugi.ru/covid-cert/verify/9770000014233333?lang=ru&ck=733a9d218d312fe134f1c2cc06e1a800", $qrcode->text($hints));
@@ -51,7 +51,7 @@ class QrReaderTest extends TestCase
 		$qrcode->decode([
 			'TRY_HARDER' => true
 		]);
-		$this->assertSame(null, $qrcode->getError());
+		$this->assertNull($qrcode->getError());
 		$this->assertSame("https://www.gosuslugi.ru/covid-cert/verify/9770000014233333?lang=ru&ck=733a9d218d312fe134f1c2cc06e1a800", $qrcode->text());
 	}
 

@@ -61,15 +61,17 @@ final class IMagickLuminanceSource extends LuminanceSource
 	 * Converts shorthand memory notation value to bytes
 	 * From http://php.net/manual/en/function.ini-get.php
 	 *
-	 * @param int $val Memory size shorthand notation string
+	 * @param string $val Memory size shorthand notation string
+	 *
+	 * @return float|int|string
 	 */
-	protected static function kmgStringToBytes(string $val)
+	protected static function kmgStringToBytes(string $val): int|float|string
 	{
 		$val = trim($val);
 		$last = strtolower($val[strlen($val) - 1]);
 		$val = substr($val, 0, -1);
 		switch ($last) {
-				// The 'G' modifier is available since PHP 5.1.0
+			// The 'G' modifier is available since PHP 5.1.0
 			case 'g':
 				$val *= 1024;
 				// no break

@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="./vendor/autoload.php" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
-  <coverage processUncoveredFiles="true">
-    <include>
-      <directory suffix=".php">lib</directory>
-    </include>
-  </coverage>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         bootstrap="./vendor/autoload.php"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd">
+
   <testsuite name="Tests">
-    <directory suffix="Test.php">tests</directory>
+    <directory>tests</directory>
   </testsuite>
+
+  <source>
+    <include>
+      <directory>lib</directory>
+    </include>
+  </source>
+
 </phpunit>
