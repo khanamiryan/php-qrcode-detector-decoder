@@ -401,8 +401,11 @@ class Detector
 		);
 	}
 
+    /**
+     * @param BitMatrix $image
+     */
 	private static function sampleGrid(
-		BitMatrix $image,
+		$image,
 		PerspectiveTransform $transform,
 		int $dimension
 	): \Zxing\Common\BitMatrix {
@@ -411,7 +414,10 @@ class Detector
 		return $sampler->sampleGrid_($image, $dimension, $dimension, $transform);
 	}
 
-	final protected function getImage(): BitMatrix
+    /**
+     * @return BitMatrix
+     */
+	final protected function getImage()
 	{
 		return $this->image;
 	}
