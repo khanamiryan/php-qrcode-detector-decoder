@@ -22,13 +22,6 @@ jobs:
       # basically git clone
       - uses: actions/checkout@v2
 
-      - name: Setup Git
-        run: |
-          git --version
-          git config --global user.email "test@github.com"
-          git config --global user.name "GitHub Action"
-          git --version
-
       - name: Setup PHP
         # use PHP of specific version
         uses: shivammathur/setup-php@v2
