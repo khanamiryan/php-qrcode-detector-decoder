@@ -126,7 +126,7 @@ final class AlignmentPatternFinder
 			return $this->possibleCenters[0];
 		}
 
-		throw  new NotFoundException("Bottom right alignment pattern not found");
+		throw new NotFoundException("Bottom right alignment pattern not found");
 	}
 
 	/**
@@ -198,9 +198,9 @@ final class AlignmentPatternFinder
 	 * alignment pattern to see if the same proportion is detected.</p>
 	 *
 	 * @param int $startI row   where an alignment pattern was detected
-	 * @param float $centerJ center  of the section that appears to cross an alignment pattern
+	 * @param int $centerJ center of the section that appears to cross an alignment pattern
 	 * @param int $maxCount maximum reasonable number of modules that should be
-	 *                 observed in any reading state, based on the results of the horizontal scan
+  *                 observed in any reading state, based on the results of the horizontal scan
 	 *
 	 * @return float vertical center of alignment pattern, or {@link Float#NaN} if not found
 	 */

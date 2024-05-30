@@ -44,8 +44,7 @@ class ResultPoint
 	 */
 	public static function orderBestPatterns(array $patterns): array
 	{
-
-// Find distances between pattern centers
+		// Find distances between pattern centers
 		$zeroOneDistance = self::distance($patterns[0], $patterns[1]);
 		$oneTwoDistance = self::distance($patterns[1], $patterns[2]);
 		$zeroTwoDistance = self::distance($patterns[0], $patterns[2]);
