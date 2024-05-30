@@ -13,6 +13,8 @@ jobs:
       matrix:
         php:
           - "8.1"
+          - "8.2"
+          - "8.3"
         dependency-version:
           # - prefer-lowest
           - prefer-stable
@@ -20,14 +22,7 @@ jobs:
     name: PHP ${{ matrix.php }} - ${{ matrix.dependency-version }} - tests
     steps:
       # basically git clone
-      - uses: actions/checkout@v2
-
-      - name: Setup Git
-        run: |
-          git --version
-          git config --global user.email "test@github.com"
-          git config --global user.name "GitHub Action"
-          git --version
+      - uses: actions/checkout@v4
 
       - name: Setup PHP
         # use PHP of specific version
