@@ -40,16 +40,13 @@ final class Decoder
 		$this->rsDecoder = new ReedSolomonDecoder(GenericGF::$QR_CODE_FIELD_256);
 	}
 
-	public function decode(BitMatrix|BitMatrixParser $variable, array|null $hints = null): string|DecoderResult
+    /**
+     * @throws FormatException
+     * @throws ChecksumException
+     */
+    public function decode(BitMatrix|BitMatrixParser $variable, array|null $hints = null): string|DecoderResult
 	{
-		if (is_array($variable)) {
-			return $this->decodeImage($variable, $hints);
-		} elseif ($variable instanceof BitMatrix) {
-			return $this->decodeBits($variable, $hints);
-		} elseif ($variable instanceof BitMatrixParser) {
-			return $this->decodeParser($variable, $hints);
-		}
-		die('decode error Decoder.php');
+        return $this->decodeBits($variable, $hints);
 	}
 
 	/**
@@ -93,7 +90,6 @@ final class Decoder
 	 */
 	public function decodeBits(\Zxing\Common\BitMatrix $bits, $hints = null): string|DecoderResult
 	{
-
 		// Construct a parser and read version, error-correction level
 		$parser = new BitMatrixParser($bits);
 		$fe = null;
@@ -107,7 +103,6 @@ final class Decoder
 		}
 
 		try {
-
 			// Revert the bit matrix
 			$parser->remask();
 

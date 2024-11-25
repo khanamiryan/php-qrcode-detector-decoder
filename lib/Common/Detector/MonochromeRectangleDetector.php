@@ -165,8 +165,8 @@ class MonochromeRectangleDetector
 	): \Zxing\ResultPoint {
 		$lastRange = null;
 		for ($y = $centerY, $x = $centerX;
-			 $y < $bottom && $y >= $top && $x < $right && $x >= $left;
-			 $y += $deltaY, $x += $deltaX) {
+			$y < $bottom && $y >= $top && $x < $right && $x >= $left;
+			$y += $deltaY, $x += $deltaX) {
 			$range = 0;
 			if ($deltaX == 0) {
 				// horizontal slices, up and down

@@ -43,7 +43,7 @@ class QRCodeReader implements Reader
 	}
 
 	/**
-  * @param null         $hints
+  * @param array|null         $hints
   *
   * @return Result
   * @throws \Zxing\FormatException

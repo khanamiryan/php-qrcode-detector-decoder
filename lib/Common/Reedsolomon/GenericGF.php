@@ -172,11 +172,13 @@ final class GenericGF
 		return $this->expTable[($this->logTable[$a] + $this->logTable[$b]) % ($this->size - 1)];
 	}
 
+    /** @return int */
 	public function getSize()
 	{
 		return $this->size;
 	}
 
+    /** @return int */
 	public function getGeneratorBase()
 	{
 		return $this->generatorBase;
