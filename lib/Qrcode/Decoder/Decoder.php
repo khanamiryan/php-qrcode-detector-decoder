@@ -147,7 +147,7 @@ final class Decoder
 		}
 	}
 
-	private function decodeParser(\Zxing\Qrcode\Decoder\BitMatrixParser $parser, array $hints = null): DecoderResult
+	private function decodeParser(\Zxing\Qrcode\Decoder\BitMatrixParser $parser, ?array $hints = null): DecoderResult
 	{
 		$version = $parser->readVersion();
 		$ecLevel = $parser->readFormatInformation()->getErrorCorrectionLevel();
