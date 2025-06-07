@@ -52,7 +52,7 @@ class Detector
 	 * @throws NotFoundException if QR Code cannot be found
 	 * @throws FormatException if a QR Code cannot be decoded
 	 */
-	final public function detect(array $hints = null): DetectorResult
+	final public function detect(?array $hints = null): DetectorResult
 	{/*Map<DecodeHintType,?>*/
 
 		$resultPointCallback = ($hints !== null && array_key_exists('NEED_RESULT_POINT_CALLBACK', $hints)) ?
