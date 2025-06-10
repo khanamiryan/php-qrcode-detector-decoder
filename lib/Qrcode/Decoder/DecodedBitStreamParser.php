@@ -309,24 +309,27 @@ final class DecodedBitStreamParser
 			$readBytes[$i] = $bits->readBits(8); //(byte)
 		}
 		$text = implode(array_map('chr', $readBytes));
-		$encoding = '';
-		if ($currentCharacterSetECI == null) {
-			// The spec isn't clear on this mode; see
-			// section 6.4.5: t does not say which encoding to assuming
-			// upon decoding. I have seen ISO-8859-1 used as well as
-			// Shift_JIS -- without anything like an ECI designator to
-			// give a hint.
+        if ($hints !== null && array_key_exists('BINARY_MODE', $hints) && $hints['BINARY_MODE']) {
+            $result .= $text;
+        } else {
+            $encoding = '';
+            if ($currentCharacterSetECI == null) {
+                // The spec isn't clear on this mode; see
+                // section 6.4.5: t does not say which encoding to assuming
+                // upon decoding. I have seen ISO-8859-1 used as well as
+                // Shift_JIS -- without anything like an ECI designator to
+                // give a hint.
 
-			try {
-				$encoding = mb_detect_encoding($text, $hints);
-			} catch (ValueError $e) {
-				$encoding = mb_detect_encoding($text, mb_detect_order(), false);
-			}
-		} else {
-			$encoding = $currentCharacterSetECI->name();
-		}
-		$result .= mb_convert_encoding($text, $encoding); //(new String(readBytes, encoding));
-		// $result .= $text; //(new String(readBytes, encoding));
+                try {
+                    $encoding = mb_detect_encoding($text, $hints);
+                } catch (ValueError $e) {
+                    $encoding = mb_detect_encoding($text, mb_detect_order(), false);
+                }
+            } else {
+                $encoding = $currentCharacterSetECI->name();
+            }
+            $result .= mb_convert_encoding($text, $encoding); //(new String(readBytes, encoding));
+        }
 
 		$byteSegments = array_merge($byteSegments, $readBytes);
 	}
