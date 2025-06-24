@@ -168,8 +168,8 @@ class FinderPatternFinder
 	}
 
 	/**
-	 * @param $stateCount ; count of black/white/black/white/black pixels just read
-	 * @param int[] $stateCount
+	 * @param $maxVariance ; count of black/white/black/white/black pixels just read
+	 * @param int[] $maxVariance
 	 *
 	 * @return bool iff the proportions of the counts is close enough to the 1/1/3/1/1 ratios used by finder patterns to be considered a match
 	 *

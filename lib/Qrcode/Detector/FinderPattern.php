@@ -17,7 +17,7 @@
 
 namespace Zxing\Qrcode\Detector;
 
-use  Zxing\ResultPoint;
+use Zxing\ResultPoint;
 
 /**
  * <p>Encapsulates a finder pattern, which are the three square patterns found in

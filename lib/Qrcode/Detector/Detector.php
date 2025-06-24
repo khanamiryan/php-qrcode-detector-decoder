@@ -25,7 +25,6 @@ use Zxing\Common\PerspectiveTransform;
 use Zxing\DecodeHintType;
 use Zxing\FormatException;
 use Zxing\NotFoundException;
-use Zxing\Qrcode\Decoder\Version;
 use Zxing\ResultPoint;
 use Zxing\ResultPointCallback;
 
@@ -54,7 +53,6 @@ class Detector
 	 */
 	final public function detect(?array $hints = null): DetectorResult
 	{/*Map<DecodeHintType,?>*/
-
 		$resultPointCallback = ($hints !== null && array_key_exists('NEED_RESULT_POINT_CALLBACK', $hints)) ?
 			$hints['NEED_RESULT_POINT_CALLBACK'] : null;
 		/* resultPointCallback = hints == null ? null :
@@ -82,7 +80,6 @@ class Detector
 		$alignmentPattern = null;
 		// Anything above version 1 has an alignment pattern
 		if ((is_countable($provisionalVersion->getAlignmentPatternCenters()) ? count($provisionalVersion->getAlignmentPatternCenters()) : 0) > 0) {
-
 			// Guess where a "bottom right" finder pattern would have been
 			$bottomRightX = $topRight->getX() - $topLeft->getX() + $bottomLeft->getX();
 			$bottomRightY = $topRight->getY() - $topLeft->getY() + $bottomLeft->getY();
@@ -404,6 +401,9 @@ class Detector
 		);
 	}
 
+    /**
+     * @param BitMatrix $image
+     */
 	private static function sampleGrid(
 		$image,
 		PerspectiveTransform $transform,
@@ -414,6 +414,9 @@ class Detector
 		return $sampler->sampleGrid_($image, $dimension, $dimension, $transform);
 	}
 
+    /**
+     * @return BitMatrix
+     */
 	final protected function getImage()
 	{
 		return $this->image;

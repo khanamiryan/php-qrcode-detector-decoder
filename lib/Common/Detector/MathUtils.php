@@ -30,8 +30,8 @@ final class MathUtils
 	 * values. -2.5 rounds to -3, not -2. For purposes here it makes no difference.
 	 *
 	 * @param float $d real value to round
-	 *
-	 * @return int {@code int}
+     *
+     * @return int
 	 */
 	public static function round(float $d)
 	{
